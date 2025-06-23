@@ -1,6 +1,6 @@
 ## Instructions
 
-To initialize on your individual VS Code, insert the following commands in your terminal:
+To initialize on your individual IDE insert the following commands in your terminal:
 
 ```
 $ git clone https://github.com/isaiaspavon/swe-project.git
