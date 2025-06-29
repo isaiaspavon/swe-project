@@ -21,3 +21,13 @@ cd frontend
 ```
 npm install
 ```
+
+## GitHub workflow
+
+To begin coding and make changes onto the project:
+
+ALWAYS Pull the latest changes first before you start working from the main branch:
+
+ ```
+ $ git pull origin main
+ ```
