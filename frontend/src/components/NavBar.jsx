@@ -32,7 +32,7 @@ const Navbar = () => {
       zIndex: 1000
     }}>
       <Link to="/" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
-        XYZ Book Store
+        The Gilded Page
       </Link>
 
       <input
