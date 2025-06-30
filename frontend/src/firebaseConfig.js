@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { getDatabase, ref, onValue } from "firebase/database";
 
 // Firebase config file
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -22,3 +22,15 @@ const app = initializeApp(firebaseConfig);
 //Export Auth and Realtime DB services
 export const auth = getAuth(app);
 export const db = getDatabase(app);
+
+export const fetchBooks = (callback) => {
+  const db = getDatabase();
+  const booksRef = ref(db, "books/");
+  onValue(booksRef, (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      const booksArray = Object.values(data);
+      callback(booksArray);
+    }
+  });
+};
