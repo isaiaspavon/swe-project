@@ -6,7 +6,7 @@ import ShoppingCartPage from "./pages/ShoppingCartPage";
 import { CartProvider } from "./contexts/CartContext";
 // import AdminDashboard from "./pages/AdminDashboard";
 // import CheckoutPage from "./pages/CheckoutPage";
-// import OrderHistoryPage from "./pages/OrderHistoryPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
             <Route path="/cart" element={<ShoppingCartPage />} />
             {/* <Route path="/admin" element={<AdminDashboard />} /> */}
             {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
-            {/* <Route path="/orders" element={<OrderHistoryPage />} /> */}
+            {<Route path="/orders" element={<OrderHistoryPage />} />}
           </Routes>
         </div>
       </div>
