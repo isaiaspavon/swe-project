@@ -22,6 +22,10 @@ cd frontend
 npm install
 ```
 
+```
+npm install framer-motion
+```
+
 ## GitHub workflow
 
 To begin coding and make changes onto the project:
