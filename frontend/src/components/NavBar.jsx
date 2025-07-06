@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
+import CreateAccountModal from './CreateAccountModal';
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -119,11 +120,22 @@ const Navbar = () => {
                     }}>
                     Sign In
                   </button>
-                  <Link to="/create-account" style={{
-                    color: '#2e7d32',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem'
-                  }}>
+                  <button
+                    onClick={() => {
+                      setShowCreateAccount(true);
+                      setDropdownOpen(false);
+                    }}
+                    style={{
+                      color: '#2e7d32',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0',
+                      font: 'inherit'
+                    }}
+                  >
                     Create an Account
                   </button>
                 </div>
@@ -143,7 +155,22 @@ const Navbar = () => {
           </Link>
         </div>
       </nav>
-      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+      <SignInModal 
+        isOpen={showSignIn} 
+        onClose={() => setShowSignIn(false)}
+        onSwitchToCreateAccount={() => {
+          setShowSignIn(false);
+          setShowCreateAccount(true);
+        }}
+      />
+      <CreateAccountModal 
+        isOpen={showCreateAccount} 
+        onClose={() => setShowCreateAccount(false)}
+        onSwitchToSignIn={() => {
+          setShowCreateAccount(false);
+          setShowSignIn(true);
+        }}
+      />
     </>
   );
 };
