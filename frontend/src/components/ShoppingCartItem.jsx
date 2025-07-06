@@ -1,121 +1,112 @@
-import React from "react";
-import Book from "../assets/Book-TheWayOfKings.jpg";
+import React from 'react';
+import { useCart } from '../contexts/CartContext';
 
+const ShoppingCartItem = ({ item }) => {
+  const { updateQuantity, removeFromCart } = useCart();
 
-const ShoppingCartItem = () => {
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity <= 0) {
+      removeFromCart(item.id);
+    } else {
+      updateQuantity(item.id, newQuantity);
+    }
+  };
 
   return (
-    <div className="cart-item" style = {{
-      display: "flex",
-      flex: "250 650",
-      alignItems: "flex-start",
-      width: 800,
-      height: 300,
-      backgroundColor: "rgb(41, 41, 41)",
-      marginBottom: 20,
-      marginLeft:  30,
-      boxShadow: "1px 1px 2px 2px rgb(53, 53, 53)",
-     
-    }
-    }>
-      <div className="Book Image Side" style = {{
-      display: "flex",
-      marginRight: 10,
-      marginLeft: 15,
-      width: 250,
+    <div style={{
+      display: 'flex',
+      border: '1px solid #333',
+      borderRadius: '16px',
+      padding: '1rem',
+      marginBottom: '1rem',
+      background: 'linear-gradient(to bottom right, #1e1e1e, #2a2a2a)',
+      color: '#f4f4f5',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
+    }}>
+      <img 
+        src={item.image} 
+        alt={item.title}
+        style={{
+          width: '80px',
+          height: '120px',
+          objectFit: 'cover',
+          marginRight: '1rem',
+          borderRadius: '12px',
+          background: '#2f2f2f'
+        }}
+      />
       
-    }
-    }>
-        <img src={Book} className="book-image" style = {{
-      width: 200,
-      height: 300,
-      objectFit: "contain",
-      border: 1,
-      marginTop: 3,
-      marginBottom: 3,
-      marginLeft: 15,
-      marginRight: 15,
-      borderStyle: "solid",
-      borderColor:"rgb(75, 75, 75)",
-
-    }
-    }/>
-      </div>
-      <div className = "right-side" style = {{
-      width: 650,
-      height: 300,
-      display: "inline-block",
-      alignContent: "top",
-      textAlign: "center",
-      justifyContent: "center",
-    
-    }
-    }>
-        <h3 className="book-title" style = {{
-                alignContent: "top",
-                fontSize: 30,   
-                marginTop: 15,
-                marginBottom: 0,           
-              }}>
-                The Way Of Kings
-                </h3>
-         <h1 className="book-author" style = {{
-                alignContent: "top",
-                fontSize: 15,   
-                marginTop: 0,           
-              }}>
-                by Brandon Sanderson
-                  </h1>
-         <p className="book-price">Price: $20.00</p>
-         <div className= "quantity-Button-Section" style = {{ 
-                display: "flex",
-                  alignItems: "top",
-                  marginLeft: 10,
-                  marginRight: 10,  
-                  marginBottom: 15,
-                  marginTop: 50,
-                  alignContent: "top",
-                  textAlign: "center",
-                  justifyContent: "center",
-              }
-              }>
-            <button className= "quantity-Button">-</button>   
-              <p style = {{
-                backgroundColor: "rgb(245, 240, 240)",
-                color: "#00000",
-                alignContent: "top",
-                width: 30,
-                border: 1,
-                borderStyle: "solid",
-                borderRadius: "10 10 10 10",
-                height: 35,
-                color: "black",
-                display: "inline-block",  
-                 textAlign: "center",
-                 paddingTop: 7,
-                marginTop: 0,
-                marginBottom: 0,   
-                marginLeft: -2,
-                marginRight: -1,           
-              }
-               }> 2 </p>
-              <button  className= "quantity-Button">+</button>  
+      <div style={{ flex: 1 }}>
+        <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: '#f4f4f5' }}>
+          {item.title}
+        </h3>
+        <p style={{ margin: '0 0 0.5rem 0', color: '#bbb' }}>
+          by {item.author}
+        </p>
+        <p style={{ margin: '0 0 1rem 0', fontWeight: 'bold', color: '#facc15' }}>
+          ${item.price.toFixed(2)}
+        </p>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              onClick={() => handleQuantityChange(item.quantity - 1)}
+              style={{
+                width: '30px',
+                height: '30px',
+                border: '1px solid #333',
+                backgroundColor: '#2a2a2a',
+                color: '#f4f4f5',
+                cursor: 'pointer',
+                borderRadius: '8px'
+              }}
+            >
+              -
+            </button>
+            <span style={{ minWidth: '30px', textAlign: 'center', color: '#f4f4f5' }}>
+              {item.quantity}
+            </span>
+            <button
+              onClick={() => handleQuantityChange(item.quantity + 1)}
+              style={{
+                width: '30px',
+                height: '30px',
+                border: '1px solid #333',
+                backgroundColor: '#2a2a2a',
+                color: '#f4f4f5',
+                cursor: 'pointer',
+                borderRadius: '8px'
+              }}
+            >
+              +
+            </button>
           </div>
-          <button className= "update-Button">Update Quantity</button>   
-          <button className= "remove-Button"style = {{
-                marginTop: 0,
-                marginBottom: 0,   
-                marginLeft: 8,
-                marginRight: 0,           
-              }
-               }>Remove All Items</button>  
-         
+          
+          <button
+            onClick={() => removeFromCart(item.id)}
+            style={{
+              backgroundColor: '#dc2626',
+              color: 'white',
+              border: 'none',
+              padding: '0.25rem 0.5rem',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '0.8rem',
+              fontWeight: '600'
+            }}
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+      
+      <div style={{ textAlign: 'right' }}>
+        <p style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#facc15' }}>
+          ${(item.price * item.quantity).toFixed(2)}
+        </p>
       </div>
     </div>
-      
-      
   );
-
 };
 
 export default ShoppingCartItem;
