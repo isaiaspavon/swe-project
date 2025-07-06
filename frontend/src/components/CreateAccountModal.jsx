@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
@@ -29,6 +30,14 @@ const CreateAccountModal = ({ isOpen, onClose }) => {
     }
   };
 
+=======
+// This will be the popup that appears when you hover over the "My Account" button then
+// click on the "Create Account" button. 
+
+import React from 'react';
+
+const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
   if (!isOpen) return null;
 
   return (
@@ -62,15 +71,26 @@ const CreateAccountModal = ({ isOpen, onClose }) => {
             position: 'absolute',
             top: '1rem',
             right: '1rem',
+<<<<<<< HEAD
             width: '2.5rem',
             height: '2.5rem',
+=======
+            width: '2rem',
+            height: '2rem',
+            padding: 0,
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
             background: 'transparent',
             border: 'none',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+<<<<<<< HEAD
             fontSize: '1rem',
+=======
+            fontSize: '1.25rem',
+            lineHeight: 1,
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
             color: '#666',
             cursor: 'pointer',
             transition: 'background 0.2s',
@@ -81,6 +101,7 @@ const CreateAccountModal = ({ isOpen, onClose }) => {
         >
           &times;
         </button>
+<<<<<<< HEAD
         
         <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>
           Create Account
@@ -133,6 +154,16 @@ const CreateAccountModal = ({ isOpen, onClose }) => {
             style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required 
           />
+=======
+        <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Create Account</h2>
+        <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <input type="text" placeholder="Full Name" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+          <input type="tel" placeholder="Phone number" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+          <input type="email" placeholder="Email" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+          <input type="email" placeholder="Confirm Email" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+          <input type="password" placeholder="Password" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+          <input type="password" placeholder="Confirm Password" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
           <button
             type="submit"
             style={{
@@ -141,16 +172,39 @@ const CreateAccountModal = ({ isOpen, onClose }) => {
               color: 'white',
               border: 'none',
               borderRadius: '4px',
+<<<<<<< HEAD
               cursor: 'pointer',
               fontSize: '1rem'
+=======
+              fontSize: '1rem',
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
             }}
           >
             Create Account
           </button>
+<<<<<<< HEAD
+=======
+          <div style={{ color: 'black', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}> 
+            Already have an account?{' '}
+            <span
+                style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+                onClick={() => {
+                    onClose();
+                    onSwitchToSignIn();
+                }}
+            >
+                Sign in
+            </span>
+          </div>
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584
         </form>
       </div>
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default CreateAccountModal;
+=======
+export default CreateAccountModal; 
+>>>>>>> 817807e9986d32ea6ce025eb2bb3df2b1dfdb584

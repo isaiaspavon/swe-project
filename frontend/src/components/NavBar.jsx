@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
-import CreateAccountModal from './CreateAccountModal';
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -120,22 +119,11 @@ const Navbar = () => {
                     }}>
                     Sign In
                   </button>
-                  <button
-                    onClick={() => {
-                      setShowCreateAccount(true);
-                      setDropdownOpen(false);
-                    }}
-                    style={{
-                      color: '#2e7d32',
-                      textDecoration: 'none',
-                      fontSize: '0.9rem',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '0',
-                      font: 'inherit'
-                    }}
-                  >
+                  <Link to="/create-account" style={{
+                    color: '#2e7d32',
+                    textDecoration: 'none',
+                    fontSize: '0.9rem'
+                  }}>
                     Create an Account
                   </button>
                 </div>
@@ -156,7 +144,6 @@ const Navbar = () => {
         </div>
       </nav>
       <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
-      <CreateAccountModal isOpen={showCreateAccount} onClose={() => setShowCreateAccount(false)} />
     </>
   );
 };
