@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
+import CreateAccountModal from "./CreateAccountModal";
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
+  const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -96,13 +98,24 @@ const Navbar = () => {
                     }}>
                     Sign In
                   </button>
-                  <Link to="/create-account" style={{
-                    color: '#2e7d32',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem'
-                  }}>
+                  <button
+                    onClick={() => {
+                      setShowCreateAccount(true);
+                      setDropdownOpen(false);
+                    }}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      backgroundColor: 'white',
+                      color: '#2e7d32',
+                      border: '1px solid #2e7d32',
+                      borderRadius: '4px',
+                      fontSize: '0.9rem',
+                      cursor: 'pointer'
+                    }}
+                  >
                     Create an Account
-                  </Link>
+                  </button>
                 </div>
                 <div style={{ borderTop: '1px solid #ddd' }}>
                   <DropdownLink to="/account">Manage Account</DropdownLink>
@@ -120,7 +133,18 @@ const Navbar = () => {
           </Link>
         </div>
       </nav>
-      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} 
+      onSwitchToCreateAccount={() => {
+        setShowSignIn(false);
+        setShowCreateAccount(true);
+      }}
+      />
+      <CreateAccountModal isOpen={showCreateAccount} onClose={() => setShowCreateAccount(false)} 
+      onSwitchToSignIn={() => {
+        setShowCreateAccount(false);
+        setShowSignIn(true);
+      }}
+      />
     </>
   );
 };

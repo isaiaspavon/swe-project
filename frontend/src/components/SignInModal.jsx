@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-const SignInModal = ({ isOpen, onClose }) => {
+const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
     if (!isOpen) return null;
 
     return (
@@ -58,8 +58,8 @@ const SignInModal = ({ isOpen, onClose }) => {
                 </button>
                 <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Sign In</h2>
                 <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <input type="email" placeholder="Email" style={{ padding: '0.5rem' }} />
-                    <input type="password" placeholder="Password" style={{ padding: '0.5rem' }} />
+                    <input type="email" placeholder="Email" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+                    <input type="password" placeholder="Password" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
                     <button
                         type="submit"
                         style={{
@@ -72,6 +72,18 @@ const SignInModal = ({ isOpen, onClose }) => {
                     >
                         Sign In
                     </button>
+                    <div style={{ color: 'black', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}> 
+                        Create an account?{' '}
+                        <span
+                            style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+                            onClick={() => {
+                                onClose();
+                                onSwitchToCreateAccount();
+                            }}
+                        >
+                            Create account
+                        </span>
+                    </div>
                 </form>
             </div>
         </div>
