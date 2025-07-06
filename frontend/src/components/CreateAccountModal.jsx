@@ -1,9 +1,47 @@
-// This will be the popup that appears when you hover over the "My Account" button then
-// click on the "Create Account" button. 
-
-import React from 'react';
+import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phoneNumber: '',
+    email: '',
+    confirmEmail: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validation
+    if (formData.email !== formData.confirmEmail) {
+      setError('Emails do not match');
+      return;
+    }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return;
+    }
+    
+    try {
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      onClose();
+      setFormData({ fullName: '', phoneNumber: '', email: '', confirmEmail: '', password: '', confirmPassword: '' });
+      setError('');
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -58,14 +96,66 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         >
           &times;
         </button>
-        <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Create Account</h2>
-        <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <input type="text" placeholder="Full Name" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
-          <input type="tel" placeholder="Phone number" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
-          <input type="email" placeholder="Email" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
-          <input type="email" placeholder="Confirm Email" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
-          <input type="password" placeholder="Password" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
-          <input type="password" placeholder="Confirm Password" style={{ backgroundColor: '#FBFBFB', padding: '0.5rem' }} />
+        
+        <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>
+          Create Account
+        </h2>
+        
+        {error && (
+          <p style={{ color: 'red', textAlign: 'center', marginBottom: '1rem', fontSize: '0.9rem' }}>
+            {error}
+          </p>
+        )}
+        
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <input 
+            type="text" 
+            placeholder="Full Name" 
+            value={formData.fullName}
+            onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
+          <input 
+            type="tel" 
+            placeholder="Phone number" 
+            value={formData.phoneNumber}
+            onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
+          <input 
+            type="email" 
+            placeholder="Email" 
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
+          <input 
+            type="email" 
+            placeholder="Confirm Email" 
+            value={formData.confirmEmail}
+            onChange={(e) => setFormData({...formData, confirmEmail: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
+          <input 
+            type="password" 
+            placeholder="Password" 
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
+          <input 
+            type="password" 
+            placeholder="Confirm Password" 
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            required
+          />
           <button
             type="submit"
             style={{
@@ -75,20 +165,22 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               border: 'none',
               borderRadius: '4px',
               fontSize: '1rem',
+              cursor: 'pointer'
             }}
           >
             Create Account
           </button>
+          
           <div style={{ color: 'black', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}> 
             Already have an account?{' '}
             <span
-                style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
-                onClick={() => {
-                    onClose();
-                    onSwitchToSignIn();
-                }}
+              style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+              onClick={() => {
+                onClose();
+                onSwitchToSignIn();
+              }}
             >
-                Sign in
+              Sign in
             </span>
           </div>
         </form>
@@ -97,4 +189,4 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   );
 };
 
-export default CreateAccountModal; 
+export default CreateAccountModal;

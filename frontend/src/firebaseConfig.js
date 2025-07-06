@@ -29,7 +29,10 @@ export const fetchBooks = (callback) => {
   onValue(booksRef, (snapshot) => {
     const data = snapshot.val();
     if (data) {
-      const booksArray = Object.values(data);
+      const booksArray = Object.entries(data).map(([id, book]) => ({
+        id,
+        ...book,
+      }));
       callback(booksArray);
     }
   });

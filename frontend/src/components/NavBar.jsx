@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
-import CreateAccountModal from "./CreateAccountModal";
+import CreateAccountModal from './CreateAccountModal';
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('title');
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
+  const { getCartCount } = useCart();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -40,16 +44,36 @@ const Navbar = () => {
           The Gilded Page
         </Link>
 
-        <input
-          type="text"
-          placeholder="Search by Title, Author, Genre..."
-          style={{
-            padding: '0.5rem',
-            width: '300px',
-            borderRadius: '4px',
-            border: '1px solid #ccc'
-          }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <select 
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            style={{ 
+              padding: '0.5rem', 
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              backgroundColor: 'white',
+              color: 'black'
+            }}
+          >
+            <option value="title">Search by Title</option>
+            <option value="author">Search by Author</option>
+            <option value="genre">Search by Genre</option>
+          </select>
+          
+          <input
+            type="text"
+            placeholder={`Search by ${searchFilter}...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              padding: '0.5rem',
+              width: '400px',
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -57,7 +81,6 @@ const Navbar = () => {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
-              {/* Placeholder Circle */}
               <div style={{
                 width: '32px',
                 height: '32px',
@@ -104,14 +127,14 @@ const Navbar = () => {
                       setDropdownOpen(false);
                     }}
                     style={{
-                      width: '100%',
-                      padding: '0.5rem',
-                      backgroundColor: 'white',
                       color: '#2e7d32',
-                      border: '1px solid #2e7d32',
-                      borderRadius: '4px',
+                      textDecoration: 'none',
                       fontSize: '0.9rem',
-                      cursor: 'pointer'
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0',
+                      font: 'inherit'
                     }}
                   >
                     Create an Account
@@ -128,22 +151,46 @@ const Navbar = () => {
             )}
           </div>
 
-          <Link to="/checkout" style={{ color: 'white', textDecoration: 'none' }}>
-            Checkout
+          <Link to="/cart" style={{ color: 'white', textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span role="img" aria-label="cart" style={{ fontSize: '1.3rem', marginRight: '0.3rem' }}>🛒</span>
+            Cart
+            {getCartCount() > 0 && (
+              <span style={{
+                marginLeft: '0.4rem',
+                backgroundColor: '#f44336',
+                color: 'white',
+                borderRadius: '50%',
+                minWidth: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                position: 'relative',
+                top: '-6px'
+              }}>
+                {getCartCount()}
+              </span>
+            )}
           </Link>
         </div>
       </nav>
-      <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} 
-      onSwitchToCreateAccount={() => {
-        setShowSignIn(false);
-        setShowCreateAccount(true);
-      }}
+      <SignInModal 
+        isOpen={showSignIn} 
+        onClose={() => setShowSignIn(false)}
+        onSwitchToCreateAccount={() => {
+          setShowSignIn(false);
+          setShowCreateAccount(true);
+        }}
       />
-      <CreateAccountModal isOpen={showCreateAccount} onClose={() => setShowCreateAccount(false)} 
-      onSwitchToSignIn={() => {
-        setShowCreateAccount(false);
-        setShowSignIn(true);
-      }}
+      <CreateAccountModal 
+        isOpen={showCreateAccount} 
+        onClose={() => setShowCreateAccount(false)}
+        onSwitchToSignIn={() => {
+          setShowCreateAccount(false);
+          setShowSignIn(true);
+        }}
       />
     </>
   );
@@ -160,7 +207,7 @@ const DropdownLink = ({ to, children }) => (
       color: '#333',
       fontSize: '0.9rem'
     }}
-    onClick={() => window.scrollTo(0, 0)} // Optional: scroll to top on click
+    onClick={() => window.scrollTo(0, 0)}
   >
     {children}
   </Link>
