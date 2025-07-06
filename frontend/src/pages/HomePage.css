@@ -4,6 +4,11 @@
   gap: 1rem;
 }
 
+.book-grid,
+.carousel-slide {
+  overflow: visible;
+}
+
 .book-card {
   border: 1px solid #ccc;
   padding: 1rem;

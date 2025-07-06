@@ -1,10 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
+import CreateAccountModal from './CreateAccountModal';
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
+  const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [searchFilter, setSearchFilter] = useState('title');
+  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
 
   // Close dropdown if clicked outside
@@ -38,16 +42,36 @@ const Navbar = () => {
           The Gilded Page
         </Link>
 
-        <input
-          type="text"
-          placeholder="Search by Title, Author, Genre..."
-          style={{
-            padding: '0.5rem',
-            width: '300px',
-            borderRadius: '4px',
-            border: '1px solid #ccc'
-          }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <select 
+            value={searchFilter}
+            onChange={(e) => setSearchFilter(e.target.value)}
+            style={{ 
+              padding: '0.5rem', 
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              backgroundColor: 'white',
+              color: 'black'
+            }}
+          >
+            <option value="title">Search by Title</option>
+            <option value="author">Search by Author</option>
+            <option value="genre">Search by Genre</option>
+          </select>
+          
+          <input
+            type="text"
+            placeholder={`Search by ${searchFilter}...`}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              padding: '0.5rem',
+              width: '400px', // Larger search bar
+              borderRadius: '4px',
+              border: '1px solid #ccc'
+            }}
+          />
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -96,13 +120,24 @@ const Navbar = () => {
                     }}>
                     Sign In
                   </button>
-                  <Link to="/create-account" style={{
-                    color: '#2e7d32',
-                    textDecoration: 'none',
-                    fontSize: '0.9rem'
-                  }}>
+                  <button
+                    onClick={() => {
+                      setShowCreateAccount(true);
+                      setDropdownOpen(false);
+                    }}
+                    style={{
+                      color: '#2e7d32',
+                      textDecoration: 'none',
+                      fontSize: '0.9rem',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '0',
+                      font: 'inherit'
+                    }}
+                  >
                     Create an Account
-                  </Link>
+                  </button>
                 </div>
                 <div style={{ borderTop: '1px solid #ddd' }}>
                   <DropdownLink to="/account">Manage Account</DropdownLink>
@@ -121,6 +156,7 @@ const Navbar = () => {
         </div>
       </nav>
       <SignInModal isOpen={showSignIn} onClose={() => setShowSignIn(false)} />
+      <CreateAccountModal isOpen={showCreateAccount} onClose={() => setShowCreateAccount(false)} />
     </>
   );
 };
