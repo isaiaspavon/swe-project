@@ -14,20 +14,19 @@ const ShoppingCartPage = () => {
     <div className="shopping-cart-page">
       <h2 className = "cart-title">
         Cart Items:
-        </h2>
+      </h2>
+
       <div className = "cart-checkout">
-      
-      <div className="cart-flex">
-        <ShoppingCartItem/>
-         <ShoppingCartItem/>
-         <ShoppingCartItem/>
-      </div>
-      <div> 
-        <p>
-          Estimated Total: $80.00
-        </p>
-        <button className = "check-out-button"> Check Out </button>
-      </div>
+        <div className="cart-flex">
+          <ShoppingCartItem/>
+          <ShoppingCartItem/>
+          <ShoppingCartItem/>
+        </div>
+        <div className="order-summary-card">
+          <h3>Order Summary</h3>
+          <p>Estimated Total: $80.00</p>
+          <button className = "check-out-button">Check Out</button>
+        </div>
       </div>
     </div>
   );
