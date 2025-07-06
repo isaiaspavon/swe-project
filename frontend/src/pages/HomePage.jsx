@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { fetchBooks } from "../firebaseConfig"; // this should return the books from your DB
-import BookCard from "../components/BookCard";
-import "./HomePage.css"
+import { fetchBooks } from "../firebaseConfig";
+import BookCarousel from "../components/BookCarousel"; // ✅ you're using this now
+import "./HomePage.css";
 
 const HomePage = () => {
   const [books, setBooks] = useState([]);
@@ -12,25 +12,16 @@ const HomePage = () => {
     });
   }, []);
 
-  // Separate books by category
-  const topSellers = books.filter(book => book.category === "top-seller");
-  const comingSoon = books.filter(book => book.category === "coming-soon");
+  const topSellers = books.filter((book) => book.category === "top-seller");
+  const comingSoon = books.filter((book) => book.category === "coming-soon");
 
   return (
     <div className="homepage">
       <h2>Best Sellers</h2>
-      <div className="book-grid">
-        {topSellers.map((book, index) => (
-          <BookCard key={index} book={book} />
-        ))}
-      </div>
+      <BookCarousel books={topSellers} /> {/* ✅ Carousel instead of map */}
 
       <h2>Coming Soon</h2>
-      <div className="book-grid">
-        {comingSoon.map((book, index) => (
-          <BookCard key={index} book={book} />
-        ))}
-      </div>
+      <BookCarousel books={comingSoon} /> {/* ✅ Carousel instead of map */}
     </div>
   );
 };

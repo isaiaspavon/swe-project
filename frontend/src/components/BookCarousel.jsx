@@ -1,0 +1,52 @@
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import BookCard from "./BookCard";
+import "./BookCarousel.css"; // we'll style it separately
+
+const BookCarousel = ({ books }) => {
+  const [startIndex, setStartIndex] = useState(0);
+  const visibleBooks = books.slice(startIndex, startIndex + 5);
+
+  const handleNext = () => {
+    if (startIndex + 5 < books.length) {
+      setStartIndex(startIndex + 5);
+    }
+  };
+
+  const handlePrev = () => {
+    if (startIndex - 5 >= 0) {
+      setStartIndex(startIndex - 5);
+    }
+  };
+
+  return (
+    <div className="carousel-container">
+      <button className="nav-button" onClick={handlePrev} disabled={startIndex === 0}>
+        ◀
+      </button>
+
+      <div className="carousel-track">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={startIndex}
+            className="carousel-slide"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.4 }}
+          >
+            {visibleBooks.map((book, index) => (
+              <BookCard key={index} book={book} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <button className="nav-button" onClick={handleNext} disabled={startIndex + 5 >= books.length}>
+        ▶
+      </button>
+    </div>
+  );
+};
+
+export default BookCarousel;
