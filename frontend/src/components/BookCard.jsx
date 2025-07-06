@@ -1,7 +1,7 @@
 // BookCard.jsx
 // This file contains a reusable component to display book details in a card layout
-
 import React from "react";
+import "./BookCard.css";
 
 const BookCard = ({ book, onAddToCart }) => {
   return (
