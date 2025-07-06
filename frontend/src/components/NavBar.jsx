@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
+import { useCart } from '../contexts/CartContext';
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [searchFilter, setSearchFilter] = useState('title');
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
+  const { getCartCount } = useCart();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -66,7 +68,7 @@ const Navbar = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               padding: '0.5rem',
-              width: '400px', // Larger search bar
+              width: '400px',
               borderRadius: '4px',
               border: '1px solid #ccc'
             }}
@@ -79,7 +81,6 @@ const Navbar = () => {
               onClick={() => setDropdownOpen(!dropdownOpen)}
               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             >
-              {/* Placeholder Circle */}
               <div style={{
                 width: '32px',
                 height: '32px',
@@ -150,8 +151,28 @@ const Navbar = () => {
             )}
           </div>
 
-          <Link to="/checkout" style={{ color: 'white', textDecoration: 'none' }}>
-            Checkout
+          <Link to="/cart" style={{ color: 'white', textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <span role="img" aria-label="cart" style={{ fontSize: '1.3rem', marginRight: '0.3rem' }}>🛒</span>
+            Cart
+            {getCartCount() > 0 && (
+              <span style={{
+                marginLeft: '0.4rem',
+                backgroundColor: '#f44336',
+                color: 'white',
+                borderRadius: '50%',
+                minWidth: '20px',
+                height: '20px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.85rem',
+                fontWeight: 'bold',
+                position: 'relative',
+                top: '-6px'
+              }}>
+                {getCartCount()}
+              </span>
+            )}
           </Link>
         </div>
       </nav>
@@ -186,7 +207,7 @@ const DropdownLink = ({ to, children }) => (
       color: '#333',
       fontSize: '0.9rem'
     }}
-    onClick={() => window.scrollTo(0, 0)} // Optional: scroll to top on click
+    onClick={() => window.scrollTo(0, 0)}
   >
     {children}
   </Link>

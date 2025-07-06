@@ -35,8 +35,8 @@ const BookCarousel = ({ books }) => {
             exit={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.4 }}
           >
-            {visibleBooks.map((book, index) => (
-              <BookCard key={index} book={book} />
+            {visibleBooks.map((book) => (
+              <BookCard key={book.id} book={book} />
             ))}
           </motion.div>
         </AnimatePresence>
