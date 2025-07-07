@@ -12,34 +12,35 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     confirmPassword: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     // Validation
+    if (!formData.fullName || !formData.phoneNumber || !formData.email || !formData.confirmEmail || !formData.password || !formData.confirmPassword) {
+      setError('Please fill in all fields');
+      return;
+    }
     if (formData.email !== formData.confirmEmail) {
       setError('Emails do not match');
       return;
     }
-    
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
     }
-    
-    try {
-      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+    // Simulate success (no Firebase call) - we will implement this to work with firebase
+    setSuccess(true);
+    setError('');
+    setFormData({ fullName: '', phoneNumber: '', email: '', confirmEmail: '', password: '', confirmPassword: '' });
+    setTimeout(() => {
+      setSuccess(false);
       onClose();
-      setFormData({ fullName: '', phoneNumber: '', email: '', confirmEmail: '', password: '', confirmPassword: '' });
-      setError('');
-    } catch (error) {
-      setError(error.message);
-    }
+    }, 3500);
   };
 
   if (!isOpen) return null;
@@ -96,6 +97,22 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         >
           &times;
         </button>
+        
+        {success && (
+          <div style={{
+            background: '#2e7d32',
+            color: 'white',
+            borderRadius: '6px',
+            padding: '0.75rem 1rem',
+            marginBottom: '1rem',
+            textAlign: 'center',
+            fontWeight: 'bold',
+            fontSize: '1.05rem',
+            boxShadow: '0 2px 8px rgba(46,125,50,0.08)'
+          }}>
+            Account Email Confirmation Sent!
+          </div>
+        )}
         
         <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>
           Create Account
