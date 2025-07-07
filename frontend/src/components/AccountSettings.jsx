@@ -13,7 +13,7 @@ const headerStyle = {
 const cardStyle = {
   background: '#232323',
   border: '1.5px solid #444',
-  borderRadius: '16px',
+  borderRadius: '8px',
   padding: '2rem',
   marginBottom: '2rem',
   color: 'white',
