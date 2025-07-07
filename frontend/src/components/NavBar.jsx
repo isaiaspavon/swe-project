@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
-import AccountPage from "../pages/AccountPage";
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -43,6 +42,20 @@ const Navbar = () => {
       }}>
         <Link to="/" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
           The Gilded Page
+        </Link>
+        
+        <Link
+          to="/admin"
+          style={{
+            backgroundColor: 'rgb(250, 204, 21)',
+            color: 'white',
+            borderRadius: '6px',
+            padding: '0.3rem 1.2rem',
+            fontSize: '1rem',
+            cursor: 'pointer',
+          }}
+        >
+          Admin View
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
