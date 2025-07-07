@@ -1,9 +1,10 @@
 // This will be the popup that appears when you hover over the "My Account" button then
 // click on the "Sign In" button.
 
-import React from 'react';
+import React, { useState } from 'react';
 
 const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
+    const [formData, setFormData] = useState({ email: '', password: '' });
     if (!isOpen) return null;
 
     return (
@@ -56,10 +57,31 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
                 >
                     &times;
                 </button>
+
                 <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Sign In</h2>
                 <form style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <input type="email" placeholder="Email" style={{ padding: '0.5rem' }} />
-                    <input type="password" placeholder="Password" style={{ padding: '0.5rem' }} />
+                    <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+                        Email: <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input 
+                      type="email" 
+                      placeholder="Email" 
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                      required
+                    />
+                    <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+                        Password: <span style={{ color: 'red' }}>*</span>
+                    </label>
+                    <input 
+                      type="password" 
+                      placeholder="Password" 
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                      required
+                    />
                     <button
                         type="submit"
                         style={{
@@ -68,6 +90,10 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
                             color: 'white',
                             border: 'none',
                             borderRadius: '4px',
+                            fontWeight: 'bold',
+                            fontSize: '1rem',
+                            width: '100%',
+                            cursor: 'pointer',
                         }}
                     >
                         Sign In

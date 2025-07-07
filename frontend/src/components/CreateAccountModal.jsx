@@ -108,52 +108,70 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         )}
         
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Full Name: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="text" 
-            placeholder="Full Name" 
+            placeholder="Full Name"
             value={formData.fullName}
             onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Phone number: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="tel" 
-            placeholder="Phone number" 
+            placeholder="Phone number"
             value={formData.phoneNumber}
             onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Email: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="email" 
-            placeholder="Email" 
+            placeholder="Email"
             value={formData.email}
             onChange={(e) => setFormData({...formData, email: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Confirm Email: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="email" 
-            placeholder="Confirm Email" 
+            placeholder="Confirm Email"
             value={formData.confirmEmail}
             onChange={(e) => setFormData({...formData, confirmEmail: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Password: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="password" 
-            placeholder="Password" 
+            placeholder="Password"
             value={formData.password}
             onChange={(e) => setFormData({...formData, password: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Confirm Password: <span style={{ color: 'red' }}>*</span>
+          </label>
           <input 
             type="password" 
-            placeholder="Confirm Password" 
+            placeholder="Confirm Password"
             value={formData.confirmPassword}
             onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-            style={{ backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
             required
           />
           <button
