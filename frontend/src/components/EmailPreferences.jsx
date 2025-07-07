@@ -87,14 +87,14 @@ const EmailPreferences = () => {
         </div>
         <label style={checkboxLabelStyle}>
           <input type="checkbox" checked={prefs.nook} onChange={() => handleChange('nook')} />
-          NOOK Daily Find
+          Your Daily Finds
         </label>
         <div style={{ color: '#bbb', marginLeft: '2rem', marginBottom: '1rem', fontSize: '0.98rem' }}>
           Delivered to your inbox every day, this email features a great limited-time discount on a specially selected NOOK Book.
         </div>
         <label style={checkboxLabelStyle}>
           <input type="checkbox" checked={prefs.unsubscribe} onChange={() => handleChange('unsubscribe')} />
-          Please unsubscribe me from all B&N email.
+          Please unsubscribe me from all email.
         </label>
         <div style={{ color: '#bbb', marginLeft: '2rem', marginBottom: '1rem', fontSize: '0.98rem' }}>
           You will continue to receive emails regarding any orders you place (such as order and shipping confirmations).

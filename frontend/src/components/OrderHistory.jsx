@@ -36,7 +36,7 @@ const OrderHistory = () => {
   ]);
 
   useEffect(() => {
-    // Fetch user's order history from Firebase
+    
   }, []);
 
   return (

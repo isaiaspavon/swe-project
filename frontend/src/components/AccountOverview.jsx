@@ -54,10 +54,6 @@ const AccountOverview = ({ onNavigate }) => (
           Full Name: John Doe<br />
           Email Address: johndoe@email.com<br />
           <span style={{ color: '#b71c1c' }}>* Phone Number: Add a number to assure account security</span><br />
-          {/*
-          Content Settings: Do not show explicit content<br />
-          Instant Purchase Settings: Active
-          */}
         </p>
         <button style={buttonStyle} onClick={() => onNavigate('settings')}>Manage Account Settings</button>
       </div>

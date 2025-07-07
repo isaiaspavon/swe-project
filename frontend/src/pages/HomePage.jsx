@@ -18,10 +18,10 @@ const HomePage = () => {
   return (
     <div className="homepage">
       <h2>Best Sellers</h2>
-      <BookCarousel books={topSellers} /> {/* ✅ Carousel instead of map */}
+      <BookCarousel books={topSellers} /> {/* Carousel instead of map */}
 
       <h2>Coming Soon</h2>
-      <BookCarousel books={comingSoon} /> {/* ✅ Carousel instead of map */}
+      <BookCarousel books={comingSoon} /> {/* Carousel instead of map */}
     </div>
   );
 };

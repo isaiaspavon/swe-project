@@ -16,7 +16,6 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Validation
     if (!formData.fullName || !formData.phoneNumber || !formData.email || !formData.confirmEmail || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
       return;
@@ -33,7 +32,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       setError('Password must be at least 6 characters');
       return;
     }
-    // Simulate success (no Firebase call) - we will implement this to work with firebase
+    // Simulate success - we will implement this to work with firebase
     setSuccess(true);
     setError('');
     setFormData({ fullName: '', phoneNumber: '', email: '', confirmEmail: '', password: '', confirmPassword: '' });

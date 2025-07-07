@@ -211,7 +211,6 @@ const Navbar = () => {
   );
 };
 
-// Helper Component for links
 const DropdownLink = ({ to, children, closeDropdown }) => (
   <Link
     to={to}

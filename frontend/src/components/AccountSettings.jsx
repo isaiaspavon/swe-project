@@ -78,7 +78,6 @@ const passwordReqStyle = {
 };
 
 const AccountSettings = () => {
-  // Local state for each form (for demo only)
   const [name, setName] = useState({ first: '', last: '' });
   const [email, setEmail] = useState({ current: 'johndoe@email.com', new: '', confirm: '' });
   const [phone, setPhone] = useState({ current: '', new: '', confirm: '' });
