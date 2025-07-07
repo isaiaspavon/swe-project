@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 
 const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [rememberMe, setRememberMe] = useState(false);
     if (!isOpen) return null;
 
     return (
@@ -82,6 +83,29 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount }) => {
                       style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
                       required
                     />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                      <label style={{ color: 'black', fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={e => setRememberMe(e.target.checked)}
+                          style={{ marginRight: '0.3rem' }}
+                        />
+                        Remember me
+                      </label>
+                      <span
+                        style={{
+                          color: '#2e7d32',
+                          fontSize: '0.9rem',
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                          alignSelf: 'flex-end'
+                        }}
+                        onClick={() => {/* have to dd forgot password logic here later on*/}}
+                      >
+                        Forgot your password?
+                      </span>
+                    </div>
                     <button
                         type="submit"
                         style={{
