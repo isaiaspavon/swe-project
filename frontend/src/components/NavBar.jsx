@@ -49,7 +49,7 @@ const Navbar = () => {
           style={{
             backgroundColor: 'rgb(250, 204, 21)',
             color: 'white',
-            borderRadius: '6px',
+            borderRadius: '4px',
             padding: '0.3rem 1.2rem',
             fontSize: '1rem',
             cursor: 'pointer',
