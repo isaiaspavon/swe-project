@@ -40,7 +40,7 @@ const Navbar = () => {
         color: 'white',
         zIndex: 1000
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'white', fontWeight: 'bold', fontSize: '1.2rem' }}>
+        <Link to="/" style={{ textDecoration: 'none', color: 'rgb(250, 204, 21)', fontWeight: 'bold', fontSize: '1.2rem' }}>
           The Gilded Page
         </Link>
         
