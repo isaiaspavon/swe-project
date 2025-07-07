@@ -1,12 +1,12 @@
 import React from 'react';
 
 const headerStyle = {
-    fontSize: '2.2rem',
+    fontSize: '2rem',
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    marginBottom: '3rem',
-    marginTop: '3rem',
+    marginBottom: '58px',
+    marginTop: '56.56px',
     letterSpacing: '0.01em',
   };
 

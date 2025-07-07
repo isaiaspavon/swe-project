@@ -5,8 +5,8 @@ const headerStyle = {
   fontWeight: 'bold',
   color: 'black',
   textAlign: 'center',
-  marginBottom: '2rem',
-  marginTop: '3rem',
+  marginBottom: '22px',
+  marginTop: '56.56px',
   letterSpacing: '0.01em',
 };
 
