@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
+import AccountPage from "../pages/AccountPage";
 
 const Navbar = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -141,11 +142,12 @@ const Navbar = () => {
                   </button>
                 </div>
                 <div style={{ borderTop: '1px solid #ddd' }}>
-                  <DropdownLink to="/account">Manage Account</DropdownLink>
-                  <DropdownLink to="/orders">Order Status</DropdownLink>
-                  <DropdownLink to="/address-book">Address Book</DropdownLink>
-                  <DropdownLink to="/payment-methods">Payment Methods</DropdownLink>
-                  <DropdownLink to="/email-preferences">Email Preferences</DropdownLink>
+                  <DropdownLink to="/account?section=account" closeDropdown={() => setDropdownOpen(false)}>Manage Account</DropdownLink>
+                  <DropdownLink to="/account?section=orders" closeDropdown={() => setDropdownOpen(false)}>Order History</DropdownLink>
+                  <DropdownLink to="/account?section=settings" closeDropdown={() => setDropdownOpen(false)}>Account Settings</DropdownLink>
+                  <DropdownLink to="/account?section=payments" closeDropdown={() => setDropdownOpen(false)}>Payment Methods</DropdownLink>
+                  <DropdownLink to="/account?section=address" closeDropdown={() => setDropdownOpen(false)}>Address Book</DropdownLink>
+                  <DropdownLink to="/account?section=email" closeDropdown={() => setDropdownOpen(false)}>Email Preferences</DropdownLink>
                 </div>
               </div>
             )}
@@ -197,7 +199,7 @@ const Navbar = () => {
 };
 
 // Helper Component for links
-const DropdownLink = ({ to, children }) => (
+const DropdownLink = ({ to, children, closeDropdown }) => (
   <Link
     to={to}
     style={{
@@ -207,7 +209,10 @@ const DropdownLink = ({ to, children }) => (
       color: '#333',
       fontSize: '0.9rem'
     }}
-    onClick={() => window.scrollTo(0, 0)}
+    onClick={() => {
+      window.scrollTo(0, 0);
+      if (closeDropdown) closeDropdown();
+    }}
   >
     {children}
   </Link>

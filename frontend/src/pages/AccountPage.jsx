@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import AccountSidebar from '../components/AccountSidebar';
 import AccountOverview from '../components/AccountOverview';
 import OrderHistory from '../components/OrderHistory';
 import AccountSettings from '../components/AccountSettings';
+import PaymentMethods from '../components/PaymentMethods';
+import AddressBook from '../components/AddressBook';
+import EmailPreferences from '../components/EmailPreferences';
 
 const sectionContent = {
   account: (onNavigate) => <AccountOverview onNavigate={onNavigate} />,
   orders: () => <OrderHistory />,
   settings: () => <AccountSettings />,
-  payments: () => <div>Payment Methods (manage cards, etc.)</div>,
-  address: () => <div>Address Book (manage addresses)</div>,
-  email: () => <div>Email Preferences (manage email settings)</div>,
+  payments: () => <PaymentMethods/>,
+  address: () => <AddressBook/>,
+  email: () => <EmailPreferences/>,
 };
 
+const validSections = Object.keys(sectionContent);
+
 const AccountPage = () => {
-  const [activeSection, setActiveSection] = useState('account');
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const sectionParam = params.get('section');
+  const initialSection = validSections.includes(sectionParam) ? sectionParam : 'account';
+  const [activeSection, setActiveSection] = useState(initialSection);
 
   return (
     <div style={{ display: 'flex', gap: '2rem', padding: '2rem', minHeight: '80vh' }}>
