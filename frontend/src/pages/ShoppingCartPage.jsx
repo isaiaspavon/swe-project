@@ -2,13 +2,28 @@ import React from 'react';
 import { useCart } from '../contexts/CartContext';
 import ShoppingCartItem from '../components/ShoppingCartItem';
 import './ShoppingCartPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const ShoppingCartPage = () => {
   const { items, getCartTotal, clearCart } = useCart();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
-    // TODO: Navigate to checkout page
-    console.log('Proceeding to checkout...');
+    // Prepare order data to send to confirmation page
+    const orderData = {
+      items: items.map(item => ({
+        id: item.id,
+        title: item.title,
+        image: item.image,
+        quantity: item.quantity,
+        price: item.price
+      })),
+      subtotal: getCartTotal(),
+      tax: getCartTotal() * 0.085,
+      total: getCartTotal() * 1.085
+    };
+    navigate('/checkout-confirmation', { state: orderData });
+    clearCart();
   };
 
   if (items.length === 0) {
