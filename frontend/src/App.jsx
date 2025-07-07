@@ -7,6 +7,7 @@ import { CartProvider } from "./contexts/CartContext";
 // import AdminDashboard from "./pages/AdminDashboard";
 // import CheckoutPage from "./pages/CheckoutPage";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
+import AccountPage from "./pages/AccountPage.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             {/* <Route path="/admin" element={<AdminDashboard />} /> */}
             {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
             {<Route path="/orders" element={<OrderHistoryPage />} />}
+            <Route path="/account" element={<AccountPage />} />
           </Routes>
         </div>
       </div>
