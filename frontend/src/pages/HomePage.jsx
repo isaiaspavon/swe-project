@@ -18,7 +18,8 @@ const HomePage = ({ searchQuery, searchFilter }) => {
     const value = searchQuery.toLowerCase();
     if (searchFilter === "title") return book.title.toLowerCase().includes(value);
     if (searchFilter === "author") return book.author.toLowerCase().includes(value);
-    if (searchFilter === "genre") return (book.genre || "").toLowerCase().includes(value);
+    // "genre" option actually searches the category field
+    if (searchFilter === "genre") return (book.category || "").toLowerCase().includes(value);
     return true;
   });
 
