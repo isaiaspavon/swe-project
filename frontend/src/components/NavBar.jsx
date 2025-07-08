@@ -4,12 +4,15 @@ import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
 
-const Navbar = () => {
+const Navbar = ({
+  searchQuery,
+  setSearchQuery,
+  searchFilter,
+  setSearchFilter
+}) => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchFilter, setSearchFilter] = useState('title');
-  const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
   const { getCartCount } = useCart();
 
