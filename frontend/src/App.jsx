@@ -19,7 +19,6 @@ function App() {
   return (
     <CartProvider>
       <div className="App">
-        // This is to make the searchbar work
         <Navbar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}

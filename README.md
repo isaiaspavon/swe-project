@@ -26,6 +26,10 @@ npm install
 npm install framer-motion
 ```
 
+```
+npm run dev
+```
+
 ## GitHub workflow
 
 To begin coding and make changes onto the project:
