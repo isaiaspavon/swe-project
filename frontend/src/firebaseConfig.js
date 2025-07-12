@@ -37,3 +37,25 @@ export const fetchBooks = (callback) => {
     }
   });
 };
+
+export const registerUser = async (email, password, userData) => {
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Save user profile to Realtime Database
+    await set(ref(db, 'users/' + user.uid), {
+      name: userData.name,
+      phone: userData.phone,
+      email: email,
+      address: userData.address, // e.g., {street, city, state, zip}
+      payment: userData.payment, // optional: {cardType, last4, exp}
+      status: "Inactive", // change to Active after email verification
+      createdAt: new Date().toISOString()
+    });
+
+    console.log("✅ User created and profile saved!");
+  } catch (error) {
+    console.error("❌ Registration error:", error.message);
+  }
+};
