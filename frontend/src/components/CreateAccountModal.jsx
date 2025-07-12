@@ -43,13 +43,28 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
     const nameRegex = /^[A-Za-z\s]+$/;
     const phoneRegex = /^\d{10}$/;
+    const zipRegex = /^\d{5}$/;
+    const cityRegex = /^[A-Za-z\s]+$/;
+    const cardNumberRegex = /^\d{15,16}$/;
 
+    if (formData.payment.cardNumber && !cardNumberRegex.test(formData.payment.cardNumber.trim())) {
+      setError('Card number must be 15 or 16 digits and contain only numbers');
+      return;
+    }
     if (!nameRegex.test(fullName.trim())) {
       setError('Name can only contain letters and spaces');
       return;
     }
     if (!phoneRegex.test(phoneNumber.trim())) {
       setError('Phone number must be exactly 10 digits');
+      return;
+    }
+    if (formData.address.zip && !zipRegex.test(formData.address.zip.trim())) {
+      setError('Zip code must be exactly 5 digits');
+      return;
+    }
+    if (formData.address.city && !cityRegex.test(formData.address.city.trim())) {
+      setError('City name can only contain letters');
       return;
     }
     if (!fullName || !phoneNumber || !email || !confirmEmail || !password || !confirmPassword) {
@@ -252,15 +267,71 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
           {/* Payment Info */}
           <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Payment Info (optional)</h4>
-          <input type="text" placeholder="Card Type" value={formData.payment.cardType}
-            onChange={(e) => setFormData({ ...formData, payment: { ...formData.payment, cardType: e.target.value } })}
-            style={inputStyle} />
-          <input type="text" placeholder="Card Number" value={formData.payment.cardNumber}
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Card Type:
+          </label>
+          <select
+            value={formData.payment.cardType}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                payment: { ...formData.payment, cardType: e.target.value }
+              })
+            }
+            style={inputStyle}
+          >
+            <option value="">Select Card Type</option>
+            <option value="Visa">Visa</option>
+            <option value="MasterCard">MasterCard</option>
+            <option value="American Express">American Express</option>
+            <option value="Discover">Discover</option>
+          </select>
+          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+            Card Number: </label>
+          <input type="text" placeholder="Card Number" maxLength={16} value={formData.payment.cardNumber}
             onChange={(e) => setFormData({ ...formData, payment: { ...formData.payment, cardNumber: e.target.value } })}
             style={inputStyle} />
-          <input type="text" placeholder="Expiration Date (MM/YY)" value={formData.payment.expDate}
-            onChange={(e) => setFormData({ ...formData, payment: { ...formData.payment, expDate: e.target.value } })}
-            style={inputStyle} />
+
+            <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+              Expiration Date:
+            </label>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <select
+                value={formData.payment.expMonth}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    payment: { ...formData.payment, expMonth: e.target.value }
+                  })
+                }
+                style={{ ...inputStyle, flex: 1 }}
+              >
+                <option value="">Month</option>
+                {Array.from({ length: 12 }, (_, i) => {
+                  const month = String(i + 1).padStart(2, '0');
+                  return <option key={month} value={month}>{month}</option>;
+                })}
+              </select>
+
+              <select
+                value={formData.payment.expYear}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    payment: { ...formData.payment, expYear: e.target.value }
+                  })
+                }
+                style={{ ...inputStyle, flex: 1 }}
+              >
+                <option value="">Year</option>
+                {Array.from({ length: 15 }, (_, i) => {
+                  const year = new Date().getFullYear() + i;
+                  return <option key={year} value={year}>{year}</option>;
+                })}
+              </select>
+            </div>
+
+          
 
           <button type="submit" style={{
             padding: '0.5rem',
