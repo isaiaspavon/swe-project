@@ -10,6 +10,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminPromotions from "./pages/AdminPromotions";
 import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AccountPage from "./pages/AccountPage.jsx";
+import CheckoutPage from "./pages/CheckoutPage";
 import CheckoutConfirmationPage from "./pages/CheckoutConfirmationPage";
 
 function App() {
@@ -34,13 +35,14 @@ function App() {
               />
             } />
             <Route path="/cart" element={<ShoppingCartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/books" element={<AdminBooks />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/promotions" element={<AdminPromotions />} />
             <Route path="/orders" element={<OrderHistoryPage />} />
             <Route path="/account" element={<AccountPage />} />
-            <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
           </Routes>
         </div>
       </div>

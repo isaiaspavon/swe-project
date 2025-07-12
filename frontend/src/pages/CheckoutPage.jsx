@@ -1,8 +1,12 @@
-// pages/CheckoutPage.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
 import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
+  const navigate = useNavigate();
+  const { items, getCartTotal, clearCart } = useCart();
+  
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -15,12 +19,6 @@ const CheckoutPage = () => {
     cvv: '',
     promoCode: '',
   });
-
-   const [books] = useState([
-    { title: 'The Great Gatsby', author:'F. Scott Fitzgerald' , quantity: 1, price: 13.99 },
-    { title: 'The Way Of Kings', author:'Brandon Sanderson' , quantity: 2, price: 20.99 },
-    { title: 'Hunger Games', author:'Suzanne Collins' , quantity: 3, price: 19.20 },
-  ]);
 
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
@@ -39,26 +37,55 @@ const CheckoutPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle checkout logic
+    
+    // Create order object with all the data
+    const order = {
+      items: items,
+      subtotal: getCartTotal(),
+      tax: getCartTotal() * 0.085,
+      total: getCartTotal() * 1.085,
+      shipping: formData,
+      orderDate: new Date().toISOString(),
+      orderNumber: 'ORD-' + Date.now()
+    };
+
+    // Clear the cart
+    clearCart();
+    
+    // Navigate to confirmation page with order data
+    navigate('/checkout-confirmation', { state: order });
   };
 
   const calculateTotalBeforeTax = () => {
-    return books.reduce((total, book) => total + book.quantity * book.price, 0).toFixed(2);
+    return getCartTotal().toFixed(2);
   };
 
-  const [promotion, setPromotion] = useState(15);
+  const [promotion, setPromotion] = useState(0);
 
   const handleApplyPromoCode = () => {
-    alert(`Promo code applied: ${formData.promoCode}`);
-    // Add promo code logic here (e.g., discount calculation)
+    if (formData.promoCode.toLowerCase() === 'welcome15') {
+      setPromotion(15);
+      alert('Promo code applied: 15% off!');
+    } else {
+      alert('Invalid promo code');
+    }
   };
+
+  if (items.length === 0) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Your cart is empty</h2>
+        <p>Please add some items to your cart before checkout.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="checkout-page">
       <div className="checkout-left">
         {/* Shipping Address */}
         <section className="shipping-address">
-          <h3 className= "shipping-header">Confirm Shipping Address</h3>
+          <h3 className="shipping-header">Confirm Shipping Address</h3>
           <form>
             <label>First Name</label>
             <input
@@ -114,7 +141,7 @@ const CheckoutPage = () => {
 
         {/* Payment Information */}
         <section className="payment-info">
-          <h3 className= "payment-header">Confirm Payment Information</h3>
+          <h3 className="payment-header">Confirm Payment Information</h3>
           <form>
             <label>Card Number</label>
             <input
@@ -146,7 +173,7 @@ const CheckoutPage = () => {
 
         {/* Promo Code */}
         <section className="promo-code">
-          <h3 className= "promo-header">Enter Promo Code</h3>
+          <h3 className="promo-header">Enter Promo Code</h3>
           <input
             type="text"
             value={formData.promoCode}
@@ -162,43 +189,43 @@ const CheckoutPage = () => {
       <div className="checkout-right">
         {/* Order Summary */}
         <section className="order-summary">
-          <h3 className= "order-summary-header">Order Summary</h3>
+          <h3 className="order-summary-header">Order Summary</h3>
           <ul className='order-list-summary'>
-            {books.map((book, index) => (
+            {items.map((item, index) => (
               <li key={index} className="book-item">
-                <p className="book-title">{book.title} by {book.author}</p>
-                <p className="book-quantity">({book.quantity})</p>
-                <p className="book-price">${(book.quantity * book.price).toFixed(2)}</p>
+                <p className="book-title">{item.title} by {item.author}</p>
+                <p className="book-quantity">({item.quantity})</p>
+                <p className="book-price">${(item.quantity * item.price).toFixed(2)}</p>
               </li>
             ))}
           </ul>
 
-        <div className="total">
-        <p className="split-paragraph">
-          <span className="left-side">Subtotal:</span>
-          <span className="right-side">${calculateTotalBeforeTax()}</span>
-        </p>
-        <p className="split-paragraph">
-          <span className="left-side">Tax (8.5%):</span>
-          <span className="right-side">${(calculateTotalBeforeTax() * 0.085).toFixed(2)}</span>
-        </p>
+          <div className="total">
+            <p className="split-paragraph">
+              <span className="left-side">Subtotal:</span>
+              <span className="right-side">${calculateTotalBeforeTax()}</span>
+            </p>
+            <p className="split-paragraph">
+              <span className="left-side">Tax (8.5%):</span>
+              <span className="right-side">${(calculateTotalBeforeTax() * 0.085).toFixed(2)}</span>
+            </p>
 
-        {/* Conditionally render promotion (if available) */}
-        {promotion && (
-          <p className="split-paragraph">
-            <span className="left-side">Promotion:</span>
-            <span className="right-side">-${promotion.toFixed(2)}</span>
-          </p>
-        )}
+            {/* Conditionally render promotion (if available) */}
+            {promotion > 0 && (
+              <p className="split-paragraph">
+                <span className="left-side">Promotion:</span>
+                <span className="right-side">-${promotion.toFixed(2)}</span>
+              </p>
+            )}
 
-        <p className="split-paragraph" style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-          <span className="left-side">Total:</span>
-          <span className="right-side">
-            ${(calculateTotalBeforeTax() * 1.085 - (promotion || 0)).toFixed(2)}
-          </span>
-        </p>
-      </div>
-          <button type="button" className="place-order">
+            <p className="split-paragraph" style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+              <span className="left-side">Total:</span>
+              <span className="right-side">
+                ${(calculateTotalBeforeTax() * 1.085 - promotion).toFixed(2)}
+              </span>
+            </p>
+          </div>
+          <button type="button" className="place-order" onClick={handleSubmit}>
             Place Order
           </button>
         </section>
