@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../firebaseConfig';
 
@@ -20,12 +20,13 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     payment: {
       cardType: '',
       cardNumber: '',
-      expDate: ''
+      expMonth: '',
+      expYear: ''
     }
   });
 
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [showVerifyNotice, setShowVerifyNotice] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +48,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     const cityRegex = /^[A-Za-z\s]+$/;
     const cardNumberRegex = /^\d{15,16}$/;
 
-    if (formData.payment.cardNumber && !cardNumberRegex.test(formData.payment.cardNumber.trim())) {
+    if (payment.cardNumber && !cardNumberRegex.test(payment.cardNumber.trim())) {
       setError('Card number must be 15 or 16 digits and contain only numbers');
       return;
     }
@@ -59,11 +60,11 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       setError('Phone number must be exactly 10 digits');
       return;
     }
-    if (formData.address.zip && !zipRegex.test(formData.address.zip.trim())) {
+    if (address.zip && !zipRegex.test(address.zip.trim())) {
       setError('Zip code must be exactly 5 digits');
       return;
     }
-    if (formData.address.city && !cityRegex.test(formData.address.city.trim())) {
+    if (address.city && !cityRegex.test(address.city.trim())) {
       setError('City name can only contain letters');
       return;
     }
@@ -88,6 +89,8 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      await sendEmailVerification(user);
+
       await set(ref(db, 'users/' + user.uid), {
         name: fullName,
         phone: phoneNumber,
@@ -103,12 +106,10 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         payment: {
           cardType: payment.cardType || '',
           cardNumber: payment.cardNumber || '',
-          expDate: payment.expDate || ''
+          expDate: `${payment.expMonth || ''}/${payment.expYear || ''}`
         }
       });
 
-      setSuccess(true);
-      setError('');
       setFormData({
         fullName: '',
         phoneNumber: '',
@@ -117,13 +118,11 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         password: '',
         confirmPassword: '',
         address: { street: '', city: '', state: '', zip: '' },
-        payment: { cardType: '', cardNumber: '', expDate: '' }
+        payment: { cardType: '', cardNumber: '', expMonth: '', expYear: '' }
       });
 
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-      }, 3500);
+      setError('');
+      setShowVerifyNotice(true);
     } catch (err) {
       console.error(err);
       if (err.code === 'auth/email-already-in-use') {
@@ -136,72 +135,40 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
   if (!isOpen) return null;
 
+  if (showVerifyNotice) {
+    return (
+      <div style={modalOverlay}>
+        <div style={modalBox}>
+          <h2 style={{ color: '#2e7d32' }}>Verification Email Sent!</h2>
+          <p style={{ color: 'black', marginTop: '1rem' }}>
+            Please check your email and click the verification link to activate your account.
+          </p>
+          <button
+            onClick={() => {
+              setShowVerifyNotice(false);
+              onClose();
+            }}
+            style={submitButtonStyle}
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 10000,
-      overflowY: 'auto',
-      padding: '2rem',
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        padding: '2rem',
-        borderRadius: '8px',
-        width: '90%',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-        position: 'relative'
-      }}>
+    <div style={modalOverlay}>
+      <div style={formBox}>
         <button
           onClick={onClose}
-          style={{
-            position: 'absolute',
-            top: '1rem',
-            right: '1rem',
-            width: '2rem',
-            height: '2rem',
-            padding: 0,
-            background: 'transparent',
-            border: 'none',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.25rem',
-            lineHeight: 1,
-            color: '#666',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-          }}
+          style={closeButton}
           onMouseOver={e => e.currentTarget.style.background = '#e0e0e0'}
           onMouseOut={e => e.currentTarget.style.background = 'transparent'}
           aria-label="Close"
         >
           &times;
         </button>
-
-        {success && (
-          <div style={{
-            background: '#2e7d32',
-            color: 'white',
-            borderRadius: '6px',
-            padding: '0.75rem 1rem',
-            marginBottom: '1rem',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            fontSize: '1.05rem',
-            boxShadow: '0 2px 8px rgba(46,125,50,0.08)'
-          }}>
-            Account created successfully!
-          </div>
-        )}
 
         <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>
           Create Account
@@ -214,148 +181,64 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {/* Full Name */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Full Name: <span style={{ color: 'red' }}>*</span></label>
-          <input type="text" placeholder="Full Name" value={formData.fullName}
-            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Full Name: <span style={{ color: 'red' }}>*</span></label>
+          <input type="text" value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} style={inputStyle} required />
 
-          {/* Phone */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Phone Number: <span style={{ color: 'red' }}>*</span></label>
-          <input type="tel" placeholder="Phone number" value={formData.phoneNumber}
-            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Phone Number: <span style={{ color: 'red' }}>*</span></label>
+          <input type="tel" value={formData.phoneNumber} onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })} style={inputStyle} required />
 
-          {/* Email */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Email: <span style={{ color: 'red' }}>*</span></label>
-          <input type="email" placeholder="Email" value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Email: <span style={{ color: 'red' }}>*</span></label>
+          <input type="email" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} style={inputStyle} required />
 
-          {/* Confirm Email */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Confirm Email: <span style={{ color: 'red' }}>*</span></label>
-          <input type="email" placeholder="Confirm Email" value={formData.confirmEmail}
-            onChange={(e) => setFormData({ ...formData, confirmEmail: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Confirm Email: <span style={{ color: 'red' }}>*</span></label>
+          <input type="email" value={formData.confirmEmail} onChange={e => setFormData({ ...formData, confirmEmail: e.target.value })} style={inputStyle} required />
 
-          {/* Password */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Password: <span style={{ color: 'red' }}>*</span></label>
-          <input type="password" placeholder="Password" value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Password: <span style={{ color: 'red' }}>*</span></label>
+          <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} style={inputStyle} required />
 
-          {/* Confirm Password */}
-          <label style={{ color: 'black', fontWeight: 'bold' }}>Confirm Password: <span style={{ color: 'red' }}>*</span></label>
-          <input type="password" placeholder="Confirm Password" value={formData.confirmPassword}
-            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-            style={inputStyle} required />
+          <label style={labelStyle}>Confirm Password: <span style={{ color: 'red' }}>*</span></label>
+          <input type="password" value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} style={inputStyle} required />
 
-          {/* Shipping Address */}
           <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Shipping Address (optional)</h4>
-          <input type="text" placeholder="Street" value={formData.address.street}
-            onChange={(e) => setFormData({ ...formData, address: { ...formData.address, street: e.target.value } })}
-            style={inputStyle} />
-          <input type="text" placeholder="City" value={formData.address.city}
-            onChange={(e) => setFormData({ ...formData, address: { ...formData.address, city: e.target.value } })}
-            style={inputStyle} />
-          <input type="text" placeholder="State" value={formData.address.state}
-            onChange={(e) => setFormData({ ...formData, address: { ...formData.address, state: e.target.value } })}
-            style={inputStyle} />
-          <input type="text" placeholder="Zip Code" value={formData.address.zip}
-            onChange={(e) => setFormData({ ...formData, address: { ...formData.address, zip: e.target.value } })}
-            style={inputStyle} />
+          <input type="text" placeholder="Street" value={formData.address.street} onChange={e => setFormData({ ...formData, address: { ...formData.address, street: e.target.value } })} style={inputStyle} />
+          <input type="text" placeholder="City" value={formData.address.city} onChange={e => setFormData({ ...formData, address: { ...formData.address, city: e.target.value } })} style={inputStyle} />
+          <input type="text" placeholder="State" value={formData.address.state} onChange={e => setFormData({ ...formData, address: { ...formData.address, state: e.target.value } })} style={inputStyle} />
+          <input type="text" placeholder="Zip Code" value={formData.address.zip} onChange={e => setFormData({ ...formData, address: { ...formData.address, zip: e.target.value } })} style={inputStyle} />
 
-          {/* Payment Info */}
           <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Payment Info (optional)</h4>
-          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
-            Card Type:
-          </label>
-          <select
-            value={formData.payment.cardType}
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                payment: { ...formData.payment, cardType: e.target.value }
-              })
-            }
-            style={inputStyle}
-          >
+          <label style={labelStyle}>Card Type:</label>
+          <select value={formData.payment.cardType} onChange={e => setFormData({ ...formData, payment: { ...formData.payment, cardType: e.target.value } })} style={inputStyle}>
             <option value="">Select Card Type</option>
             <option value="Visa">Visa</option>
             <option value="MasterCard">MasterCard</option>
             <option value="American Express">American Express</option>
             <option value="Discover">Discover</option>
           </select>
-          <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
-            Card Number: </label>
-          <input type="text" placeholder="Card Number" maxLength={16} value={formData.payment.cardNumber}
-            onChange={(e) => setFormData({ ...formData, payment: { ...formData.payment, cardNumber: e.target.value } })}
-            style={inputStyle} />
 
-            <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
-              Expiration Date:
-            </label>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <select
-                value={formData.payment.expMonth}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    payment: { ...formData.payment, expMonth: e.target.value }
-                  })
-                }
-                style={{ ...inputStyle, flex: 1 }}
-              >
-                <option value="">Month</option>
-                {Array.from({ length: 12 }, (_, i) => {
-                  const month = String(i + 1).padStart(2, '0');
-                  return <option key={month} value={month}>{month}</option>;
-                })}
-              </select>
+          <label style={labelStyle}>Card Number:</label>
+          <input type="text" maxLength={16} value={formData.payment.cardNumber} onChange={e => setFormData({ ...formData, payment: { ...formData.payment, cardNumber: e.target.value } })} style={inputStyle} />
 
-              <select
-                value={formData.payment.expYear}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    payment: { ...formData.payment, expYear: e.target.value }
-                  })
-                }
-                style={{ ...inputStyle, flex: 1 }}
-              >
-                <option value="">Year</option>
-                {Array.from({ length: 15 }, (_, i) => {
-                  const year = new Date().getFullYear() + i;
-                  return <option key={year} value={year}>{year}</option>;
-                })}
-              </select>
-            </div>
+          <label style={labelStyle}>Expiration Date:</label>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <select value={formData.payment.expMonth} onChange={e => setFormData({ ...formData, payment: { ...formData.payment, expMonth: e.target.value } })} style={{ ...inputStyle, flex: 1 }}>
+              <option value="">Month</option>
+              {Array.from({ length: 12 }, (_, i) => {
+                const month = String(i + 1).padStart(2, '0');
+                return <option key={month} value={month}>{month}</option>;
+              })}
+            </select>
+            <select value={formData.payment.expYear} onChange={e => setFormData({ ...formData, payment: { ...formData.payment, expYear: e.target.value } })} style={{ ...inputStyle, flex: 1 }}>
+              <option value="">Year</option>
+              {Array.from({ length: 15 }, (_, i) => {
+                const year = new Date().getFullYear() + i;
+                return <option key={year} value={year}>{year}</option>;
+              })}
+            </select>
+          </div>
 
-          
-
-          <button type="submit" style={{
-            padding: '0.5rem',
-            backgroundColor: '#2e7d32',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            fontSize: '1rem',
-            cursor: 'pointer'
-          }}>
-            Create Account
-          </button>
-
-          <div style={{ color: 'black', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}>
-            Already have an account?{' '}
-            <span
-              style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
-              onClick={() => {
-                onClose();
-                onSwitchToSignIn();
-              }}
-            >
-              Sign in
-            </span>
+          <button type="submit" style={submitButtonStyle}>Create Account</button>
+          <div style={{ textAlign: 'center', color: 'black' }}>
+            Already have an account? <span style={{ color: '#2e7d32', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => { onClose(); onSwitchToSignIn(); }}>Sign in</span>
           </div>
         </form>
       </div>
@@ -363,12 +246,70 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   );
 };
 
+// 🎨 Styles
 const inputStyle = {
   color: 'black',
   backgroundColor: '#FBFBFB',
   padding: '0.5rem',
   borderRadius: '4px',
   border: '1px solid #ccc'
+};
+const labelStyle = {
+  color: 'black',
+  fontWeight: 'bold'
+};
+const modalOverlay = {
+  position: 'fixed',
+  top: 0, left: 0, right: 0, bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 10000,
+  overflowY: 'auto',
+  padding: '2rem'
+};
+const formBox = {
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '8px',
+  width: '90%',
+  maxWidth: '600px',
+  maxHeight: '90vh',
+  overflowY: 'auto',
+  boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+  position: 'relative'
+};
+const modalBox = {
+  backgroundColor: 'white',
+  padding: '2rem',
+  borderRadius: '8px',
+  width: '400px',
+  textAlign: 'center',
+  boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+};
+const closeButton = {
+  position: 'absolute',
+  top: '1rem',
+  right: '1rem',
+  width: '2rem',
+  height: '2rem',
+  background: 'transparent',
+  border: 'none',
+  borderRadius: '50%',
+  fontSize: '1.25rem',
+  color: '#666',
+  cursor: 'pointer'
+};
+const submitButtonStyle = {
+  padding: '0.5rem',
+  backgroundColor: '#2e7d32',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+  fontSize: '1rem',
+  cursor: 'pointer',
+  marginTop: '1rem'
 };
 
 export default CreateAccountModal;
