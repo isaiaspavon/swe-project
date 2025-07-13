@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = ({
   searchQuery,
@@ -15,6 +16,7 @@ const Navbar = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { getCartCount } = useCart();
+  const { currentUser, userProfile, logout, isAuthenticated } = useAuth();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -26,6 +28,23 @@ const Navbar = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    setDropdownOpen(false);
+  };
+
+  const handleAccountAction = (action) => {
+    if (!isAuthenticated) {
+      setShowSignIn(true);
+      setDropdownOpen(false);
+      return;
+    }
+    
+    // If authenticated, perform the action
+    setDropdownOpen(false);
+    // Navigation will be handled by the Link component
+  };
 
   return (
     <>
@@ -39,26 +58,12 @@ const Navbar = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 2rem',
-        backgroundColor: '#1e1e1e',
+        background: 'linear-gradient(to bottom right, #1e1e1e, #2a2a2a)',
         color: 'white',
         zIndex: 1000
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: 'rgb(250, 204, 21)', fontWeight: 'bold', fontSize: '1.2rem' }}>
+        <Link to="/" style={{ textDecoration: 'none', color: '#facc15', fontWeight: 'bold', fontSize: '1.2rem' }}>
           The Gilded Page
-        </Link>
-        
-        <Link
-          to="/admin"
-          style={{
-            backgroundColor: 'rgb(250, 204, 21)',
-            color: 'white',
-            borderRadius: '4px',
-            padding: '0.3rem 1.2rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-          }}
-        >
-          Admin View
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -102,9 +107,9 @@ const Navbar = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#888'
+                backgroundColor: '#facc15'
               }} />
-              <span>My Account ▾</span>
+              <span>{isAuthenticated ? (userProfile?.name || 'My Account') : 'My Account'} ▾</span>
             </div>
 
             {dropdownOpen && (
@@ -120,57 +125,127 @@ const Navbar = ({
                 width: '220px',
                 zIndex: 999
               }}>
-                <div style={{ padding: '1rem', borderBottom: '1px solid #ddd' }}>
-                  <button
-                    onClick={() => {
-                      setShowSignIn(true);
-                      setDropdownOpen(false);
-                    }}
+                {!isAuthenticated ? (
+                  <div style={{ padding: '1rem', borderBottom: '1px solid #ddd' }}>
+                    <button
+                      onClick={() => {
+                        setShowSignIn(true);
+                        setDropdownOpen(false);
+                      }}
                       style={{
-                      width: '100%',
-                      padding: '0.5rem',
-                      backgroundColor: '#2e7d32',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      marginBottom: '0.5rem',
-                      cursor: 'pointer'
-                    }}>
-                    Sign In
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowCreateAccount(true);
-                      setDropdownOpen(false);
-                    }}
-                    style={{
-                      color: '#2e7d32',
-                      textDecoration: 'none',
-                      fontSize: '0.9rem',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '0',
-                      font: 'inherit'
-                    }}
-                  >
-                    Create an Account
-                  </button>
-                </div>
+                        width: '100%',
+                        padding: '0.5rem',
+                        backgroundColor: '#facc15',
+                        color: '#000',
+                        border: 'none',
+                        borderRadius: '4px',
+                        marginBottom: '0.5rem',
+                        cursor: 'pointer',
+                        fontWeight: 'bold'
+                      }}>
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowCreateAccount(true);
+                        setDropdownOpen(false);
+                      }}
+                      style={{
+                        color: '#facc15',
+                        textDecoration: 'none',
+                        fontSize: '0.9rem',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        padding: '0',
+                        font: 'inherit',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      Create an Account
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ padding: '1rem', borderBottom: '1px solid #ddd' }}>
+                    <div style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>
+                      Welcome, {userProfile?.name || currentUser.email}
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold'
+                      }}>
+                      Sign Out
+                    </button>
+                  </div>
+                )}
+                
                 <div style={{ borderTop: '1px solid #ddd' }}>
-                  <DropdownLink to="/account?section=account" closeDropdown={() => setDropdownOpen(false)}>Manage Account</DropdownLink>
-                  <DropdownLink to="/account?section=orders" closeDropdown={() => setDropdownOpen(false)}>Order History</DropdownLink>
-                  <DropdownLink to="/account?section=settings" closeDropdown={() => setDropdownOpen(false)}>Account Settings</DropdownLink>
-                  <DropdownLink to="/account?section=payments" closeDropdown={() => setDropdownOpen(false)}>Payment Methods</DropdownLink>
-                  <DropdownLink to="/account?section=address" closeDropdown={() => setDropdownOpen(false)}>Address Book</DropdownLink>
-                  <DropdownLink to="/account?section=email" closeDropdown={() => setDropdownOpen(false)}>Email Preferences</DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=account" 
+                    closeDropdown={() => handleAccountAction('account')}
+                    requireAuth={true}
+                  >
+                    Manage Account
+                  </DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=orders" 
+                    closeDropdown={() => handleAccountAction('orders')}
+                    requireAuth={true}
+                  >
+                    Order History
+                  </DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=settings" 
+                    closeDropdown={() => handleAccountAction('settings')}
+                    requireAuth={true}
+                  >
+                    Account Settings
+                  </DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=payments" 
+                    closeDropdown={() => handleAccountAction('payments')}
+                    requireAuth={true}
+                  >
+                    Payment Methods
+                  </DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=address" 
+                    closeDropdown={() => handleAccountAction('address')}
+                    requireAuth={true}
+                  >
+                    Address Book
+                  </DropdownLink>
+                  <DropdownLink 
+                    to="/account?section=email" 
+                    closeDropdown={() => handleAccountAction('email')}
+                    requireAuth={true}
+                  >
+                    Email Preferences
+                  </DropdownLink>
                 </div>
               </div>
             )}
           </div>
 
           <Link to="/cart" style={{ color: 'white', textDecoration: 'none', position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <span role="img" aria-label="cart" style={{ fontSize: '1.3rem', marginRight: '0.3rem' }}>🛒</span>
+            <span style={{ 
+              fontSize: '1.3rem', 
+              marginRight: '0.3rem',
+              display: 'inline-block',
+              width: '1.3rem',
+              height: '1.3rem',
+              background: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'white\'%3E%3Cpath d=\'M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z\'/%3E%3C/svg%3E") no-repeat center',
+              backgroundSize: 'contain'
+            }} />
             Cart
             {getCartCount() > 0 && (
               <span style={{
@@ -214,23 +289,44 @@ const Navbar = ({
   );
 };
 
-const DropdownLink = ({ to, children, closeDropdown }) => (
-  <Link
-    to={to}
-    style={{
-      display: 'block',
-      padding: '0.75rem 1rem',
-      textDecoration: 'none',
-      color: '#333',
-      fontSize: '0.9rem'
-    }}
-    onClick={() => {
-      window.scrollTo(0, 0);
-      if (closeDropdown) closeDropdown();
-    }}
-  >
-    {children}
-  </Link>
-);
+const DropdownLink = ({ to, children, closeDropdown, requireAuth }) => {
+  const { isAuthenticated } = useAuth();
+  
+  if (requireAuth && !isAuthenticated) {
+    return (
+      <div
+        style={{
+          display: 'block',
+          padding: '0.75rem 1rem',
+          textDecoration: 'none',
+          color: '#999',
+          fontSize: '0.9rem',
+          cursor: 'not-allowed'
+        }}
+      >
+        {children} (Sign in required)
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      to={to}
+      style={{
+        display: 'block',
+        padding: '0.75rem 1rem',
+        textDecoration: 'none',
+        color: '#333',
+        fontSize: '0.9rem'
+      }}
+      onClick={() => {
+        window.scrollTo(0, 0);
+        if (closeDropdown) closeDropdown();
+      }}
+    >
+      {children}
+    </Link>
+  );
+};
 
 export default Navbar;

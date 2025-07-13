@@ -1,14 +1,20 @@
 import React from 'react';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import ShoppingCartItem from '../components/ShoppingCartItem';
 import './ShoppingCartPage.css';
 import { useNavigate } from 'react-router-dom';
 
 const ShoppingCartPage = () => {
   const { items, getCartTotal, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
+    if (!isAuthenticated) {
+      alert('Please sign in to complete your purchase');
+      return;
+    }
     navigate('/checkout');
   };
 
@@ -104,18 +110,18 @@ const ShoppingCartPage = () => {
               onClick={handleCheckout}
               className="checkout-button"
               style={{
-                backgroundColor: '#facc15',
-                color: '#000',
+                backgroundColor: isAuthenticated ? '#facc15' : '#ccc',
+                color: isAuthenticated ? '#000' : '#666',
                 border: 'none',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '8px',
-                cursor: 'pointer',
+                cursor: isAuthenticated ? 'pointer' : 'not-allowed',
                 fontSize: '1rem',
                 fontWeight: 'bold',
                 width: '100%'
               }}
             >
-              Proceed to Checkout
+              {isAuthenticated ? 'Proceed to Checkout' : 'Sign in to Checkout'}
             </button>
             
             <button 
