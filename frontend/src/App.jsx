@@ -5,6 +5,7 @@ import Navbar from "./components/NavBar.jsx";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
 import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminBooks from "./pages/AdminBooks";
 import AdminUsers from "./pages/AdminUsers";
@@ -39,10 +40,29 @@ function App() {
               <Route path="/cart" element={<ShoppingCartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/books" element={<AdminBooks />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/promotions" element={<AdminPromotions />} />
+              
+              {/* Admin Routes - Protected */}
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              } />
+              <Route path="/admin/books" element={
+                <AdminRoute>
+                  <AdminBooks />
+                </AdminRoute>
+              } />
+              <Route path="/admin/users" element={
+                <AdminRoute>
+                  <AdminUsers />
+                </AdminRoute>
+              } />
+              <Route path="/admin/promotions" element={
+                <AdminRoute>
+                  <AdminPromotions />
+                </AdminRoute>
+              } />
+              
               <Route path="/orders" element={<OrderHistoryPage />} />
               <Route path="/account" element={<AccountPage />} />
             </Routes>
