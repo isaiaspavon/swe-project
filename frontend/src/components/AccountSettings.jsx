@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import {
-  EmailAuthProvider,
   reauthenticateWithCredential,
   updatePassword as firebaseUpdatePassword
 } from 'firebase/auth';
@@ -97,10 +96,11 @@ const passwordReqStyle = {
 };
 
 const AccountSettings = () => {
-  const { currentUser, userProfile, updateProfile, updateEmail, updatePassword } = useAuth();
+  const { currentUser, userProfile, updateProfile, updatePassword } = useAuth();
 
   const [name, setName] = useState({ first: '', last: '' });
-  const [email, setEmail] = useState({ current: '', new: '', confirm: '' });
+  // REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
+  // const [email, setEmail] = useState({ current: '', new: '', confirm: '' });
   const [phone, setPhone] = useState({ current: '', new: '', confirm: '' });
   const [password, setPassword] = useState({ current: '', new: '', confirm: '' });
 
@@ -109,9 +109,11 @@ const AccountSettings = () => {
       // if you store full name as one string:
       const [first = '', last = ''] = userProfile.name.split(' ');
     }
+    {/* REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
     if (currentUser?.email) {
       setEmail(e => ({ ...e, current: currentUser.email }));
     }
+    */}
     if (userProfile?.phone) {
       setPhone(p => ({ ...p, current: userProfile.phone }));
     }
@@ -140,7 +142,7 @@ const handleNameSave = async (e) => {
     alert('Failed to update name: ' + err.message);
   }
 };
-
+{/*} REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
 const handleEmailSave = async (e) => {
   e.preventDefault();
 
@@ -166,6 +168,7 @@ const handleEmailSave = async (e) => {
     alert("Failed to update email: " + err.message);
   }
 };
+*/}
 
 const handlePhoneSave = async (e) => {
   e.preventDefault();
@@ -239,7 +242,9 @@ const handlePasswordSave = async (e) => {
         </div>
       </form>
 
+      
       {/* Update Email Address */}
+      {/*} REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
       <form onSubmit={handleEmailSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Update Your Email Address</div>
         <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Email Address: {email.current}</div>
@@ -252,7 +257,7 @@ const handlePasswordSave = async (e) => {
           <button type="button" style={cancelButtonStyle}>Cancel</button>
         </div>
       </form>
-
+      */}
       {/* Update Mobile Phone Number */}
       <form onSubmit={handlePhoneSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Update Your Mobile Phone Number</div>
