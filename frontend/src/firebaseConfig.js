@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getDatabase, ref, onValue } from "firebase/database";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, onValue, set, get } from "firebase/database";
 
 // Firebase config file
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -59,3 +59,49 @@ export const registerUser = async (email, password, userData) => {
     console.error("❌ Registration error:", error.message);
   }
 };
+
+
+// login function
+export const loginUser = async (email, password) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // Fetch user data from Realtime Database
+    const userRef = ref(db, 'users/' + user.uid);
+    const snapshot = await get(userRef);
+    
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      console.log("✅ User logged in successfully!");
+      return { 
+        success: true, 
+        user: user, 
+        userData: userData 
+      };
+    } else {
+      console.log("User authenticated but no profile data found");
+      return { 
+        success: true, 
+        user: user, 
+        userData: null 
+      };
+    }
+  } catch (error) {
+    console.error("❌ Login error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+// LOGOUT FUNCTION
+export const logoutUser = async () => {
+  try {
+    await signOut(auth);
+    console.log("✅ User logged out successfully!");
+    return { success: true };
+  } catch (error) {
+    console.error("❌ Logout error:", error.message);
+    return { success: false, error: error.message };
+  }
+};
+
