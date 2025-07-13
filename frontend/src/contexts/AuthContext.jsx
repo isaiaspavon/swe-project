@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebaseConfig';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { ref, get } from 'firebase/database';
+import { onAuthStateChanged, signOut, updateProfile as authUpdateProfile, updateEmail as authUpdateEmail, updatePassword as authUpdatePassword } from 'firebase/auth';
+import { ref, get, update} from 'firebase/database';
 
 const AuthContext = createContext();
 
@@ -52,12 +52,47 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+    const updateProfile = async (fields) => {
+    if (!currentUser) throw new Error("Not authenticated");
+
+    // 1) Update Auth displayName/email if you want:
+    if (fields.name) {
+      await authUpdateProfile(currentUser, { displayName: fields.name });
+    }
+
+    // 2) Write any fields into your RTDB record
+    const userRef = ref(db, `users/${currentUser.uid}`);
+    await update(userRef, fields);
+
+    // 3) Optimistically update local state
+    setUserProfile(p => ({ ...p, ...fields }));
+  };
+
+   const updateEmail = async (newEmail) => {
+    if (!currentUser) throw new Error("Not authenticated");
+    await authUpdateEmail(currentUser, newEmail);
+    // optionally mirror it in your RTDB
+    const userRef = ref(db, `users/${currentUser.uid}`);
+    await update(userRef, { email: newEmail });
+    setCurrentUser(u => ({ ...u, email: newEmail }));
+    setUserProfile(p => ({ ...p, email: newEmail }));
+  };
+
+const updatePassword = async (newPassword) => {
+    if (!currentUser) throw new Error("Not authenticated");
+    await authUpdatePassword(currentUser, newPassword);
+  };
+
+
   const value = {
     currentUser,
     userProfile,
     loading,
     logout,
-    isAuthenticated: !!currentUser
+    isAuthenticated: !!currentUser,
+    updateProfile,
+    updateEmail,
+    updatePassword
   };
 
   return (

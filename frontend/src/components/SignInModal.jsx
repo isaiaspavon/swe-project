@@ -4,14 +4,14 @@ import { loginUser } from '../firebaseConfig';
 const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [rememberMe, setRememberMe] = useState(false);
-    const [isLoading, setIsLoading] = useState(false); // ← Add this
-    const [error, setError] = useState(''); // ← Add this
+    const [isLoading, setIsLoading] = useState(false); 
+    const [error, setError] = useState(''); 
     
     if (!isOpen) return null;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("🐞 handleSubmit fired");
+        
 
         setIsLoading(true);
         setError('');
@@ -29,7 +29,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                 setError(response.error);
             }
         } catch (error) {
-            console.error('❌ handleSubmit error:', error); // ← Fix variable name
+            console.error('❌ handleSubmit error:', error); 
             setError('An error occurred while logging in. Please try again.');
         } finally {
             setIsLoading(false);
@@ -89,7 +89,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
 
                 <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Sign In</h2>
                 
-                {/* Add error display */}
+                
                 {error && (
                     <div style={{ 
                         color: 'red', 

@@ -1,4 +1,18 @@
 import React from 'react';
+import { useAuth } from '../contexts/AuthContext';
+
+function formatPhone(number = '') {
+  // Strip out anything that isn't a digit
+  const digits = number.replace(/\D/g, '');
+  // If it’s not exactly 10 digits, just return the raw string
+  if (digits.length !== 10) return number;
+  const [area, prefix, line] = [
+    digits.slice(0, 3),
+    digits.slice(3, 6),
+    digits.slice(6, 10),
+  ];
+  return `(${area})-${prefix}-${line}`;
+}
 
 const headerStyle = {
     fontSize: '2rem',
@@ -36,7 +50,10 @@ const buttonStyle = {
   fontWeight: 'bold',
 };
 
-const AccountOverview = ({ onNavigate }) => (
+const AccountOverview = ({ onNavigate }) => {
+  const { currentUser, userProfile } = useAuth();
+  
+  return (
   <div>
     <h2 style={headerStyle}>My Account</h2>
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
@@ -51,9 +68,17 @@ const AccountOverview = ({ onNavigate }) => (
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Account Settings</h2>
         <p style={{ margin: '0.5rem 0 0 0' }}>
-          Full Name: John Doe<br />
-          Email Address: johndoe@email.com<br />
-          <span style={{ color: '#b71c1c' }}>* Phone Number: Add a number to assure account security</span><br />
+          Full Name: {userProfile?.name || 'Not Set'}<br />
+          Email Address: {currentUser?.email || 'Not Set'}<br />
+          Phone Number:{' '}
+          {userProfile?.phone
+             ? formatPhone(userProfile.phone)
+              : (
+                <span style={{ color: '#b71c1c' }}>
+                 Add a number to assure account security
+                </span>
+              )
+            }<br />
         </p>
         <button style={buttonStyle} onClick={() => onNavigate('settings')}>Manage Account Settings</button>
       </div>
@@ -80,6 +105,7 @@ const AccountOverview = ({ onNavigate }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 export default AccountOverview; 
