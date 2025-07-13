@@ -4,19 +4,8 @@ import {
   reauthenticateWithCredential,
   updatePassword as firebaseUpdatePassword
 } from 'firebase/auth';
+import { formatPhone } from '../utils/formatPhone';
 
-function formatPhone(number = '') {
-  // Strip out anything that isn't a digit
-  const digits = number.replace(/\D/g, '');
-  // If it’s not exactly 10 digits, just return the raw string
-  if (digits.length !== 10) return number;
-  const [area, prefix, line] = [
-    digits.slice(0, 3),
-    digits.slice(3, 6),
-    digits.slice(6, 10),
-  ];
-  return `(${area})-${prefix}-${line}`;
-}
 
 const headerStyle = {
   fontSize: '2rem',

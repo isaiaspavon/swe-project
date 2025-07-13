@@ -1,18 +1,8 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useAuth } from '../contexts/AuthContext';
-
-function formatPhone(number = '') {
-  // Strip out anything that isn't a digit
-  const digits = number.replace(/\D/g, '');
-  // If it’s not exactly 10 digits, just return the raw string
-  if (digits.length !== 10) return number;
-  const [area, prefix, line] = [
-    digits.slice(0, 3),
-    digits.slice(3, 6),
-    digits.slice(6, 10),
-  ];
-  return `(${area})-${prefix}-${line}`;
-}
+import { formatPhone } from '../utils/formatPhone';
+import { ref, onValue } from 'firebase/database';
+import { db } from '../firebaseConfig';
 
 const headerStyle = {
     fontSize: '2rem',
@@ -52,7 +42,22 @@ const buttonStyle = {
 
 const AccountOverview = ({ onNavigate }) => {
   const { currentUser, userProfile } = useAuth();
-  
+  const [addresses, setAddresses] = useState([]);
+
+  // This is for fetching addresses from Firebase
+  useEffect(() => {
+  if (!currentUser) return;
+
+  const addrRef = ref(db, `addresses/${currentUser.uid}`);
+  const unsubscribe = onValue(addrRef, snap => {
+    const data = snap.val() || {};
+    const list = Object.entries(data).map(([id, addr]) => ({ id, ...addr }));
+    setAddresses(list);
+  });
+  return () => unsubscribe();
+}, [currentUser]);
+
+
   return (
   <div>
     <h2 style={headerStyle}>My Account</h2>
@@ -86,7 +91,30 @@ const AccountOverview = ({ onNavigate }) => {
       {/* Address Book Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Address Book</h2>
-        <p style={{ margin: '0.5rem 0 0 0' }}>Add New Address</p>
+        {addresses.length === 0 ? (
+          <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>You haven't added any addresses yet.</p>
+        ) : (
+              <ul style={{
+                  listStyle: 'none',
+                  padding: 0,
+                  margin: '0.5rem 0',
+                  maxHeight: '8rem',
+                  overflowY: 'auto'
+                }}>
+                  {addresses.map(addr => (
+                    <li key={addr.id} style={{ marginBottom: '0.75rem' }}>
+                      <strong>
+                        {addr.first} {addr.mi && `${addr.mi}.`} {addr.last}
+                      </strong><br/>
+                      {addr.street}{addr.street2 && `, ${addr.street2}`}<br/>
+                      {addr.city}, {addr.state} {addr.zip}<br/>
+                      {addr.phone && (
+                        <span>Phone: {formatPhone(addr.phone)}</span>
+                      )}
+                    </li>
+                  ))}
+              </ul>
+          )}
         <button style={buttonStyle} onClick={() => onNavigate('address')}>Manage Address Book</button>
       </div>
 
