@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
@@ -17,6 +17,7 @@ const Navbar = ({
   const dropdownRef = useRef(null);
   const { getCartCount } = useCart();
   const { currentUser, userProfile, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -29,9 +30,14 @@ const Navbar = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    setDropdownOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setDropdownOpen(false);
+      navigate('/'); // Redirect to homepage after logout
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const handleAccountAction = (action) => {
@@ -191,42 +197,42 @@ const Navbar = ({
                 <div style={{ borderTop: '1px solid #ddd' }}>
                   <DropdownLink 
                     to="/account?section=account" 
-                    closeDropdown={() => handleAccountAction('account')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Manage Account
                   </DropdownLink>
                   <DropdownLink 
                     to="/account?section=orders" 
-                    closeDropdown={() => handleAccountAction('orders')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Order History
                   </DropdownLink>
                   <DropdownLink 
                     to="/account?section=settings" 
-                    closeDropdown={() => handleAccountAction('settings')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Account Settings
                   </DropdownLink>
                   <DropdownLink 
                     to="/account?section=payments" 
-                    closeDropdown={() => handleAccountAction('payments')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Payment Methods
                   </DropdownLink>
                   <DropdownLink 
                     to="/account?section=address" 
-                    closeDropdown={() => handleAccountAction('address')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Address Book
                   </DropdownLink>
                   <DropdownLink 
                     to="/account?section=email" 
-                    closeDropdown={() => handleAccountAction('email')}
+                    closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
                     Email Preferences

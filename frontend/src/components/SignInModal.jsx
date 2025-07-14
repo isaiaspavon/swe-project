@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { loginUser } from '../firebaseConfig';  
+import { loginUser } from '../firebaseConfig';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
 
 const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [rememberMe, setRememberMe] = useState(false);
     const [isLoading, setIsLoading] = useState(false); 
-    const [error, setError] = useState(''); 
+    const [error, setError] = useState('');
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [resetEmail, setResetEmail] = useState('');
+    const [resetMessage, setResetMessage] = useState('');
     
     if (!isOpen) return null;
 
@@ -35,6 +40,137 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
             setIsLoading(false);
         }
     };
+
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        if (!resetEmail) {
+            setResetMessage('Please enter your email address.');
+            return;
+        }
+
+        try {
+            await sendPasswordResetEmail(auth, resetEmail);
+            setResetMessage('Password reset email sent! Please check your inbox.');
+            setResetEmail('');
+        } catch (error) {
+            console.error('Password reset error:', error);
+            if (error.code === 'auth/user-not-found') {
+                setResetMessage('No account found with this email address.');
+            } else {
+                setResetMessage('An error occurred. Please try again.');
+            }
+        }
+    };
+
+    if (showForgotPassword) {
+        return (
+            <div
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 10000,
+                }}
+            >
+                <div
+                    style={{
+                        backgroundColor: 'white',
+                        padding: '2rem',
+                        borderRadius: '8px',
+                        width: '400px',
+                        boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
+                        position: 'relative',
+                    }}
+                >
+                    <button
+                        onClick={() => setShowForgotPassword(false)}
+                        style={{
+                            position: 'absolute',
+                            top: '1rem',
+                            right: '1rem',
+                            width: '2.5rem',
+                            height: '2.5rem',
+                            background: 'transparent',
+                            border: 'none',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1rem',
+                            color: '#666',
+                            cursor: 'pointer',
+                            transition: 'background 0.2s',
+                        }}
+                        onMouseOver={e => e.currentTarget.style.background = '#e0e0e0'}
+                        onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                        aria-label="Close"
+                    >
+                        &times;
+                    </button>
+
+                    <h2 style={{ textAlign: 'center', color: 'black', fontSize: '1.5rem', marginBottom: '1rem' }}>Reset Password</h2>
+                    
+                    {resetMessage && (
+                        <div style={{ 
+                            color: resetMessage.includes('sent') ? 'green' : 'red', 
+                            textAlign: 'center', 
+                            marginBottom: '1rem',
+                            padding: '0.5rem',
+                            backgroundColor: resetMessage.includes('sent') ? '#e8f5e8' : '#ffebee',
+                            borderRadius: '4px',
+                            border: `1px solid ${resetMessage.includes('sent') ? '#4caf50' : '#f44336'}`
+                        }}>
+                            {resetMessage}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleForgotPassword} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <label style={{ color: 'black', fontWeight: 'bold', marginBottom: '-0.5rem' }}>
+                            Email: <span style={{ color: 'red' }}>*</span>
+                        </label>
+                        <input 
+                            type="email" 
+                            placeholder="Enter your email address" 
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            style={{ color: 'black', backgroundColor: '#FBFBFB', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                            required
+                        />
+                        <button
+                            type="submit"
+                            style={{
+                                padding: '0.5rem',
+                                backgroundColor: '#2e7d32',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                fontWeight: 'bold',
+                                fontSize: '1rem',
+                                width: '100%',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Send Reset Email
+                        </button>
+                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                            <span
+                                style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+                                onClick={() => setShowForgotPassword(false)}
+                            >
+                                Back to Sign In
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div
@@ -148,7 +284,11 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                                 cursor: 'pointer',
                                 alignSelf: 'flex-end'
                             }}
-                            onClick={() => {/* have to add forgot password logic here later on*/}}
+                            onClick={() => {
+                                setShowForgotPassword(true);
+                                setResetEmail('');
+                                setResetMessage('');
+                            }}
                         >
                             Forgot your password?
                         </span>

@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
+import { ref, push } from 'firebase/database';
+import { db } from '../firebaseConfig';
 import "./CheckoutPage.css";
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, getCartTotal, clearCart } = useCart();
+  const { currentUser } = useAuth();
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -35,9 +39,14 @@ const CheckoutPage = () => {
     setFormData({ ...formData, promoCode: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!currentUser) {
+      alert('Please sign in to complete your order.');
+      return;
+    }
+
     // Create order object with all the data
     const order = {
       items: items,
@@ -46,14 +55,32 @@ const CheckoutPage = () => {
       total: getCartTotal() * 1.085,
       shipping: formData,
       orderDate: new Date().toISOString(),
-      orderNumber: 'ORD-' + Date.now()
+      orderNumber: 'ORD-' + Date.now(),
+      status: 'Placed',
+      userId: currentUser.uid,
+      userEmail: currentUser.email
     };
 
-    // Clear the cart
-    clearCart();
-    
-    // Navigate to confirmation page with order data
-    navigate('/checkout-confirmation', { state: order });
+    try {
+      // Save order to Firebase
+      const ordersRef = ref(db, `orders/${currentUser.uid}`);
+      const newOrderRef = await push(ordersRef, order);
+      
+      // Update order with Firebase-generated ID
+      const orderWithId = {
+        ...order,
+        id: newOrderRef.key
+      };
+
+      // Clear the cart
+      clearCart();
+      
+      // Navigate to confirmation page with order data
+      navigate('/checkout-confirmation', { state: orderWithId });
+    } catch (error) {
+      console.error('Error saving order:', error);
+      alert('There was an error processing your order. Please try again.');
+    }
   };
 
   const calculateTotalBeforeTax = () => {
@@ -70,6 +97,28 @@ const CheckoutPage = () => {
       alert('Invalid promo code');
     }
   };
+
+  if (!currentUser) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Please Sign In</h2>
+        <p>You need to be signed in to complete your order.</p>
+        <button 
+          onClick={() => navigate('/')}
+          style={{
+            padding: '0.5rem 1rem',
+            backgroundColor: '#2e7d32',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Back to Home
+        </button>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
