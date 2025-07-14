@@ -7,7 +7,11 @@ export const encryptData = (plainText) => {
   return CryptoJS.AES.encrypt(plainText, SECRET_KEY).toString();
 };
 
-export const decryptData = (cipherText) => {
-  const bytes = CryptoJS.AES.decrypt(cipherText, SECRET_KEY);
-  return bytes.toString(CryptoJS.enc.Utf8);
+export const decryptData = (ciphertext) => {
+  try {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  } catch {
+    return '';
+  }
 };
