@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
 import { auth, db } from '../firebaseConfig';
+import { encryptData } from '../utils/encryption';
+
 
 const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const [formData, setFormData] = useState({
@@ -105,8 +107,12 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         },
         payment: {
           cardType: payment.cardType || '',
-          cardNumber: payment.cardNumber || '',
-          expDate: `${payment.expMonth || ''}/${payment.expYear || ''}`
+          cardNumber: payment.cardNumber
+            ? encryptData(payment.cardNumber)
+            : '',
+          expDate: payment.expMonth && payment.expYear
+            ? encryptData(`${payment.expMonth}/${payment.expYear}`)
+            : ''
         }
       });
 
