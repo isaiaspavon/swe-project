@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { formatPhone } from '../utils/formatPhone';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, off } from 'firebase/database';
 import { db } from '../firebaseConfig';
 
 const headerStyle = {
@@ -43,20 +43,47 @@ const buttonStyle = {
 const AccountOverview = ({ onNavigate }) => {
   const { currentUser, userProfile } = useAuth();
   const [addresses, setAddresses] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
-  // This is for fetching addresses from Firebase
+  // Fetch addresses from Firebase
   useEffect(() => {
-  if (!currentUser) return;
+    if (!currentUser) return;
+    const addrRef = ref(db, `addresses/${currentUser.uid}`);
+    const unsubscribe = onValue(addrRef, snap => {
+      const data = snap.val() || {};
+      const list = Object.entries(data).map(([id, addr]) => ({ id, ...addr }));
+      setAddresses(list);
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
 
-  const addrRef = ref(db, `addresses/${currentUser.uid}`);
-  const unsubscribe = onValue(addrRef, snap => {
-    const data = snap.val() || {};
-    const list = Object.entries(data).map(([id, addr]) => ({ id, ...addr }));
-    setAddresses(list);
-  });
-  return () => unsubscribe();
-}, [currentUser]);
-
+  // Fetch recent orders from Firebase
+  useEffect(() => {
+    if (!currentUser) {
+      setRecentOrders([]);
+      setLoadingOrders(false);
+      return;
+    }
+    const ordersRef = ref(db, `orders/${currentUser.uid}`);
+    const unsubscribe = onValue(ordersRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const ordersData = snapshot.val();
+        const ordersList = Object.entries(ordersData).map(([orderId, orderData]) => ({
+          id: orderId,
+          ...orderData,
+          date: orderData.orderDate ? new Date(orderData.orderDate).toLocaleDateString() : 'Unknown',
+        }));
+        // Sort by date descending
+        ordersList.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+        setRecentOrders(ordersList.slice(0, 2)); // Show up to 2 recent orders
+      } else {
+        setRecentOrders([]);
+      }
+      setLoadingOrders(false);
+    });
+    return () => off(ordersRef, 'value', unsubscribe);
+  }, [currentUser]);
 
   return (
   <div>
@@ -65,7 +92,28 @@ const AccountOverview = ({ onNavigate }) => {
       {/* Order History Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Order History</h2>
-        <p style={{ margin: '0.5rem 0 0 0' }}>Recent Order(s)<br />We could not find any recent orders.</p>
+        <div style={{ margin: '0.5rem 0 1rem 0', minHeight: 40 }}>
+          {loadingOrders ? (
+            <span>Loading recent orders...</span>
+          ) : recentOrders.length === 0 ? (
+            <>
+              <span>Recent Order(s)</span>
+              <br />
+              <span>We could not find any recent orders.</span>
+            </>
+          ) : (
+            <>
+              <span>Recent Order(s):</span>
+              <ul style={{ margin: '0.5rem 0 0 1.2rem', color: '#facc15', fontSize: '1rem' }}>
+                {recentOrders.map(order => (
+                  <li key={order.id}>
+                    <span style={{ fontWeight: 500 }}>Order #{order.id}</span> — {order.date} — ${order.total?.toFixed(2) || '0.00'}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
         <button style={buttonStyle} onClick={() => onNavigate('orders')}>See All Orders</button>
       </div>
 
