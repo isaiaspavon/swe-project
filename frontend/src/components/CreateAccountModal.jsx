@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { ref, set } from 'firebase/database';
+import { ref, set, push, update } from 'firebase/database';
 import { auth, db } from '../firebaseConfig';
 import { encryptData } from '../utils/encryption';
-
 
 const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const [formData, setFormData] = useState({
@@ -32,16 +31,9 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const {
-      fullName,
-      phoneNumber,
-      email,
-      confirmEmail,
-      password,
-      confirmPassword,
-      address,
-      payment
+      fullName, phoneNumber, email, confirmEmail,
+      password, confirmPassword, address, payment
     } = formData;
 
     const nameRegex = /^[A-Za-z\s]+$/;
@@ -93,10 +85,11 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
       await sendEmailVerification(user);
 
+      // Store basic profile without payment in users/{uid}
       await set(ref(db, 'users/' + user.uid), {
         name: fullName,
         phone: phoneNumber,
-        email: email,
+        email,
         status: "Inactive",
         createdAt: new Date().toISOString(),
         address: {
@@ -104,17 +97,26 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           city: address.city || '',
           state: address.state || '',
           zip: address.zip || ''
-        },
-        payment: {
-          cardType: payment.cardType || '',
-          cardNumber: payment.cardNumber
-            ? encryptData(payment.cardNumber)
-            : '',
-          expDate: payment.expMonth && payment.expYear
-            ? encryptData(`${payment.expMonth}/${payment.expYear}`)
-            : ''
         }
       });
+
+      // Optional: store card in centralized path
+      if (
+        payment.cardType &&
+        payment.cardNumber &&
+        payment.expMonth &&
+        payment.expYear
+      ) {
+        const expDate = `${payment.expMonth}/${payment.expYear}`;
+        const cardRef = push(ref(db, `paymentCards/${user.uid}`));
+        await update(cardRef, {
+          cardType: payment.cardType,
+          cardNumber: encryptData(payment.cardNumber),
+          expDate: encryptData(expDate),
+          default: true,
+          source: 'registration'
+        });
+      }
 
       setFormData({
         fullName: '',
@@ -252,7 +254,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   );
 };
 
-// 🎨 Styles
+// Styles
 const inputStyle = {
   color: 'black',
   backgroundColor: '#FBFBFB',
@@ -260,62 +262,31 @@ const inputStyle = {
   borderRadius: '4px',
   border: '1px solid #ccc'
 };
-const labelStyle = {
-  color: 'black',
-  fontWeight: 'bold'
-};
+const labelStyle = { color: 'black', fontWeight: 'bold' };
 const modalOverlay = {
-  position: 'fixed',
-  top: 0, left: 0, right: 0, bottom: 0,
-  backgroundColor: 'rgba(0,0,0,0.5)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 10000,
-  overflowY: 'auto',
-  padding: '2rem'
+  position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
+  justifyContent: 'center', alignItems: 'center',
+  zIndex: 10000, overflowY: 'auto', padding: '2rem'
 };
 const formBox = {
-  backgroundColor: 'white',
-  padding: '2rem',
-  borderRadius: '8px',
-  width: '90%',
-  maxWidth: '600px',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-  boxShadow: '0 5px 15px rgba(0,0,0,0.3)',
-  position: 'relative'
+  backgroundColor: 'white', padding: '2rem', borderRadius: '8px',
+  width: '90%', maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto',
+  boxShadow: '0 5px 15px rgba(0,0,0,0.3)', position: 'relative'
 };
 const modalBox = {
-  backgroundColor: 'white',
-  padding: '2rem',
-  borderRadius: '8px',
-  width: '400px',
-  textAlign: 'center',
-  boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
+  backgroundColor: 'white', padding: '2rem', borderRadius: '8px',
+  width: '400px', textAlign: 'center', boxShadow: '0 5px 15px rgba(0,0,0,0.3)'
 };
 const closeButton = {
-  position: 'absolute',
-  top: '1rem',
-  right: '1rem',
-  width: '2rem',
-  height: '2rem',
-  background: 'transparent',
-  border: 'none',
-  borderRadius: '50%',
-  fontSize: '1.25rem',
-  color: '#666',
-  cursor: 'pointer'
+  position: 'absolute', top: '1rem', right: '1rem', width: '2rem',
+  height: '2rem', background: 'transparent', border: 'none',
+  borderRadius: '50%', fontSize: '1.25rem', color: '#666', cursor: 'pointer'
 };
 const submitButtonStyle = {
-  padding: '0.5rem',
-  backgroundColor: '#2e7d32',
-  color: 'white',
-  border: 'none',
-  borderRadius: '4px',
-  fontSize: '1rem',
-  cursor: 'pointer',
-  marginTop: '1rem'
+  padding: '0.5rem', backgroundColor: '#2e7d32', color: 'white',
+  border: 'none', borderRadius: '4px', fontSize: '1rem',
+  cursor: 'pointer', marginTop: '1rem'
 };
 
 export default CreateAccountModal;
