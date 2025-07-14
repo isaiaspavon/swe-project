@@ -27,6 +27,10 @@ npm install framer-motion
 ```
 
 ```
+npm install crypto-js
+```
+
+```
 npm run dev
 ```
 
