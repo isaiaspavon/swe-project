@@ -6,7 +6,7 @@ const sidebarOptions = [
   { key: 'settings', label: 'Account Settings' },
   { key: 'payments', label: 'Payment Methods' },
   { key: 'address', label: 'Address Book' },
-  { key: 'email', label: 'Email Preferences' },
+  { key: 'email', label: 'Promotions' },
 ];
 
 const AccountSidebar = ({ activeSection, onSelect }) => {

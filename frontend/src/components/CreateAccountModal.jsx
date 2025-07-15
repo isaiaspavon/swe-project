@@ -12,6 +12,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     confirmEmail: '',
     password: '',
     confirmPassword: '',
+    subscribe: false,
     address: {
       street: '',
       city: '',
@@ -33,7 +34,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     e.preventDefault();
     const {
       fullName, phoneNumber, email, confirmEmail,
-      password, confirmPassword, address, payment
+      password, confirmPassword, address, payment, subscribe
     } = formData;
 
     const nameRegex = /^[A-Za-z\s]+$/;
@@ -85,13 +86,15 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
       await sendEmailVerification(user);
 
-      // Store basic profile without payment in users/{uid}
       await set(ref(db, 'users/' + user.uid), {
         name: fullName,
         phone: phoneNumber,
         email,
         status: "Inactive",
         createdAt: new Date().toISOString(),
+        promotions: {
+          subscribed: subscribe
+        },
         address: {
           street: address.street || '',
           city: address.city || '',
@@ -100,7 +103,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         }
       });
 
-      // Optional: store card in centralized path
+
       if (
         payment.cardType &&
         payment.cardNumber &&
@@ -125,6 +128,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         confirmEmail: '',
         password: '',
         confirmPassword: '',
+        subscribe: false,
         address: { street: '', city: '', state: '', zip: '' },
         payment: { cardType: '', cardNumber: '', expMonth: '', expYear: '' }
       });
@@ -206,6 +210,16 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
           <label style={labelStyle}>Confirm Password: <span style={{ color: 'red' }}>*</span></label>
           <input type="password" value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} style={inputStyle} required />
+
+          <label style={{ ...labelStyle, display: 'flex', alignItems: 'center' }}>
+            <input
+              type="checkbox"
+              checked={formData.subscribe}
+              onChange={e => setFormData({ ...formData, subscribe: e.target.checked })}
+              style={{ marginRight: '0.5rem' }}
+            />
+            Register for promotional emails
+          </label>
 
           <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Shipping Address (optional)</h4>
           <input type="text" placeholder="Street" value={formData.address.street} onChange={e => setFormData({ ...formData, address: { ...formData.address, street: e.target.value } })} style={inputStyle} />

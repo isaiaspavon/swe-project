@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { formatPhone } from '../utils/formatPhone';
-import { ref, onValue, off } from 'firebase/database';
+import { ref, onValue, off, get } from 'firebase/database';
 import { db } from '../firebaseConfig';
 
 const headerStyle = {
@@ -12,7 +12,7 @@ const headerStyle = {
     marginBottom: '58px',
     marginTop: '56.56px',
     letterSpacing: '0.01em',
-  };
+};
 
 const cardStyle = {
   background: '#232323',
@@ -41,12 +41,23 @@ const buttonStyle = {
 };
 
 const AccountOverview = ({ onNavigate }) => {
-  const { currentUser, userProfile } = useAuth();
+  const { currentUser } = useAuth();
+  const [userProfile, setUserProfile] = useState(null);
   const [addresses, setAddresses] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
-  // Fetch addresses from Firebase
+  useEffect(() => {
+    if (!currentUser) return;
+    const userRef = ref(db, `users/${currentUser.uid}`);
+    const unsubscribe = onValue(userRef, snap => {
+      if (snap.exists()) {
+        setUserProfile(snap.val());
+      }
+    });
+    return () => off(userRef, 'value', unsubscribe);
+  }, [currentUser]);
+
   useEffect(() => {
     if (!currentUser) return;
     const addrRef = ref(db, `addresses/${currentUser.uid}`);
@@ -55,10 +66,9 @@ const AccountOverview = ({ onNavigate }) => {
       const list = Object.entries(data).map(([id, addr]) => ({ id, ...addr }));
       setAddresses(list);
     });
-    return () => unsubscribe();
+    return () => off(addrRef, 'value', unsubscribe);
   }, [currentUser]);
 
-  // Fetch recent orders from Firebase
   useEffect(() => {
     if (!currentUser) {
       setRecentOrders([]);
@@ -74,9 +84,8 @@ const AccountOverview = ({ onNavigate }) => {
           ...orderData,
           date: orderData.orderDate ? new Date(orderData.orderDate).toLocaleDateString() : 'Unknown',
         }));
-        // Sort by date descending
         ordersList.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-        setRecentOrders(ordersList.slice(0, 2)); // Show up to 2 recent orders
+        setRecentOrders(ordersList.slice(0, 2));
       } else {
         setRecentOrders([]);
       }
@@ -89,7 +98,6 @@ const AccountOverview = ({ onNavigate }) => {
   <div>
     <h2 style={headerStyle}>My Account</h2>
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-      {/* Order History Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Order History</h2>
         <div style={{ margin: '0.5rem 0 1rem 0', minHeight: 40 }}>
@@ -117,65 +125,56 @@ const AccountOverview = ({ onNavigate }) => {
         <button style={buttonStyle} onClick={() => onNavigate('orders')}>See All Orders</button>
       </div>
 
-      {/* Account Settings Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Account Settings</h2>
         <p style={{ margin: '0.5rem 0 0 0' }}>
           Full Name: {userProfile?.name || 'Not Set'}<br />
           Email Address: {currentUser?.email || 'Not Set'}<br />
           Phone Number:{' '}
-          {userProfile?.phone
-             ? formatPhone(userProfile.phone)
-              : (
-                <span style={{ color: '#b71c1c' }}>
-                 Add a number to assure account security
-                </span>
-              )
-            }<br />
+          {userProfile?.phone ? formatPhone(userProfile.phone) : (
+            <span style={{ color: '#b71c1c' }}>Add a number to assure account security</span>
+          )}<br />
         </p>
         <button style={buttonStyle} onClick={() => onNavigate('settings')}>Manage Account Settings</button>
       </div>
 
-      {/* Address Book Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Address Book</h2>
         {addresses.length === 0 ? (
           <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>You haven't added any addresses yet.</p>
         ) : (
-              <ul style={{
-                  listStyle: 'none',
-                  padding: 0,
-                  margin: '0.5rem 0',
-                  maxHeight: '8rem',
-                  overflowY: 'auto'
-                }}>
-                  {addresses.map(addr => (
-                    <li key={addr.id} style={{ marginBottom: '0.75rem' }}>
-                      <strong>
-                        {addr.first} {addr.mi && `${addr.mi}.`} {addr.last}
-                      </strong><br/>
-                      {addr.street}{addr.street2 && `, ${addr.street2}`}<br/>
-                      {addr.city}, {addr.state} {addr.zip}<br/>
-                      {addr.phone && (
-                        <span>Phone: {formatPhone(addr.phone)}</span>
-                      )}
-                    </li>
-                  ))}
-              </ul>
-          )}
+          <ul style={{
+            listStyle: 'none',
+            padding: 0,
+            margin: '0.5rem 0',
+            maxHeight: '8rem',
+            overflowY: 'auto'
+          }}>
+            {addresses.map(addr => (
+              <li key={addr.id} style={{ marginBottom: '0.75rem' }}>
+                <strong>
+                  {addr.first} {addr.mi && `${addr.mi}.`} {addr.last}
+                </strong><br/>
+                {addr.street}{addr.street2 && `, ${addr.street2}`}<br/>
+                {addr.city}, {addr.state} {addr.zip}<br/>
+                {addr.phone && (
+                  <span>Phone: {formatPhone(addr.phone)}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
         <button style={buttonStyle} onClick={() => onNavigate('address')}>Manage Address Book</button>
       </div>
 
-      {/* Payment Methods Card */}
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Payment Methods</h2>
         <p style={{ margin: '0.5rem 0 0 0' }}>Add a New Payment Method</p>
         <button style={buttonStyle} onClick={() => onNavigate('payments')}>Manage Payment Methods</button>
       </div>
 
-      {/* Email Preferences Card */}
       <div style={cardStyle}>
-        <h2 style={{ margin: 0 }}>Email Preferences</h2>
+        <h2 style={{ margin: 0 }}>Promotions</h2>
         <p style={{ margin: '0.5rem 0 0 0' }}>Manage the types of emails you receive from us.</p>
         <button style={buttonStyle} onClick={() => onNavigate('email')}>Manage Email Preferences</button>
       </div>
@@ -184,4 +183,4 @@ const AccountOverview = ({ onNavigate }) => {
   );
 };
 
-export default AccountOverview; 
+export default AccountOverview;

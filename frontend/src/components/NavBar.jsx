@@ -235,7 +235,7 @@ const Navbar = ({
                     closeDropdown={() => setDropdownOpen(false)}
                     requireAuth={true}
                   >
-                    Email Preferences
+                    Promotions
                   </DropdownLink>
                 </div>
               </div>
