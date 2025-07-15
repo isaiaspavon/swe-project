@@ -54,6 +54,11 @@ const ShoppingCartItem = ({ item }) => {
               style={{
                 width: '30px',
                 height: '30px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 0,
+                lineHeight: 1,
                 border: '1px solid #333',
                 backgroundColor: '#2a2a2a',
                 color: '#f4f4f5',
@@ -71,6 +76,11 @@ const ShoppingCartItem = ({ item }) => {
               style={{
                 width: '30px',
                 height: '30px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                padding: 0,
+                lineHeight: 1,
                 border: '1px solid #333',
                 backgroundColor: '#2a2a2a',
                 color: '#f4f4f5',

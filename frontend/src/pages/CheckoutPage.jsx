@@ -143,6 +143,8 @@ const CheckoutPage = () => {
               value={formData.firstName}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
+
             />
             <label>Last Name</label>
             <input
@@ -151,6 +153,8 @@ const CheckoutPage = () => {
               value={formData.lastName}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
+
             />
             <label>Email</label>
             <input
@@ -159,6 +163,7 @@ const CheckoutPage = () => {
               value={formData.email}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
             />
             <label>Address</label>
             <input
@@ -167,6 +172,7 @@ const CheckoutPage = () => {
               value={formData.address}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
             />
             <label>City</label>
             <input
@@ -175,6 +181,7 @@ const CheckoutPage = () => {
               value={formData.city}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
             />
             <label>Zip Code</label>
             <input
@@ -183,6 +190,7 @@ const CheckoutPage = () => {
               value={formData.zipCode}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
             />
             <button type="button">Save Changes</button>
           </form>
@@ -199,6 +207,7 @@ const CheckoutPage = () => {
               value={formData.cardNumber}
               onChange={handlePaymentChange}
               required
+              style={{ color: '#000' }}
             />
             <label>Expiration Date</label>
             <input
@@ -207,6 +216,7 @@ const CheckoutPage = () => {
               value={formData.expiryDate}
               onChange={handlePaymentChange}
               required
+              style={{ color: '#000' }}
             />
             <label>CVV</label>
             <input
@@ -215,6 +225,7 @@ const CheckoutPage = () => {
               value={formData.cvv}
               onChange={handlePaymentChange}
               required
+              style={{ color: '#000' }}
             />
             <button type="button">Save Changes</button>
           </form>
@@ -228,6 +239,7 @@ const CheckoutPage = () => {
             value={formData.promoCode}
             onChange={handlePromoCodeChange}
             placeholder="Enter Promo Code"
+            style={{ color: '#000' }}
           />
           <button type="button" onClick={handleApplyPromoCode}>
             Apply
