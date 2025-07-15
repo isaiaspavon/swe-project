@@ -75,6 +75,31 @@ const AddressBook = () => {
     if (!form.fullName || !form.street || !form.city || !form.zip || !form.phone) {
       return alert('Please fill in all required fields.');
     }
+
+    // Name must be letters and spaces only
+    if (!/^[A-Za-z\s]+$/.test(form.fullName)) {
+      return alert('Name can only contain letters and spaces.');
+    }
+
+    // Phone isexactly 10 digits
+    if (!/^\d{10}$/.test(form.phone)) {
+      return alert('Phone number must be exactly 10 digits (numbers only).');
+    }
+
+    //  zip is numbers only
+    if (!/^\d+$/.test(form.zip)) {
+      return alert('Zip code can only contain numbers.');
+    }
+    // City contains only letters, spaces, or hyphens—no numbers
+    if (!/^[A-Za-z\s-]+$/.test(form.city)) {
+      return alert('City can only contain letters, spaces, or dashes.');
+    }
+
+    // State contains only letters, spaces, or hyphens—no numbers
+    if (form.state && !/^[A-Za-z\s-]+$/.test(form.state)) {
+      return alert('State can only contain letters, spaces, or dashes.');
+    }
+
     try {
       await update(ref(db, `users/${currentUser.uid}`), {
         name: form.fullName,
@@ -136,6 +161,6 @@ const AddressBook = () => {
       )}
     </div>
   );
-};
+}
 
 export default AddressBook;
