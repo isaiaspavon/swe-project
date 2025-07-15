@@ -140,30 +140,20 @@ const AccountOverview = ({ onNavigate }) => {
 
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Address Book</h2>
-        {addresses.length === 0 ? (
-          <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>You haven't added any addresses yet.</p>
-        ) : (
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: '0.5rem 0',
-            maxHeight: '8rem',
-            overflowY: 'auto'
-          }}>
-            {addresses.map(addr => (
-              <li key={addr.id} style={{ marginBottom: '0.75rem' }}>
-                <strong>
-                  {addr.first} {addr.mi && `${addr.mi}.`} {addr.last}
-                </strong><br/>
-                {addr.street}{addr.street2 && `, ${addr.street2}`}<br/>
-                {addr.city}, {addr.state} {addr.zip}<br/>
-                {addr.phone && (
-                  <span>Phone: {formatPhone(addr.phone)}</span>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
+        {userProfile?.address?.street ? (
+          <div style={{ margin: '0.5rem 0 0 0', lineHeight: 1.4, color: 'white'}}>
+            <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
+            {userProfile.name}</strong>{userProfile.address.street}
+            {userProfile.address.street2 && `, ${userProfile.address.street2}`} <br/>
+            {userProfile.address.city}, {userProfile.address.state} {userProfile.address.zip} <br/>
+            {userProfile.phone && (
+              <span>Phone: {formatPhone(userProfile.phone)}</span>)}
+          </div>
+          ) : (
+            <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>
+              You haven't added any address yet.
+            </p>
+          )}
         <button style={buttonStyle} onClick={() => onNavigate('address')}>Manage Address Book</button>
       </div>
 
