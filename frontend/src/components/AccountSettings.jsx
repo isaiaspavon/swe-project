@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import {
-  reauthenticateWithCredential,
-  updatePassword as firebaseUpdatePassword
-} from 'firebase/auth';
+import {EmailAuthProvider, reauthenticateWithCredential, updatePassword as firebaseUpdatePassword} from 'firebase/auth';
 import { formatPhone } from '../utils/formatPhone';
 
 
@@ -111,21 +108,28 @@ const AccountSettings = () => {
 
 const handleNameSave = async (e) => {
   e.preventDefault();
-  const fullName = `${name.first.trim()} ${name.last.trim()}`.trim();
-  if (!fullName) {
-    return alert("Name can't be blank");
+
+  // 1) Trim inputs
+  const first = name.first.trim();
+  const last  = name.last.trim();
+
+  // 2) Neither field can be blank
+  if (!first || !last) {
+    return alert("Both first and last name are required.");
   }
 
+  // 3) Only letters allowed (no numbers, spaces, or punctuation)
+  const lettersOnly = /^[A-Za-z]+$/;
+  if (!lettersOnly.test(first) || !lettersOnly.test(last)) {
+    return alert("Names may only contain letters A–Z.");
+  }
+  const fullName = `${first} ${last}`;
+
   try {
-    // 1) Push the change to your AuthContext (Firebase + RTDB)
+    // 4) Save to your AuthContext
     await updateProfile({ name: fullName });
-
-    // 2) Success feedback
     alert('Name updated successfully!');
-
-    // 3) Reset your inputs (if you want them to clear out)
-    setName({ first: '', last: '' });
-
+    setName({ first: '', last: '' }); // reset form
   } catch (err) {
     console.error(err);
     alert('Failed to update name: ' + err.message);
@@ -187,21 +191,27 @@ const handlePasswordSave = async (e) => {
 
   if (!password.current) {
     return alert("Enter your current password.");
-  }
-  if (password.new.length < 8) {
-    return alert("New password must be at least 8 characters.");
-  }
+  } // not current password
+  if (password.new.length < 8 || password.new.length > 15) { 
+    return alert("New password must be between 8 and 15 characters.");
+  } // between 8 and 15 characters
+  if (!/[A-Z]/.test(password.new)) {
+    return alert("New password must contain at least one uppercase letter.");
+  } //At least one uppercase letter
+  if (!/[0-9]/.test(password.new)) {
+    return alert("New password must contain at least one number.");
+  } // at least one number
+  if (password.new === currentUser?.email) {
+    return alert("New password must be different from your username.");
+  } // different from username
   if (password.new !== password.confirm) {
     return alert("New password and confirmation do not match.");
-  }
+  } // new and confirm match
 
   try {
     // some backends require both current & new; Firebase Auth only needs new
-     const cred = EmailAuthProvider.credential(
-        currentUser.email,
-        password.current
-      );
-      await reauthenticateWithCredential(currentUser, cred);
+     const cred = EmailAuthProvider.credential(currentUser.email, password.current);
+      await reauthenticateWithCredential(currentUser, cred);  
     
     // after re-authentication, update the password
     await firebaseUpdatePassword(currentUser, password.new);
