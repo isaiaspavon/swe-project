@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut} from 'firebase/auth';
 import { ref, set, push, update } from 'firebase/database';
 import { auth, db } from '../firebaseConfig';
 import { encryptData } from '../utils/encryption';
@@ -156,9 +156,15 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
             Please check your email and click the verification link to activate your account.
           </p>
           <button
-            onClick={() => {
+            onClick={async () => {
               setShowVerifyNotice(false);
               onClose();
+              try {
+                await signOut(auth);              // ✅ Log the user out
+                window.location.href = '/';       // ✅ Redirect to homepage
+              } catch (signOutError) {
+                console.error('Error signing out:', signOutError);
+              }
             }}
             style={submitButtonStyle}
           >

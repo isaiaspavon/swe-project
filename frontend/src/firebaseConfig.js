@@ -71,14 +71,26 @@ export const loginUser = async (email, password) => {
     const userRef = ref(db, 'users/' + user.uid);
     const snapshot = await get(userRef);
     
-    if (snapshot.exists()) {
-      const userData = snapshot.val();
-      console.log("✅ User logged in successfully!");
-      return { 
-        success: true, 
-        user: user, 
-        userData: userData 
-      };
+    if (!user.emailVerified) {
+  console.warn("❌ Email not verified");
+  return { success: false, error: "Please verify your email before logging in." };
+}
+
+  if (snapshot.exists()) {
+    const userData = snapshot.val();
+
+    // Optional: auto-update status to Active after email verification
+    if (userData.status === "Inactive") {
+      await set(ref(db, 'users/' + user.uid + '/status'), "Active");
+    }
+
+    console.log("✅ User logged in successfully!");
+    return { 
+      success: true, 
+      user: user, 
+      userData: { ...userData, status: "Active" }
+    };
+
     } else {
       console.log("User authenticated but no profile data found");
       return { 
