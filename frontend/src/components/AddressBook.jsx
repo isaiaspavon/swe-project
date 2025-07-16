@@ -48,7 +48,7 @@ const AddressBook = () => {
   const [address, setAddress] = useState(null);
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({
-    fullName: '', street: '', street2: '', city: '', zip: '', state: '', phone: '',
+    firstName: '', lastName: '', street: '', street2: '', city: '', zip: '', state: '', phone: '',
   });
 
   useEffect(() => {
@@ -59,7 +59,8 @@ const AddressBook = () => {
       const userData = snap.val() || {};
       const regAddr = userData.address || {};
       setAddress({
-        fullName: userData.name || '',
+        firstName: userData.firstName || '',
+        lastName: userData.lastName || '',
         street: regAddr.street || '',
         street2: regAddr.street2 || '',
         city: regAddr.city || '',
@@ -72,38 +73,37 @@ const AddressBook = () => {
 
   const handleSave = async () => {
     if (!currentUser) return alert('Sign in to save your address.');
-    if (!form.fullName || !form.street || !form.city || !form.zip || !form.phone) {
+    const { firstName, lastName, phone, street, city, zip, state } = form;
+
+    if (!firstName || !lastName || !phone || !street || !city || !zip) {
       return alert('Please fill in all required fields.');
     }
 
-    // Name must be letters and spaces only
-    if (!/^[A-Za-z\s]+$/.test(form.fullName)) {
-      return alert('Name can only contain letters and spaces.');
+    if (!/^[A-Za-z\s]+$/.test(firstName) || !/^[A-Za-z\s]+$/.test(lastName)) {
+      return alert('Name fields can only contain letters and spaces.');
     }
 
-    // Phone isexactly 10 digits
-    if (!/^\d{10}$/.test(form.phone)) {
+    if (!/^\d{10}$/.test(phone)) {
       return alert('Phone number must be exactly 10 digits (numbers only).');
     }
 
-    //  zip is numbers only
-    if (!/^\d+$/.test(form.zip)) {
+    if (!/^\d+$/.test(zip)) {
       return alert('Zip code can only contain numbers.');
     }
-    // City contains only letters, spaces, or hyphens—no numbers
-    if (!/^[A-Za-z\s-]+$/.test(form.city)) {
+
+    if (!/^[A-Za-z\s-]+$/.test(city)) {
       return alert('City can only contain letters, spaces, or dashes.');
     }
 
-    // State contains only letters, spaces, or hyphens—no numbers
-    if (form.state && !/^[A-Za-z\s-]+$/.test(form.state)) {
+    if (state && !/^[A-Za-z\s-]+$/.test(state)) {
       return alert('State can only contain letters, spaces, or dashes.');
     }
 
     try {
       await update(ref(db, `users/${currentUser.uid}`), {
-        name: form.fullName,
-        phone: form.phone,
+        firstName,
+        lastName,
+        phone,
         address: {
           street: form.street,
           street2: form.street2,
@@ -125,8 +125,11 @@ const AddressBook = () => {
 
       {!address || editing ? (
         <form style={cardStyle} onSubmit={e => e.preventDefault()}>
-          <label style={labelStyle}>Full Name *</label>
-          <input style={inputStyle} placeholder="Full Name" value={form.fullName} onChange={e => setForm({ ...form, fullName: e.target.value })} />
+          <label style={labelStyle}>First Name *</label>
+          <input style={inputStyle} placeholder="First Name" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
+
+          <label style={labelStyle}>Last Name *</label>
+          <input style={inputStyle} placeholder="Last Name" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} />
 
           <label style={labelStyle}>Street Address *</label>
           <input style={inputStyle} placeholder="Street Address" value={form.street} onChange={e => setForm({ ...form, street: e.target.value })} />
@@ -148,7 +151,7 @@ const AddressBook = () => {
       ) : (
         <div style={{ ...cardStyle, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <strong>{address.fullName}</strong><br />
+            <strong>{address.firstName} {address.lastName}</strong><br />
             {address.street}{address.street2 && `, ${address.street2}`}<br />
             {address.city}, {address.state} {address.zip}<br />
             {address.phone && `Phone: ${formatPhone(address.phone)}`}
