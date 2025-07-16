@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import {EmailAuthProvider, reauthenticateWithCredential, updatePassword as firebaseUpdatePassword} from 'firebase/auth';
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword as firebaseUpdatePassword } from 'firebase/auth';
 import { formatPhone } from '../utils/formatPhone';
-
 
 const headerStyle = {
   fontSize: '2rem',
@@ -85,152 +84,107 @@ const AccountSettings = () => {
   const { currentUser, userProfile, updateProfile, updatePassword } = useAuth();
 
   const [name, setName] = useState({ first: '', last: '' });
-  // REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
-  // const [email, setEmail] = useState({ current: '', new: '', confirm: '' });
   const [phone, setPhone] = useState({ current: '', new: '', confirm: '' });
   const [password, setPassword] = useState({ current: '', new: '', confirm: '' });
 
-    useEffect(() => {
-    if (userProfile?.name) {
-      // if you store full name as one string:
-      const [first = '', last = ''] = userProfile.name.split(' ');
+  useEffect(() => {
+    if (userProfile?.firstName || userProfile?.lastName) {
+      setName({
+        first: userProfile.firstName || '',
+        last: userProfile.lastName || ''
+      });
     }
-    {/* REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
-    if (currentUser?.email) {
-      setEmail(e => ({ ...e, current: currentUser.email }));
-    }
-    */}
     if (userProfile?.phone) {
       setPhone(p => ({ ...p, current: userProfile.phone }));
     }
   }, [userProfile, currentUser]);
 
+  const handleNameSave = async (e) => {
+    e.preventDefault();
 
-const handleNameSave = async (e) => {
-  e.preventDefault();
+    const first = name.first.trim();
+    const last = name.last.trim();
 
-  // 1) Trim inputs
-  const first = name.first.trim();
-  const last  = name.last.trim();
+    if (!first || !last) {
+      return alert("Both first and last name are required.");
+    }
 
-  // 2) Neither field can be blank
-  if (!first || !last) {
-    return alert("Both first and last name are required.");
-  }
+    const lettersOnly = /^[A-Za-z]+$/;
+    if (!lettersOnly.test(first) || !lettersOnly.test(last)) {
+      return alert("Names may only contain letters A–Z.");
+    }
 
-  // 3) Only letters allowed (no numbers, spaces, or punctuation)
-  const lettersOnly = /^[A-Za-z]+$/;
-  if (!lettersOnly.test(first) || !lettersOnly.test(last)) {
-    return alert("Names may only contain letters A–Z.");
-  }
-  const fullName = `${first} ${last}`;
+    try {
+      await updateProfile({ firstName: first, lastName: last });
+      alert('Name updated successfully!');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update name: ' + err.message);
+    }
+  };
 
-  try {
-    // 4) Save to your AuthContext
-    await updateProfile({ name: fullName });
-    alert('Name updated successfully!');
-    setName({ first: '', last: '' }); // reset form
-  } catch (err) {
-    console.error(err);
-    alert('Failed to update name: ' + err.message);
-  }
-};
-{/*} REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
-const handleEmailSave = async (e) => {
-  e.preventDefault();
+  const handlePhoneSave = async (e) => {
+    e.preventDefault();
 
-  // 1) Basic validation
-  if (!email.new) {
-    return alert("Please enter a new email address.");
-  }
-  if (email.new !== email.confirm) {
-    return alert("New email and confirmation do not match.");
-  }
+    const raw = phone.new.replace(/\D/g, "");
+    if (raw.length !== 10) {
+      return alert("Please enter a valid 10-digit phone number.");
+    }
+    if (raw !== phone.confirm.replace(/\D/g, "")) {
+      return alert("Phone number and confirmation do not match.");
+    }
 
-  try {
-    // 2) Call the context helper
-    await updateEmail(email.new);
+    try {
+      await updateProfile({ phone: raw });
+      alert("Phone number updated!");
+      setPhone(curr => ({ ...curr, new: "", confirm: "" }));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update phone: " + err.message);
+    }
+  };
 
-    // 3) Success feedback
-    alert("Email updated! Please check your inbox for any verification links.");
+  const handlePasswordSave = async (e) => {
+    e.preventDefault();
 
-    // 4) Reset only the new/confirm fields
-    setEmail(curr => ({ ...curr, new: "", confirm: "" }));
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update email: " + err.message);
-  }
-};
-*/}
+    if (!password.current) {
+      return alert("Enter your current password.");
+    }
+    if (password.new.length < 8 || password.new.length > 15) {
+      return alert("New password must be between 8 and 15 characters.");
+    }
+    if (!/[A-Z]/.test(password.new)) {
+      return alert("New password must contain at least one uppercase letter.");
+    }
+    if (!/[0-9]/.test(password.new)) {
+      return alert("New password must contain at least one number.");
+    }
+    if (password.new === currentUser?.email) {
+      return alert("New password must be different from your username.");
+    }
+    if (password.new !== password.confirm) {
+      return alert("New password and confirmation do not match.");
+    }
 
-const handlePhoneSave = async (e) => {
-  e.preventDefault();
-
-  const raw = phone.new.replace(/\D/g, "");             // strip non-digits
-  if (raw.length !== 10) {
-    return alert("Please enter a valid 10-digit phone number.");
-  }
-  if (raw !== phone.confirm.replace(/\D/g, "")) {
-    return alert("Phone number and confirmation do not match.");
-  }
-
-  try {
-    await updateProfile({ phone: raw });
-
-    alert("Phone number updated!");
-
-    setPhone(curr => ({ ...curr, new: "", confirm: "" }));
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update phone: " + err.message);
-  }
-};
-
-const handlePasswordSave = async (e) => {
-  e.preventDefault();
-
-  if (!password.current) {
-    return alert("Enter your current password.");
-  } // not current password
-  if (password.new.length < 8 || password.new.length > 15) { 
-    return alert("New password must be between 8 and 15 characters.");
-  } // between 8 and 15 characters
-  if (!/[A-Z]/.test(password.new)) {
-    return alert("New password must contain at least one uppercase letter.");
-  } //At least one uppercase letter
-  if (!/[0-9]/.test(password.new)) {
-    return alert("New password must contain at least one number.");
-  } // at least one number
-  if (password.new === currentUser?.email) {
-    return alert("New password must be different from your username.");
-  } // different from username
-  if (password.new !== password.confirm) {
-    return alert("New password and confirmation do not match.");
-  } // new and confirm match
-
-  try {
-    // some backends require both current & new; Firebase Auth only needs new
-     const cred = EmailAuthProvider.credential(currentUser.email, password.current);
-      await reauthenticateWithCredential(currentUser, cred);  
-    
-    // after re-authentication, update the password
-    await firebaseUpdatePassword(currentUser, password.new);
-    alert("Password changed successfully!");
-    setPassword({ current: "", new: "", confirm: "" });
-    
-  } catch (err) {
-    console.error(err);
-    alert("Failed to change password: " + err.message);
-  }
-};
+    try {
+      const cred = EmailAuthProvider.credential(currentUser.email, password.current);
+      await reauthenticateWithCredential(currentUser, cred);
+      await firebaseUpdatePassword(currentUser, password.new);
+      alert("Password changed successfully!");
+      setPassword({ current: "", new: "", confirm: "" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to change password: " + err.message);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', alignItems: 'center', width: '100%' }}>
       <h2 style={headerStyle}>Account Settings</h2>
-      {/* Update Name */}
+
       <form onSubmit={handleNameSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Update Your Name</div>
-        <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Name: {userProfile.name}</div>
+        <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Name: {userProfile.firstName} {userProfile.lastName}</div>
         <label style={labelStyle}>First Name</label>
         <input style={inputStyle} value={name.first} onChange={e => setName({ ...name, first: e.target.value })} placeholder="First Name" />
         <label style={labelStyle}>Last Name</label>
@@ -241,23 +195,6 @@ const handlePasswordSave = async (e) => {
         </div>
       </form>
 
-      
-      {/* Update Email Address */}
-      {/*} REMOVED BC USERS CAN'T CHANGE EMAIL <------------------------
-      <form onSubmit={handleEmailSave} style={cardStyle}>
-        <div style={sectionTitleStyle}>Update Your Email Address</div>
-        <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Email Address: {email.current}</div>
-        <label style={labelStyle}>New Email Address</label>
-        <input style={inputStyle} value={email.new} onChange={e => setEmail({ ...email, new: e.target.value })} placeholder="New Email Address" />
-        <label style={labelStyle}>Confirm New Email Address</label>
-        <input style={inputStyle} value={email.confirm} onChange={e => setEmail({ ...email, confirm: e.target.value })} placeholder="Confirm New Email Address" />
-        <div style={buttonRowStyle}>
-          <button type="submit" style={saveButtonStyle}>Save Changes</button>
-          <button type="button" style={cancelButtonStyle}>Cancel</button>
-        </div>
-      </form>
-      */}
-      {/* Update Mobile Phone Number */}
       <form onSubmit={handlePhoneSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Update Your Mobile Phone Number</div>
         <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Mobile Phone Number: {phone.current ? formatPhone(phone.current) : 'None'}</div>
@@ -271,7 +208,6 @@ const handlePasswordSave = async (e) => {
         </div>
       </form>
 
-      {/* Change Password */}
       <form onSubmit={handlePasswordSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Change Your Password</div>
         <label style={labelStyle}>Current Password</label>
@@ -298,4 +234,4 @@ const handlePasswordSave = async (e) => {
   );
 };
 
-export default AccountSettings; 
+export default AccountSettings;

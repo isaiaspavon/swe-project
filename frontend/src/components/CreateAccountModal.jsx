@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, sendEmailVerification, signOut} from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
 import { ref, set, push, update } from 'firebase/database';
 import { auth, db } from '../firebaseConfig';
 import { encryptData } from '../utils/encryption';
 
 const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const [formData, setFormData] = useState({
-    fullName: '',
+    firstName: '',
+    lastName: '',
     phoneNumber: '',
     email: '',
     confirmEmail: '',
@@ -33,7 +34,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const {
-      fullName, phoneNumber, email, confirmEmail,
+      firstName, lastName, phoneNumber, email, confirmEmail,
       password, confirmPassword, address, payment, subscribe
     } = formData;
 
@@ -43,11 +44,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
     const cityRegex = /^[A-Za-z\s]+$/;
     const cardNumberRegex = /^\d{15,16}$/;
 
-    if (payment.cardNumber && !cardNumberRegex.test(payment.cardNumber.trim())) {
-      setError('Card number must be 15 or 16 digits and contain only numbers');
-      return;
-    }
-    if (!nameRegex.test(fullName.trim())) {
+    if (!nameRegex.test(firstName.trim()) || !nameRegex.test(lastName.trim())) {
       setError('Name can only contain letters and spaces');
       return;
     }
@@ -63,7 +60,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       setError('City name can only contain letters');
       return;
     }
-    if (!fullName || !phoneNumber || !email || !confirmEmail || !password || !confirmPassword) {
+    if (!firstName || !lastName || !phoneNumber || !email || !confirmEmail || !password || !confirmPassword) {
       setError('Please fill in all required fields');
       return;
     }
@@ -75,8 +72,25 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       setError('Passwords do not match');
       return;
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+    if (password.length < 8 || password.length > 15) {
+      setError('Password must be between 8 and 15 characters');
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError('Password must contain at least one uppercase letter');
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError('Password must contain at least one number');
+      return;
+    }
+    if (password === email) {
+      setError('Password must be different from your email');
+      return;
+    }
+
+    if (payment.cardNumber && !cardNumberRegex.test(payment.cardNumber.trim())) {
+      setError('Card number must be 15 or 16 digits and contain only numbers');
       return;
     }
 
@@ -87,7 +101,8 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       await sendEmailVerification(user);
 
       await set(ref(db, 'users/' + user.uid), {
-        name: fullName,
+        firstName,
+        lastName,
         phone: phoneNumber,
         email,
         status: "Inactive",
@@ -102,7 +117,6 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           zip: address.zip || ''
         }
       });
-
 
       if (
         payment.cardType &&
@@ -122,7 +136,8 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
       }
 
       setFormData({
-        fullName: '',
+        firstName: '',
+        lastName: '',
         phoneNumber: '',
         email: '',
         confirmEmail: '',
@@ -160,8 +175,8 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
               setShowVerifyNotice(false);
               onClose();
               try {
-                await signOut(auth);              // ✅ Log the user out
-                window.location.href = '/';       // ✅ Redirect to homepage
+                await signOut(auth);
+                window.location.href = '/';
               } catch (signOutError) {
                 console.error('Error signing out:', signOutError);
               }
@@ -199,8 +214,11 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <label style={labelStyle}>Full Name: <span style={{ color: 'red' }}>*</span></label>
-          <input type="text" value={formData.fullName} onChange={e => setFormData({ ...formData, fullName: e.target.value })} style={inputStyle} required />
+          <label style={labelStyle}>First Name: <span style={{ color: 'red' }}>*</span></label>
+          <input type="text" value={formData.firstName} onChange={e => setFormData({ ...formData, firstName: e.target.value })} style={inputStyle} required />
+
+          <label style={labelStyle}>Last Name: <span style={{ color: 'red' }}>*</span></label>
+          <input type="text" value={formData.lastName} onChange={e => setFormData({ ...formData, lastName: e.target.value })} style={inputStyle} required />
 
           <label style={labelStyle}>Phone Number: <span style={{ color: 'red' }}>*</span></label>
           <input type="tel" value={formData.phoneNumber} onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })} style={inputStyle} required />
@@ -212,10 +230,29 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           <input type="email" value={formData.confirmEmail} onChange={e => setFormData({ ...formData, confirmEmail: e.target.value })} style={inputStyle} required />
 
           <label style={labelStyle}>Password: <span style={{ color: 'red' }}>*</span></label>
-          <input type="password" value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} style={inputStyle} required />
+          <input
+            type="password"
+            value={formData.password}
+            onChange={e => setFormData({ ...formData, password: e.target.value })}
+            style={inputStyle}
+            required
+          />
+          <ul style={passwordRulesStyle}>
+            <li>Password must be between 8–15 characters</li>
+            <li>Must contain at least one uppercase letter</li>
+            <li>Must contain at least one number</li>
+            <li>Must be different from your email</li>
+          </ul>
 
           <label style={labelStyle}>Confirm Password: <span style={{ color: 'red' }}>*</span></label>
-          <input type="password" value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} style={inputStyle} required />
+          <input
+            type="password"
+            value={formData.confirmPassword}
+            onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
+            style={inputStyle}
+            required
+          />
+
 
           <label style={{ ...labelStyle, display: 'flex', alignItems: 'center' }}>
             <input
@@ -275,6 +312,15 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 };
 
 // Styles
+const passwordRulesStyle = {
+  fontSize: '0.85rem',
+  color: '#555',
+  marginTop: '-0.5rem',
+  marginBottom: '1rem',
+  paddingLeft: '1.25rem',
+  listStyleType: 'disc'
+};
+
 const inputStyle = {
   color: 'black',
   backgroundColor: '#FBFBFB',
