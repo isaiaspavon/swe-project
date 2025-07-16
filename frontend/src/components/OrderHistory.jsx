@@ -194,7 +194,7 @@ const OrderHistory = () => {
               }}>
                 <button
                   style={{
-                    background: '#facc15',
+                    background: '#f5b5efff',
                     color: '#232323',
                     border: 'none',
                     borderRadius: '8px',
@@ -211,7 +211,7 @@ const OrderHistory = () => {
                 </button>
                 <button
                   style={{
-                    background: '#facc15',
+                    background: '#f5b5efff',
                     color: '#232323',
                     border: 'none',
                     borderRadius: '8px',

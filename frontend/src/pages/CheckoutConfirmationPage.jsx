@@ -26,7 +26,7 @@ const CheckoutConfirmationPage = () => {
 
   return (
     <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h1 style={{ color: "#2e7d32" }}>Thank you for your order!</h1>
+      <h1 style={{ color: "#f065e2ff" }}>Thank you for your order!</h1>
       <p style={{ margin: "1rem 0" }}>
         A confirmation email has been sent to your email address.
       </p>
@@ -70,12 +70,12 @@ const CheckoutConfirmationPage = () => {
         </ul>
         <p>Subtotal: ${order.subtotal.toFixed(2)}</p>
         <p>Tax (8.5%): ${order.tax.toFixed(2)}</p>
-        <p style={{ fontWeight: "bold", color: "#facc15" }}>
+        <p style={{ fontWeight: "bold", color: "#f5b5efff" }}>
           Total: ${order.total.toFixed(2)}
         </p>
       </div>
       <Link to="/" style={{
-        background: "#facc15",
+        background: "#f5b5efff",
         color: "#000",
         borderRadius: "8px",
         padding: "0.75rem 1.5rem",

@@ -46,12 +46,12 @@
 .book-price {
   font-size: 1rem;
   font-weight: bold;
-  color: #facc15; /* Gold */
+  color: rgb(245, 199, 240); 
   margin-bottom: 0.75rem;
 }
 
 .book-card button {
-  background: #facc15;
+  background: #f5b5efff;
   color: #000;
   border: none;
   padding: 0.5rem 0.75rem;
@@ -64,5 +64,5 @@
 }
 
 .book-card button:hover {
-  background: #eab308;
+  background: #f5b5efff;
 }

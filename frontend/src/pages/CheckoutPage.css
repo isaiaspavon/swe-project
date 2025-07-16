@@ -136,7 +136,7 @@ form {
 
 .checkout-page button {
   color: rgb(68, 67, 67);
-  background-color: rgb(250, 204, 21);
+  background-color: #f5b5efff;
   align-self: center;
   max-width: 70%;;
   padding: 10px 20px;
@@ -149,7 +149,7 @@ form {
 }
 
 .checkout-page button:hover {
-  background-color:  rgb(250, 204, 21);
+  background-color:  #f5b5efff;
   transform: scale(1.05);
 }
 

@@ -254,7 +254,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
           />
 
 
-          <label style={{ ...labelStyle, display: 'flex', alignItems: 'center' }}>
+          <label style={{ ...labelStyle, display: 'flex', alignItems: 'center'}}>
             <input
               type="checkbox"
               checked={formData.subscribe}
@@ -264,13 +264,13 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
             Register for promotional emails
           </label>
 
-          <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Shipping Address (optional)</h4>
+          <h4 style={{ marginTop: '5px', marginBottom: '0px', fontSize: '1rem', color: 'black' }}>Shipping Address (optional)</h4>
           <input type="text" placeholder="Street" value={formData.address.street} onChange={e => setFormData({ ...formData, address: { ...formData.address, street: e.target.value } })} style={inputStyle} />
           <input type="text" placeholder="City" value={formData.address.city} onChange={e => setFormData({ ...formData, address: { ...formData.address, city: e.target.value } })} style={inputStyle} />
           <input type="text" placeholder="State" value={formData.address.state} onChange={e => setFormData({ ...formData, address: { ...formData.address, state: e.target.value } })} style={inputStyle} />
           <input type="text" placeholder="Zip Code" value={formData.address.zip} onChange={e => setFormData({ ...formData, address: { ...formData.address, zip: e.target.value } })} style={inputStyle} />
 
-          <h4 style={{ marginTop: '1rem', fontSize: '1rem', color: 'black' }}>Payment Info (optional)</h4>
+          <h4 style={{ marginTop: '1rem', marginBottom: '0px', fontSize: '1rem', color: 'black' }}>Payment Info (optional)</h4>
           <label style={labelStyle}>Card Type:</label>
           <select value={formData.payment.cardType} onChange={e => setFormData({ ...formData, payment: { ...formData.payment, cardType: e.target.value } })} style={inputStyle}>
             <option value="">Select Card Type</option>
@@ -303,7 +303,7 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
           <button type="submit" style={submitButtonStyle}>Create Account</button>
           <div style={{ textAlign: 'center', color: 'black' }}>
-            Already have an account? <span style={{ color: '#2e7d32', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => { onClose(); onSwitchToSignIn(); }}>Sign in</span>
+            Already have an account? <span style={{ color: '#2e427dff', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => { onClose(); onSwitchToSignIn(); }}>Sign in</span>
           </div>
         </form>
       </div>
@@ -346,11 +346,16 @@ const modalBox = {
 };
 const closeButton = {
   position: 'absolute', top: '1rem', right: '1rem', width: '2rem',
+  paddingTop: '5px',
+  paddingRight: '20px',
+  paddingBottom: '20px',
+  paddingLeft: '10px',
   height: '2rem', background: 'transparent', border: 'none',
-  borderRadius: '50%', fontSize: '1.25rem', color: '#666', cursor: 'pointer'
+  borderRadius: '50%', fontSize: '1.25rem', color: '#f5b5efff', cursor: 'pointer',
+  
 };
 const submitButtonStyle = {
-  padding: '0.5rem', backgroundColor: '#2e7d32', color: 'white',
+  padding: '0.5rem', backgroundColor: '#45b94bff', color: 'white',
   border: 'none', borderRadius: '4px', fontSize: '1rem',
   cursor: 'pointer', marginTop: '1rem'
 };

@@ -37,7 +37,7 @@ const ShoppingCartPage = () => {
           <button 
             onClick={handleContinueShopping}
             style={{
-              backgroundColor: '#facc15',
+              backgroundColor: '#f5b5efff',
               color: '#000',
               border: 'none',
               padding: '0.75rem 1.5rem',
@@ -110,7 +110,7 @@ const ShoppingCartPage = () => {
               onClick={handleCheckout}
               className="checkout-button"
               style={{
-                backgroundColor: isAuthenticated ? '#facc15' : '#ccc',
+                backgroundColor: isAuthenticated ? '#81bbeaff' : '#ccc',
                 color: isAuthenticated ? '#000' : '#666',
                 border: 'none',
                 padding: '0.75rem 1.5rem',
@@ -128,8 +128,8 @@ const ShoppingCartPage = () => {
               onClick={handleContinueShopping}
               style={{
                 backgroundColor: 'transparent',
-                color: '#facc15',
-                border: '1px solid #facc15',
+                color: '#f5b5efff',
+                border: '1px solid #f5b5efff',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '8px',
                 cursor: 'pointer',

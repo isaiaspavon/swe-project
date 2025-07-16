@@ -38,7 +38,7 @@ const checkboxLabelStyle = {
   marginBottom: '1.2rem', color: 'white', fontWeight: 'normal',
 };
 const saveButtonStyle = {
-  backgroundColor: '#2e7d32', color: 'white',
+  backgroundColor: '#f5b5efff', color: 'white',
   border: 'none', borderRadius: '6px', padding: '0.7rem 2rem',
   fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer',
   marginTop: '1rem',

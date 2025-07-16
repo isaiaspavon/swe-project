@@ -146,7 +146,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                             type="submit"
                             style={{
                                 padding: '0.5rem',
-                                backgroundColor: '#2e7d32',
+                                backgroundColor: '#f5b5efff',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '4px',
@@ -160,7 +160,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                         </button>
                         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                             <span
-                                style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+                                style={{ color: '#3b57acff', cursor: 'pointer', textDecoration: 'underline' }}
                                 onClick={() => setShowForgotPassword(false)}
                             >
                                 Back to Sign In
@@ -278,7 +278,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                         </label>
                         <span
                             style={{
-                                color: '#2e7d32',
+                                color: '#3b57acff',
                                 fontSize: '0.9rem',
                                 textDecoration: 'underline',
                                 cursor: 'pointer',
@@ -298,7 +298,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                         disabled={isLoading}
                         style={{
                             padding: '0.5rem',
-                            backgroundColor: isLoading ? '#ccc' : '#2e7d32',
+                            backgroundColor: isLoading ? '#ccc' : '#f5b5efff',
                             color: 'white',
                             border: 'none',
                             borderRadius: '4px',
@@ -313,7 +313,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                     <div style={{ color: 'black', textAlign: 'center', marginTop: '1rem', fontSize: '0.9rem' }}> 
                         Don't have an account?{' '}
                         <span
-                            style={{ color: '#2e7d32', cursor: 'pointer', textDecoration: 'underline' }}
+                            style={{ color: '#3b57acff', cursor: 'pointer', textDecoration: 'underline' }}
                             onClick={() => {
                                 onClose();
                                 onSwitchToCreateAccount();

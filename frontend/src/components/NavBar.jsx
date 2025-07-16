@@ -64,11 +64,11 @@ const Navbar = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 2rem',
-        background: 'linear-gradient(to bottom right, #1e1e1e, #2a2a2a)',
+        background: 'linear-gradient(#1e1e1e, #414040ff)',
         color: 'white',
         zIndex: 1000
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: '#facc15', fontWeight: 'bold', fontSize: '1.2rem' }}>
+        <Link to="/" style={{ textDecoration: 'none', color: '#f5b5efff', fontWeight: 'bold', fontSize: '1.2rem' }}>
           The Gilded Page
         </Link>
 
@@ -77,10 +77,10 @@ const Navbar = ({
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             style={{ 
-              padding: '0.5rem', 
+              padding: '0.2rem', 
               borderRadius: '4px',
-              border: '1px solid #ccc',
-              backgroundColor: 'white',
+              border: '2px ridge #fffbfbff',
+              background: 'linear-gradient(#fffdfdff, #eae8e8ff)',
               color: 'black'
             }}
           >
@@ -113,7 +113,7 @@ const Navbar = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#facc15'
+                backgroundColor: '#f5b5efff'
               }} />
               <span>{isAuthenticated ? (userProfile?.name || 'My Account') : 'My Account'} ▾</span>
             </div>
@@ -141,7 +141,7 @@ const Navbar = ({
                       style={{
                         width: '100%',
                         padding: '0.5rem',
-                        backgroundColor: '#facc15',
+                        backgroundColor: '#f5b5efff',
                         color: '#000',
                         border: 'none',
                         borderRadius: '4px',
@@ -157,15 +157,20 @@ const Navbar = ({
                         setDropdownOpen(false);
                       }}
                       style={{
-                        color: '#facc15',
+                        color: '#232323ff',
                         textDecoration: 'none',
                         fontSize: '0.9rem',
                         background: 'none',
+                        marginLeft: '20px',
                         border: 'none',
                         cursor: 'pointer',
                         padding: '0',
                         font: 'inherit',
-                        fontWeight: 'bold'
+                        fontWeight: 'bold',
+                        textShadow: `-1px -1px 0 #f5b5ef67,
+                                     1px -1px 0 #f5b5ef67,
+                                    -1px  1px 0 #f5b5ef67,
+                                     1px  1px 0 #f5b5ef67 `,
                       }}
                     >
                       Create an Account
@@ -181,9 +186,9 @@ const Navbar = ({
                       style={{
                         width: '100%',
                         padding: '0.5rem',
-                        backgroundColor: '#dc2626',
+                        backgroundColor: '#af1818ff',
+                        border: "2px, outset, #c4463dff",
                         color: 'white',
-                        border: 'none',
                         borderRadius: '4px',
                         cursor: 'pointer',
                         fontSize: '0.9rem',
@@ -256,7 +261,7 @@ const Navbar = ({
             {getCartCount() > 0 && (
               <span style={{
                 marginLeft: '0.4rem',
-                backgroundColor: '#f44336',
+                backgroundColor: '#af1818ff',
                 color: 'white',
                 borderRadius: '50%',
                 minWidth: '20px',
