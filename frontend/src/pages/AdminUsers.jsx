@@ -1,76 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-const initialUsers = [
-  { id: 'user1', name: 'Alice', email: 'alice@example.com' },
-  { id: 'user2', name: 'Bob', email: 'bob@example.com' }
-];
+import { ref, onValue, update } from 'firebase/database';
+import { db } from '../firebaseConfig';
 
 const AdminUsers = () => {
-  const [users, setUsers] = useState(initialUsers);
-  const [form, setForm] = useState({ name: '', email: '' });
-  const [editingId, setEditingId] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  // Fetch users from Firebase
+  useEffect(() => {
+    const usersRef = ref(db, 'users');
+    const unsubscribe = onValue(usersRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const usersData = snapshot.val();
+        const usersList = Object.entries(usersData).map(([id, user]) => ({
+          id,
+          ...user,
+        }));
+        setUsers(usersList);
+      } else {
+        setUsers([]);
+      }
+      setLoading(false);
+    });
 
-  const handleAdd = e => {
-    e.preventDefault();
-    if (!form.name || !form.email) return;
-    setUsers([...users, { id: `user${Date.now()}`, ...form }]);
-    setForm({ name: '', email: '' });
+    return () => unsubscribe();
+  }, []);
+
+  const handleStatusChange = async (userId, newStatus) => {
+    try {
+      const userRef = ref(db, `users/${userId}`);
+      await update(userRef, { status: newStatus });
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      alert('Failed to update user status');
+    }
   };
 
-  const handleEdit = user => {
-    setEditingId(user.id);
-    setForm({ name: user.name, email: user.email });
+  const handleRoleChange = async (userId, newRole) => {
+    try {
+      const userRef = ref(db, `users/${userId}`);
+      await update(userRef, { role: newRole });
+    } catch (error) {
+      console.error('Error updating user role:', error);
+      alert('Failed to update user role');
+    }
   };
 
-  const handleUpdate = e => {
-    e.preventDefault();
-    setUsers(users.map(u => u.id === editingId ? { ...u, ...form } : u));
-    setEditingId(null);
-    setForm({ name: '', email: '' });
-  };
-
-  const handleDelete = id => setUsers(users.filter(u => u.id !== id));
+  if (loading) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Loading users...</h2>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#facc15', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2>Manage Users</h2>
-      <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem' }}>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required style={{ marginRight: 8 }} />
-        <input name="email" placeholder="Email" value={form.email} onChange={handleChange} required style={{ marginRight: 8 }} />
-        <button type="submit" style={{ background: '#2e7d32', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
-          {editingId ? 'Update' : 'Add'}
-        </button>
-        {editingId && (
-          <button type="button" onClick={() => { setEditingId(null); setForm({ name: '', email: '' }); }} style={{ marginLeft: 8 }}>
-            Cancel
-          </button>
-        )}
-      </form>
-      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8 }}>
+      <h2 style={{ color: '#facc15' }}>Manage Users</h2>
+      
+      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, marginTop: '1rem' }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'left', padding: 8 }}>Name</th>
             <th style={{ textAlign: 'left', padding: 8 }}>Email</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Phone</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Status</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Role</th>
+            <th style={{ textAlign: 'left', padding: 8 }}>Created</th>
             <th style={{ textAlign: 'left', padding: 8 }}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map(user => (
             <tr key={user.id}>
-              <td style={{ padding: 8 }}>{user.name}</td>
-              <td style={{ padding: 8 }}>{user.email}</td>
+              <td style={{ padding: 8 }}>{user.name || 'N/A'}</td>
+              <td style={{ padding: 8 }}>{user.email || 'N/A'}</td>
+              <td style={{ padding: 8 }}>{user.phone || 'N/A'}</td>
               <td style={{ padding: 8 }}>
-                <button onClick={() => handleEdit(user)} style={{ marginRight: 8 }}>Edit</button>
-                <button onClick={() => handleDelete(user.id)} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
+                <select 
+                  value={user.status || 'Inactive'} 
+                  onChange={(e) => handleStatusChange(user.id, e.target.value)}
+                  style={{ 
+                    padding: '0.25rem', 
+                    borderRadius: '4px', 
+                    border: '1px solid #444',
+                    background: user.status === 'Active' ? '#2e7d32' : '#dc2626',
+                    color: 'white'
+                  }}
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </td>
+              <td style={{ padding: 8 }}>
+                <select 
+                  value={user.role || 'user'} 
+                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                  style={{ 
+                    padding: '0.25rem', 
+                    borderRadius: '4px', 
+                    border: '1px solid #444',
+                    background: user.role === 'admin' ? '#facc15' : '#666',
+                    color: user.role === 'admin' ? 'black' : 'white'
+                  }}
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </td>
+              <td style={{ padding: 8 }}>
+                {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+              </td>
+              <td style={{ padding: 8 }}>
+                <span style={{ 
+                  color: user.status === 'Active' ? '#2e7d32' : '#dc2626',
+                  fontWeight: 'bold'
+                }}>
+                  {user.status || 'Inactive'}
+                </span>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      
+      {users.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
+          No users found.
+        </div>
+      )}
     </div>
   );
 };

@@ -16,8 +16,17 @@ const Navbar = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const { getCartCount } = useCart();
-  const { currentUser, userProfile, logout, isAuthenticated } = useAuth();
+  const { currentUser, userProfile, logout, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
+
+  // DEBUG: Add this to see what's happening with admin status
+  console.log('Auth Debug:', { 
+    isAuthenticated, 
+    isAdmin, 
+    userProfile: userProfile?.role,
+    currentUser: currentUser?.uid,
+    fullUserProfile: userProfile
+  });
 
   // Close dropdown if clicked outside
   useEffect(() => {
@@ -200,6 +209,17 @@ const Navbar = ({
                 )}
                 
                 <div style={{ borderTop: '1px solid #ddd' }}>
+                  {/* Admin Dashboard Link - Only show for admins */}
+                  {isAuthenticated && isAdmin && (
+                    <DropdownLink 
+                      to="/admin" 
+                      closeDropdown={() => setDropdownOpen(false)}
+                      requireAuth={true}
+                    >
+                      Admin Dashboard
+                    </DropdownLink>
+                  )}
+                  
                   <DropdownLink 
                     to="/account?section=account" 
                     closeDropdown={() => setDropdownOpen(false)}

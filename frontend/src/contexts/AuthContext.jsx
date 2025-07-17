@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-    const updateProfile = async (fields) => {
+  const updateProfile = async (fields) => {
     if (!currentUser) throw new Error("Not authenticated");
 
     // 1) Update Auth displayName/email if you want:
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
     setUserProfile(p => ({ ...p, ...fields }));
   };
 
-   const updateEmail = async (newEmail) => {
+  const updateEmail = async (newEmail) => {
     if (!currentUser) throw new Error("Not authenticated");
     await authUpdateEmail(currentUser, newEmail);
     // optionally mirror it in your RTDB
@@ -78,11 +78,13 @@ export const AuthProvider = ({ children }) => {
     setUserProfile(p => ({ ...p, email: newEmail }));
   };
 
-const updatePassword = async (newPassword) => {
+  const updatePassword = async (newPassword) => {
     if (!currentUser) throw new Error("Not authenticated");
     await authUpdatePassword(currentUser, newPassword);
   };
 
+  // Add this line to check if user is admin
+  const isAdmin = userProfile?.role === 'admin';
 
   const value = {
     currentUser,
@@ -90,6 +92,7 @@ const updatePassword = async (newPassword) => {
     loading,
     logout,
     isAuthenticated: !!currentUser,
+    isAdmin, // Add this line
     updateProfile,
     updateEmail,
     updatePassword
