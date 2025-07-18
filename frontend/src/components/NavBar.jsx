@@ -19,16 +19,6 @@ const Navbar = ({
   const { currentUser, userProfile, logout, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // DEBUG: Add this to see what's happening with admin status
-  console.log('Auth Debug:', { 
-    isAuthenticated, 
-    isAdmin, 
-    userProfile: userProfile?.role,
-    currentUser: currentUser?.uid,
-    fullUserProfile: userProfile
-  });
-
-  // Close dropdown if clicked outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -43,22 +33,26 @@ const Navbar = ({
     try {
       await logout();
       setDropdownOpen(false);
-      navigate('/'); // Redirect to homepage after logout
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  const handleAccountAction = (action) => {
-    if (!isAuthenticated) {
-      setShowSignIn(true);
-      setDropdownOpen(false);
-      return;
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      const params = new URLSearchParams({
+        q: searchQuery.trim(),
+        filter: searchFilter
+      });
+      navigate(`/search?${params.toString()}`);
     }
-    
-    // If authenticated, perform the action
-    setDropdownOpen(false);
-    // Navigation will be handled by the Link component
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
   };
 
   return (
@@ -103,6 +97,7 @@ const Navbar = ({
             placeholder={`Search by ${searchFilter}...`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
             style={{
               padding: '0.5rem',
               width: '400px',
@@ -110,6 +105,21 @@ const Navbar = ({
               border: '1px solid #ccc'
             }}
           />
+          
+          <button
+            onClick={handleSearch}
+            style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: '#f5b5efff',
+              color: '#232323',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            Search
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -209,7 +219,6 @@ const Navbar = ({
                 )}
                 
                 <div style={{ borderTop: '1px solid #ddd' }}>
-                  {/* Admin Dashboard Link - Only show for admins */}
                   {isAuthenticated && isAdmin && (
                     <DropdownLink 
                       to="/admin" 

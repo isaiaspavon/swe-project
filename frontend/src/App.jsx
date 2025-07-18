@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/NavBar";
 import HomePage from "./pages/HomePage";
-import Navbar from "./components/NavBar.jsx";
 import ShoppingCartPage from "./pages/ShoppingCartPage";
-import { CartProvider } from "./contexts/CartContext";
-import { AuthProvider } from "./contexts/AuthContext";
-import AdminRoute from "./components/AdminRoute";
+import CheckoutPage from "./pages/CheckoutPage";
+import CheckoutConfirmationPage from "./pages/CheckoutConfirmationPage";
+import AccountPage from "./pages/AccountPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminBooks from "./pages/AdminBooks";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPromotions from "./pages/AdminPromotions";
-import OrderHistoryPage from "./pages/OrderHistoryPage";
-import AccountPage from "./pages/AccountPage.jsx";
-import CheckoutPage from "./pages/CheckoutPage";
-import CheckoutConfirmationPage from "./pages/CheckoutConfirmationPage";
+import { AuthProvider } from "./contexts/AuthContext";
+import { CartProvider } from "./contexts/CartContext";
+import AdminRoute from "./components/AdminRoute";
+import SearchResultsPage from "./pages/SearchResultsPage";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,10 +38,12 @@ function App() {
                   searchFilter={searchFilter}
                 />
               } />
+              <Route path="/search" element={<SearchResultsPage />} />
               <Route path="/cart" element={<ShoppingCartPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
-              
+              <Route path="/orders" element={<OrderHistoryPage />} />
+              <Route path="/account" element={<AccountPage />} />
               {/* Admin Routes - Protected */}
               <Route path="/admin" element={
                 <AdminRoute>
@@ -62,9 +65,6 @@ function App() {
                   <AdminPromotions />
                 </AdminRoute>
               } />
-              
-              <Route path="/orders" element={<OrderHistoryPage />} />
-              <Route path="/account" element={<AccountPage />} />
             </Routes>
           </div>
         </div>
