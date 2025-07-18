@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { fetchBooks } from "../firebaseConfig";
 import BookCarousel from "../components/BookCarousel";
 import "./HomePage.css";
+import Footer from "../components/Footer";
+import Testimonials from "../components/Testimonials";
 
 const HomePage = () => {
   const [books, setBooks] = useState([]);
@@ -30,6 +32,8 @@ const HomePage = () => {
 
       <h2>Coming Soon</h2>
       <BookCarousel books={comingSoon} />
+      <Testimonials />
+      <Footer />
     </motion.div>
   );
 };

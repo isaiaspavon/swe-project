@@ -1,0 +1,61 @@
+.gilded-footer {
+    background: linear-gradient(90deg, #232323 60%, #b5a8ee22 100%);
+    color: #f4f4f5;
+    padding: 2.5rem 0 1rem 0;
+    margin-top: 2rem;
+    border-top: 1.5px solid #b5a8eeff;
+  }
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto 1rem auto;
+    gap: 2rem;
+  }
+  .footer-brand {
+    font-size: 1.3rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+  }
+  .footer-title {
+    background: linear-gradient(90deg, #b5a8eeff, #61adecff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .footer-links a {
+    color: #b5a8eeff;
+    margin: 0 0.7rem;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.18s;
+  }
+  .footer-links a:hover {
+    color: #fff;
+  }
+  .footer-newsletter input {
+    padding: 0.5rem 1rem;
+    border-radius: 1rem 0 0 1rem;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+  }
+  .footer-newsletter button {
+    padding: 0.5rem 1.2rem;
+    border-radius: 0 1rem 1rem 0;
+    border: none;
+    background: linear-gradient(#b5a8eeff, #61adecff);
+    color: #232323;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.18s;
+  }
+  .footer-bottom {
+    text-align: center;
+    color: #b5a8eeff;
+    font-size: 0.95rem;
+    margin-top: 1rem;
+  }
