@@ -31,6 +31,10 @@ npm install crypto-js
 ```
 
 ```
+npm install emailjs-com
+```
+
+```
 npm run dev
 ```
 
