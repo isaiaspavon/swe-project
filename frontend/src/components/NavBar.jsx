@@ -67,7 +67,7 @@ const Navbar = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 2rem',
-        background: 'linear-gradient(#1e1e1e, #414040ff)',
+        background: 'linear-gradient(#1e1e1e, #302f2fff)',
         color: 'white',
         zIndex: 1000
       }}>

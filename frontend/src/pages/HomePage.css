@@ -2,10 +2,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+  justify-content: center;
 }
 
 .book-grid,
 .carousel-slide {
+  margin-top: 15px;
   overflow: visible;
 }
 
@@ -13,6 +15,8 @@
   border: 1px solid #ccc;
   padding: 1rem;
   width: 200px;
+  background-color: white;
+  border-radius: 8px;
 }
 
 h2 {
@@ -20,7 +24,9 @@ h2 {
   padding-bottom: 15px;
   margin-top: 0px;
   font-size: 30px;
-  position: relative; 
+  position: relative;
+  color: white;
+  z-index: 1;
 }
 
 h2::after {
@@ -28,10 +34,11 @@ h2::after {
   position: absolute;
   bottom: 0;
   left: 50%;
-  transform: translateX(-50%); 
-  width: 300px; 
+  transform: translateX(-50%);
+  width: 300px;
   height: 2px;
   background-color: rgb(255, 128, 242);
   border-bottom-left-radius: 50px;
   border-bottom-right-radius: 50px;
+  box-shadow: 0 0 4px 2px rgba(205, 130, 197, 0.527);
 }

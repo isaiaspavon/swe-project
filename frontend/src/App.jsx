@@ -30,7 +30,7 @@ function App() {
             searchFilter={searchFilter}
             setSearchFilter={setSearchFilter}
           />
-          <div style={{ paddingTop: '80px' }}>
+          <div style={{ paddingTop: '50px' }}>
             <Routes>
               <Route path="/" element={
                 <HomePage
