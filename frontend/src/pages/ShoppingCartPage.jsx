@@ -70,7 +70,7 @@ const ShoppingCartPage = () => {
             marginBottom: '1rem',
             padding: '0 1rem'
           }}>
-            <h3 style={{ margin: 0 }}>Items ({items.length})</h3>
+            <h3 style={{ margin: 0 }}>Items ({items.reduce((sum, item) => sum + (item.quantity || 1), 0)})</h3>
             <button 
               onClick={handleClearCart}
               style={{
@@ -93,7 +93,7 @@ const ShoppingCartPage = () => {
         <div className="order-summary">
           <h3>Order Summary</h3>
           <div className="summary-item">
-            <span>Subtotal ({items.length} items):</span>
+            <span>Subtotal ({items.reduce((sum, item) => sum + (item.quantity || 1), 0)} items):</span>
             <span>${subtotal.toFixed(2)}</span>
           </div>
           <div className="summary-item">

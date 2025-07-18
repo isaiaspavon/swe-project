@@ -198,7 +198,7 @@ const Navbar = () => {
                 borderRadius: '4px',
                 boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
                 width: '220px',
-                zIndex: 999
+                zIndex: 1100
               }}>
                 {!isAuthenticated ? (
                   <div style={{ padding: '1rem', borderBottom: '1px solid #ddd' }}>

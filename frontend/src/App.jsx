@@ -29,8 +29,8 @@ function App() {
         amplitude={1.0}
         speed={0.5}
       />
-      <AuthProvider>
-        <CartProvider>
+      <CartProvider>
+        <AuthProvider>
           <div className="App">
             <Navbar
               
@@ -68,8 +68,8 @@ function App() {
                 </Routes>
               </div>
             </div>
-          </CartProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </CartProvider>
     </>
   );
 }

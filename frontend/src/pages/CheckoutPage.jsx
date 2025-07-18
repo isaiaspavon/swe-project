@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { ref, push } from 'firebase/database';
+import { ref, push, get, onValue } from 'firebase/database';
 import { db } from '../firebaseConfig';
 import "./CheckoutPage.css";
+import { decryptData } from '../utils/encryption';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -23,6 +24,59 @@ const CheckoutPage = () => {
     cvv: '',
     promoCode: '',
   });
+
+  useEffect(() => {
+    if (!currentUser) return;
+
+    // Fetch user profile (name, email, address, etc.)
+    const userRef = ref(db, `users/${currentUser.uid}`);
+    get(userRef).then(snapshot => {
+      if (snapshot.exists()) {
+        const userData = snapshot.val();
+        setFormData(prev => ({
+          ...prev,
+          firstName: userData.name ? userData.name.split(' ')[0] : '',
+          lastName: userData.name ? userData.name.split(' ').slice(1).join(' ') : '',
+          email: userData.email || '',
+          address: userData.address?.street || '',
+          city: userData.address?.city || '',
+          zipCode: userData.address?.zip || '',
+          // Optionally, add more fields if you store them
+        }));
+      }
+    });
+
+    // Fetch payment info (if you store it in a separate location)
+    const paymentRef = ref(db, `users/${currentUser.uid}/payment`);
+    get(paymentRef).then(snapshot => {
+      if (snapshot.exists()) {
+        const paymentData = snapshot.val();
+        setFormData(prev => ({
+          ...prev,
+          cardNumber: paymentData.cardNumber || '',
+          expiryDate: paymentData.expDate || '',
+          // Add CVV if you store it (not recommended for security)
+        }));
+      }
+    });
+
+    // Fetch default payment card
+    const paymentCardsRef = ref(db, `paymentCards/${currentUser.uid}`);
+    onValue(paymentCardsRef, (snapshot) => {
+      const cards = snapshot.val();
+      if (cards) {
+        const cardArr = Object.values(cards);
+        const defaultCard = cardArr.find(card => card.default) || cardArr[0];
+        if (defaultCard) {
+          setFormData(prev => ({
+            ...prev,
+            cardNumber: defaultCard.cardNumber ? decryptData(defaultCard.cardNumber) : '',
+            expiryDate: defaultCard.expDate ? decryptData(defaultCard.expDate) : '',
+          }));
+        }
+      }
+    }, { onlyOnce: true });
+  }, [currentUser]);
 
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
@@ -192,7 +246,10 @@ const CheckoutPage = () => {
               required
               style={{ color: '#000' }}
             />
-            <button type="button">Save Changes</button>
+            {/* Shipping Address Save Changes */}
+            <button type="button" className="place-order primary-btn" onClick={handleShippingChange}>
+              Save Changes
+            </button>
           </form>
         </section>
 
@@ -227,7 +284,10 @@ const CheckoutPage = () => {
               required
               style={{ color: '#000' }}
             />
-            <button type="button">Save Changes</button>
+            {/* Payment Info Save Changes */}
+            <button type="button" className="place-order primary-btn" onClick={handlePaymentChange}>
+              Save Changes
+            </button>
           </form>
         </section>
 
@@ -241,7 +301,8 @@ const CheckoutPage = () => {
             placeholder="Enter Promo Code"
             style={{ color: '#000' }}
           />
-          <button type="button" onClick={handleApplyPromoCode}>
+          {/* Promo Code Apply */}
+          <button type="button" className="place-order primary-btn" onClick={handleApplyPromoCode}>
             Apply
           </button>
         </section>
@@ -253,10 +314,9 @@ const CheckoutPage = () => {
           <h3 className="order-summary-header">Order Summary</h3>
           <ul className='order-list-summary'>
             {items.map((item, index) => (
-              <li key={index} className="book-item">
-                <p className="book-title">{item.title} by {item.author}</p>
-                <p className="book-quantity">({item.quantity})</p>
-                <p className="book-price">${(item.quantity * item.price).toFixed(2)}</p>
+              <li key={index} className="book-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <span style={{ flex: 1, fontWeight: 500 }}>{item.title} <span style={{ color: '#FFFFFF', fontSize: '0.98em' }}>({item.quantity})</span></span>
+                <span style={{ minWidth: 60, textAlign: 'right', fontWeight: 'bold' }}>${(item.price * item.quantity).toFixed(2)}</span>
               </li>
             ))}
           </ul>
@@ -286,7 +346,8 @@ const CheckoutPage = () => {
               </span>
             </p>
           </div>
-          <button type="button" className="place-order" onClick={handleSubmit}>
+          {/* Place Order */}
+          <button type="button" className="place-order primary-btn" onClick={handleSubmit}>
             Place Order
           </button>
         </section>

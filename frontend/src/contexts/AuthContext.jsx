@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebaseConfig';
 import { onAuthStateChanged, signOut, updateProfile as authUpdateProfile, updateEmail as authUpdateEmail, updatePassword as authUpdatePassword } from 'firebase/auth';
 import { ref, get, update} from 'firebase/database';
+import { useCart } from './CartContext';
 
 const AuthContext = createContext();
 
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       setCurrentUser(null);
       setUserProfile(null);
+      clearCart();
     } catch (error) {
       console.error('Error signing out:', error);
     }

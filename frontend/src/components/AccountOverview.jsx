@@ -46,6 +46,7 @@ const AccountOverview = ({ onNavigate }) => {
   const [addresses, setAddresses] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
+  const [defaultCard, setDefaultCard] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -93,6 +94,28 @@ const AccountOverview = ({ onNavigate }) => {
     });
     return () => off(ordersRef, 'value', unsubscribe);
   }, [currentUser]);
+
+  // Fetch default payment card
+  useEffect(() => {
+    if (!currentUser) return;
+    const paymentCardsRef = ref(db, `paymentCards/${currentUser.uid}`);
+    const unsubscribe = onValue(paymentCardsRef, (snapshot) => {
+      const cards = snapshot.val();
+      if (cards) {
+        const cardArr = Object.values(cards);
+        const defaultCard = cardArr.find(card => card.default) || cardArr[0];
+        if (defaultCard) {
+          setDefaultCard(defaultCard);
+        }
+      }
+    });
+    return () => off(paymentCardsRef, 'value', unsubscribe);
+  }, [currentUser]);
+
+  const maskCardNumber = (number) => {
+    if (!number) return '';
+    return number.replace(/.(?=.{4})/g, '*');
+  };
 
   return (
   <div>
@@ -159,7 +182,13 @@ const AccountOverview = ({ onNavigate }) => {
 
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Payment Methods</h2>
-        <p style={{ margin: '0.5rem 0 0 0' }}>Add a New Payment Method</p>
+        {defaultCard ? (
+          <div style={{ margin: '0.5rem 0 0 0', color: 'white' }}>
+            <strong>Default Card:</strong> {defaultCard.cardType || 'Card'} ending in {defaultCard.cardNumber ? defaultCard.cardNumber.slice(-4) : '****'}
+          </div>
+        ) : (
+          <p style={{ margin: '0.5rem 0 0 0' }}>Add a New Payment Method</p>
+        )}
         <button style={buttonStyle} onClick={() => onNavigate('payments')}>Manage Payment Methods</button>
       </div>
 
