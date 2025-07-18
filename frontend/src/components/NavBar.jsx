@@ -334,25 +334,25 @@ const Navbar = () => {
               backgroundSize: 'contain'
             }} />
             Cart
-            {getCartCount() > 0 && (
-              <span style={{
-                marginLeft: '0.4rem',
-                backgroundColor: '#af1818ff',
-                color: 'white',
-                borderRadius: '50%',
-                minWidth: '20px',
-                height: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.85rem',
-                fontWeight: 'bold',
-                position: 'relative',
-                top: '-6px'
-              }}>
-                {getCartCount()}
-              </span>
-            )}
+            <span style={{
+              marginLeft: '0.4rem',
+              backgroundColor: '#af1818ff',
+              color: 'white',
+              borderRadius: '50%',
+              minWidth: '24px', // enough for two digits
+              height: '20px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '0.85rem',
+              fontWeight: 'bold',
+              position: 'relative',
+              top: '-6px',
+              opacity: getCartCount() > 0 ? 1 : 0,
+              transition: 'opacity 0.2s'
+            }}>
+              {getCartCount() > 0 ? getCartCount() : '\u00A0\u00A0'}
+            </span>
           </Link>
         </div>
       </nav>

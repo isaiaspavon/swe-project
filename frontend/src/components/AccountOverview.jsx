@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { formatPhone } from '../utils/formatPhone';
+import { decryptData } from '../utils/encryption';
 import { ref, onValue, off, get } from 'firebase/database';
 import { db } from '../firebaseConfig';
 
@@ -46,6 +47,7 @@ const AccountOverview = ({ onNavigate }) => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [defaultCard, setDefaultCard] = useState(null);
+  const [addressData, setAddressData] = useState(null);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -180,7 +182,19 @@ const AccountOverview = ({ onNavigate }) => {
         <h2 style={{ margin: 0 }}>Payment Methods</h2>
         {defaultCard ? (
           <div style={{ margin: '0.5rem 0 0 0', color: 'white' }}>
-            <strong>Default Card:</strong> {defaultCard.cardType || 'Card'} ending in {defaultCard.cardNumber ? defaultCard.cardNumber.slice(-4) : '****'}
+            <strong>Default Card:</strong> {defaultCard.cardType || 'Card'} ending in {
+              defaultCard.cardNumber ? 
+                (() => {
+                  try {
+                    const decryptedNumber = decryptData(defaultCard.cardNumber);
+                    return decryptedNumber.slice(-4);
+                  } catch (error) {
+                    console.error('Error decrypting card number:', error);
+                    return '****';
+                  }
+                })() 
+                : '****'
+            }
           </div>
         ) : (
           <p style={{ margin: '0.5rem 0 0 0' }}>Add a New Payment Method</p>
