@@ -72,35 +72,60 @@ const Navbar = ({
         color: 'white',
         zIndex: 1000
       }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#317ab5', fontWeight: 'bold', fontSize: '1.2rem', height: '60px' }}>
-          <img
-            src={logo}
-            alt="The Gilded Page Logo"
-            style={{
-              height: '85px',
-              marginRight: '0.25rem',
-              marginTop: '2.5px',
-              display: 'block'
-            }}
-          />
-          The Gilded Page
-        </Link>
+        <Link
+  to="/"
+  style={{
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    height: '60px',
+  }}
+>
+  <img
+    src={logo}
+    alt="The Gilded Page Logo"
+    style={{
+      height: '85px',
+      marginRight: '0.25rem',
+      marginTop: '2.5px',
+      display: 'block',
+    }}
+  />
+  <span
+    style={{
+      fontWeight: 'bold',
+      fontSize: '1.3rem',
+      backgroundImage: 'linear-gradient(90deg, #d2aa1aff, #998b0cff, #f4c430, #9c7e08ff, #0c0c0cff)',
+      WebkitBackgroundClip: 'text',
+      backgroundClip: 'text',
+      color: 'transparent',
+      textShadow: '0 0 5px rgba(244, 207, 20, 0.6), 0 0 10px rgba(238, 231, 35, 0.3)',
+      backgroundSize: '200%',
+      animation: 'none',
+    }}
+  >
+    The Gilded Page
+  </span>
+</Link>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <select 
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             style={{ 
-              padding: '0.2rem', 
+              padding: '7px 5px 7px 10px', 
               borderRadius: '4px',
-              border: '2px ridge #fffbfbff',
-              background: 'linear-gradient(#fffdfdff, #eae8e8ff)',
-              color: 'black'
+              border: '0.5px ridge #fffbfbff',
+              background: 'linear-gradient(#fffdfdff, #a5a2a2ff)',
+              color: 'black',
+              textAlign: 'center',
+              marginRight: '-11px',
+              fontSize: '13px'
             }}
           >
-            <option value="title">Search by Title</option>
-            <option value="author">Search by Author</option>
-            <option value="genre">Search by Genre</option>
+            <option value="title">Title</option>
+            <option value="author">Author</option>
+            <option value="genre">Genre</option>
           </select>
           
           <input
@@ -110,7 +135,8 @@ const Navbar = ({
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
             style={{
-              padding: '0.5rem',
+              padding: '8px 10px 7px 10px',
+              marginRight: '-1px',
               width: '400px',
               borderRadius: '4px',
               border: '1px solid #ccc'
@@ -120,13 +146,14 @@ const Navbar = ({
           <button
             onClick={handleSearch}
             style={{
-              padding: '0.5rem 1rem',
-              backgroundColor: '#317ab5',
-              color: '#232323',
-              border: 'none',
+              padding: '7px 9px 7px 8px',
+              marginLeft: '-11px',
+              background: 'linear-gradient(#f6f084ff, #c3bf75ff)',
+              color: '#000000ff',
+              border: '0.5px solid #5b6e7bff',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontWeight: 'bold'
+              fontSize: '15px'
             }}
           >
             Search

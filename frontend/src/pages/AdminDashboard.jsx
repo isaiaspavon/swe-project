@@ -9,7 +9,7 @@ const AdminDashboard = () => {
       background: '#18181b',
       color: '#f4f4f5'
     }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#facc15' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#f6f084ff' }}>
         Admin Dashboard
       </h1>
       <div style={{

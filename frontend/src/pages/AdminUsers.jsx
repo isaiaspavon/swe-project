@@ -57,8 +57,8 @@ const AdminUsers = () => {
 
   return (
     <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
-      <Link to="/admin" style={{ color: '#facc15', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2 style={{ color: '#facc15' }}>Manage Users</h2>
+      <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
+      <h2 style={{ color: '#f6f084ff' }}>Manage Users</h2>
       
       <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, marginTop: '1rem' }}>
         <thead>
@@ -86,7 +86,7 @@ const AdminUsers = () => {
                     padding: '0.25rem', 
                     borderRadius: '4px', 
                     border: '1px solid #444',
-                    background: user.status === 'Active' ? '#2e7d32' : '#dc2626',
+                    background: user.status === 'Active' ? '#2e7d32' : '#860d0dff',
                     color: 'white'
                   }}
                 >
@@ -102,7 +102,7 @@ const AdminUsers = () => {
                     padding: '0.25rem', 
                     borderRadius: '4px', 
                     border: '1px solid #444',
-                    background: user.role === 'admin' ? '#facc15' : '#666',
+                    background: user.role === 'admin' ? '#61c5f0ff' : '#666',
                     color: user.role === 'admin' ? 'black' : 'white'
                   }}
                 >
@@ -115,7 +115,7 @@ const AdminUsers = () => {
               </td>
               <td style={{ padding: 8 }}>
                 <span style={{ 
-                  color: user.status === 'Active' ? '#2e7d32' : '#dc2626',
+                  color: user.status === 'Active' ? '#2e7d32' : '#860d0dff',
                   fontWeight: 'bold'
                 }}>
                   {user.status || 'Inactive'}

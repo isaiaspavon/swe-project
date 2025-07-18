@@ -36,12 +36,12 @@ const AdminPromotions = () => {
 
   return (
     <div style={{ padding: '2rem' }}>
-      <Link to="/admin" style={{ color: '#facc15', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2>Manage Promotions</h2>
+      <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
+      <h2 style={{color: '#f6f084ff'}}>Manage Promotions</h2>
       <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem' }}>
         <input name="code" placeholder="Promo Code" value={form.code} onChange={handleChange} required style={{ marginRight: 8 }} />
         <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required style={{ marginRight: 8 }} />
-        <button type="submit" style={{ background: '#2e7d32', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
+        <button type="submit" style={{ background: '#337437ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
           {editingId ? 'Update' : 'Add'}
         </button>
         {editingId && (

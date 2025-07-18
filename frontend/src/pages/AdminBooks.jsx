@@ -137,8 +137,8 @@ const AdminBooks = () => {
 
   return (
     <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
-      <Link to="/admin" style={{ color: '#facc15', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2 style={{ color: '#facc15' }}>Manage Books</h2>
+      <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
+      <h2 style={{ color: '#f6f084ff' }}>Manage Books</h2>
       
       {/* Debug Info */}
       <div style={{ background: '#333', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>
@@ -192,7 +192,7 @@ const AdminBooks = () => {
             onChange={handleChange} 
             style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #444', width: '200px' }} 
           />
-          <button type="submit" style={{ background: '#2e7d32', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
+          <button type="submit" style={{ background: '#068327ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
             {editingId ? 'Update' : 'Add'}
           </button>
           {editingId && (
@@ -223,13 +223,13 @@ const AdminBooks = () => {
               <td style={{ padding: 8 }}>
                 <button 
                   onClick={() => handleEdit(book)} 
-                  style={{ marginRight: 8, background: '#2196f3', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                  style={{ marginRight: 8, background: '#949792ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
                 >
                   Edit
                 </button>
                 <button 
                   onClick={() => handleDelete(book.id)} 
-                  style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                  style={{ background: '#a21010ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
                 >
                   Delete
                 </button>
