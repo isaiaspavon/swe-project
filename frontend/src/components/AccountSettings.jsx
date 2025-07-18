@@ -8,7 +8,7 @@ import emailjs from 'emailjs-com';
 const headerStyle = {
   fontSize: '2rem',
   fontWeight: 'bold',
-  color: 'black',
+  color: 'white',
   textAlign: 'center',
   marginBottom: '22px',
   marginTop: '56.56px',
@@ -56,7 +56,7 @@ const buttonRowStyle = {
   marginTop: '0.5rem',
 };
 const saveButtonStyle = {
-  backgroundColor: '#317ab5',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)',
   color: 'white',
   border: 'none',
   borderRadius: '6px',
@@ -67,8 +67,8 @@ const saveButtonStyle = {
 };
 const cancelButtonStyle = {
   backgroundColor: 'transparent',
-  color: '#317ab5',
-  border: '1.5px solid #317ab5',
+  color: 'white',
+  border: '1.5px solid #e22929ff',
   borderRadius: '6px',
   padding: '0.7rem 2rem',
   fontWeight: 'bold',

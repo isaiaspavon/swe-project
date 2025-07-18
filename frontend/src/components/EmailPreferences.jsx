@@ -3,7 +3,7 @@ import { ref, set, onValue } from 'firebase/database';
 import { db, auth } from '../firebaseConfig';
 
 const headerStyle = {
-  fontSize: '2rem', fontWeight: 'bold', color: 'black',
+  fontSize: '2rem', fontWeight: 'bold', color: 'white',
   textAlign: 'center', marginBottom: '22px', marginTop: '56.56px', letterSpacing: '0.01em',
 };
 
@@ -20,7 +20,7 @@ const questionStyle = {
 };
 
 const saveButtonStyle = {
-  backgroundColor: '#317ab5', color: 'white', border: 'none', borderRadius: '6px',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', color: 'white', border: 'none', borderRadius: '6px',
   padding: '0.7rem 2rem', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer',
 };
 

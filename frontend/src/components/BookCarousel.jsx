@@ -9,11 +9,22 @@ const BookCarousel = ({ books }) => {
   const [startIndex, setStartIndex] = useState(0);
   const visibleBooks = books.slice(startIndex, startIndex + 5);
 
-  // Preload images for the next N books
+  // Preload images for the next 5 books
   useEffect(() => {
-    const preloadStart = startIndex + 5;
-    const preloadEnd = preloadStart + PRELOAD_AHEAD;
-    books.slice(preloadStart, preloadEnd).forEach(book => {
+    // Preload next 5 images
+    const preloadNextStart = startIndex + 5;
+    const preloadNextEnd = preloadNextStart + PRELOAD_AHEAD;
+    books.slice(preloadNextStart, preloadNextEnd).forEach(book => {
+      if (book.image) {
+        const img = new window.Image();
+        img.src = book.image;
+      }
+    });
+
+    // Preload previous 5 images
+    const preloadPrevStart = Math.max(0, startIndex - PRELOAD_AHEAD);
+    const preloadPrevEnd = startIndex;
+    books.slice(preloadPrevStart, preloadPrevEnd).forEach(book => {
       if (book.image) {
         const img = new window.Image();
         img.src = book.image;

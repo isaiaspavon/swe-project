@@ -16,7 +16,7 @@ const headerStyle = {
 
 const cardStyle = {
   background: '#232323',
-  border: '1px solid #ddd',
+  border: '1.5px solid #444',
   borderRadius: '8px',
   padding: '1.5rem',
   marginBottom: '1.5rem',
@@ -30,7 +30,7 @@ const cardStyle = {
 
 const buttonStyle = {
   marginTop: '1rem',
-  background: '#2986d2ff',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)',
   color: 'white',
   border: 'none',
   borderRadius: '4px',
@@ -112,7 +112,7 @@ const AccountOverview = ({ onNavigate }) => {
           ) : (
             <>
               <span>Recent Order(s):</span>
-              <ul style={{ margin: '0.5rem 0 0 1.2rem', color: '#317ab5', fontSize: '1rem' }}>
+              <ul style={{ margin: '0.5rem 0 0 1.2rem', color: 'white', fontSize: '1rem' }}>
                 {recentOrders.map(order => (
                   <li key={order.id}>
                     <span style={{ fontWeight: 500 }}>Order #{order.id}</span> — {order.date} — ${order.total?.toFixed(2) || '0.00'}
