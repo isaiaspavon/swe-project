@@ -3,9 +3,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { ref, update, onValue } from 'firebase/database';
 import { db } from '../firebaseConfig';
 import { formatPhone } from '../utils/formatPhone';
+import { add } from 'ogl/src/math/functions/Mat4Func.js';
 
 const headerStyle = {
-  fontSize: '2rem', fontWeight: 'bold', color: 'white',
+  fontSize: '2rem', fontWeight: 'bold', color: 'black',
   textAlign: 'center', marginBottom: '22px', marginTop: '56.56px',
   letterSpacing: '0.01em',
 };
@@ -33,13 +34,13 @@ const rowStyle = {
 };
 
 const saveButtonStyle = {
-  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', color: 'white', border: 'none',
+  background: '#317ab5', color: 'white', border: 'none',
   borderRadius: '6px', padding: '0.7rem 2rem', fontWeight: 'bold',
   fontSize: '1rem', cursor: 'pointer', marginTop: '1rem',
 };
 
 const editButtonStyle = {
-  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', border: 'none', color: 'white', fontWeight: 'bold',
+  background: '#317ab5', border: 'none', color: 'white', fontWeight: 'bold',
   padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', marginLeft: '1rem'
 };
 
@@ -131,8 +132,9 @@ const AddressBook = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center', width: '100%' }}>
       <h2 style={headerStyle}>Shipping Address</h2>
 
-      {!address || editing ? (
-        <form style={cardStyle} onSubmit={e => e.preventDefault()}>
+    {editing ? (
+      // 1) EDIT MODE: always show the form
+      <form style={cardStyle} onSubmit={e => e.preventDefault()}>
           <label style={labelStyle}>First Name *</label>
           <input style={inputStyle} placeholder="First Name" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
 
@@ -155,13 +157,32 @@ const AddressBook = () => {
           <input style={inputStyle} placeholder="Phone" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
 
           <button type="button" style={saveButtonStyle} onClick={handleSave}>Save Address</button>
-        </form>
-      ) : (
+      </form>
+
+    ) : !address?.street ? (
+      // 2) NO ADDRESS SAVED: show placeholder
+      <div style={cardStyle}>
+        <p style={{ color: '#bbb', margin: 0 }}>
+          You haven’t added a shipping address yet.
+        </p>
+        <button style={saveButtonStyle} onClick={() => setEditing(true)}>Add Address</button>
+      </div>
+        
+    ) : (
         <div style={{ ...cardStyle, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <strong>{address.firstName} {address.lastName}</strong><br />
+
             {address.street}{address.street2 && `, ${address.street2}`}<br />
-            {address.city}, {address.state} {address.zip}<br />
+            {(address.city || address.state || address.zip) && (
+            <>
+              {address.city}
+              {address.city && address.state && ', '}
+              {address.state}
+              {address.zip && ` ${address.zip}`}
+              <br/>
+            </>
+          )}
             {address.phone && `Phone: ${formatPhone(address.phone)}`}
           </div>
           <button style={editButtonStyle} onClick={() => {
