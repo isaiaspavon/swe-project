@@ -56,7 +56,7 @@ const buttonRowStyle = {
   marginTop: '0.5rem',
 };
 const saveButtonStyle = {
-  backgroundColor: '#f5b5efff',
+  backgroundColor: '#317ab5',
   color: 'white',
   border: 'none',
   borderRadius: '6px',
@@ -67,8 +67,8 @@ const saveButtonStyle = {
 };
 const cancelButtonStyle = {
   backgroundColor: 'transparent',
-  color: '#f5b5efff',
-  border: '1.5px solid #f5b5efff',
+  color: '#317ab5',
+  border: '1.5px solid #317ab5',
   borderRadius: '6px',
   padding: '0.7rem 2rem',
   fontWeight: 'bold',

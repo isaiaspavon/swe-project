@@ -39,7 +39,7 @@ const saveButtonStyle = {
 };
 
 const editButtonStyle = {
-  background: '#f5b5efff', border: 'none', color: 'white', fontWeight: 'bold',
+  background: '#317ab5', border: 'none', color: 'white', fontWeight: 'bold',
   padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', marginLeft: '1rem'
 };
 

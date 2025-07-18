@@ -95,7 +95,7 @@ const OrderHistory = () => {
           onClick={handleContinueShopping}
           style={{
             padding: '0.75rem 2rem',
-            backgroundColor: '#f5b5efff',
+            backgroundColor: '#317ab5',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
@@ -192,7 +192,7 @@ const OrderHistory = () => {
               }}>
                 <button
                   style={{
-                    background: '#f5b5efff',
+                    background: '#317ab5',
                     color: '#232323',
                     border: 'none',
                     borderRadius: '8px',
@@ -209,7 +209,7 @@ const OrderHistory = () => {
                 </button>
                 <button
                   style={{
-                    background: '#f5b5efff',
+                    background: '#317ab5',
                     color: '#232323',
                     border: 'none',
                     borderRadius: '8px',

@@ -4,6 +4,7 @@ import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../assets/logo.png'; // Add this import
 
 const Navbar = ({
   searchQuery,
@@ -67,11 +68,21 @@ const Navbar = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: '0 2rem',
-        background: 'linear-gradient(#1e1e1e, #302f2fff)',
+        background: 'linear-gradient(#1e1e1e, #414040ff)',
         color: 'white',
         zIndex: 1000
       }}>
-        <Link to="/" style={{ textDecoration: 'none', color: '#f5b5efff', fontWeight: 'bold', fontSize: '1.2rem' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: '#317ab5', fontWeight: 'bold', fontSize: '1.2rem', height: '60px' }}>
+          <img
+            src={logo}
+            alt="The Gilded Page Logo"
+            style={{
+              height: '85px',
+              marginRight: '0.25rem',
+              marginTop: '2.5px',
+              display: 'block'
+            }}
+          />
           The Gilded Page
         </Link>
 
@@ -110,7 +121,7 @@ const Navbar = ({
             onClick={handleSearch}
             style={{
               padding: '0.5rem 1rem',
-              backgroundColor: '#f5b5efff',
+              backgroundColor: '#317ab5',
               color: '#232323',
               border: 'none',
               borderRadius: '4px',
@@ -132,7 +143,7 @@ const Navbar = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#f5b5efff'
+                backgroundColor: '#317ab5'
               }} />
               <span>{isAuthenticated ? (userProfile?.name || 'My Account') : 'My Account'} ▾</span>
             </div>
@@ -160,7 +171,7 @@ const Navbar = ({
                       style={{
                         width: '100%',
                         padding: '0.5rem',
-                        backgroundColor: '#f5b5efff',
+                        backgroundColor: '#317ab5',
                         color: '#000',
                         border: 'none',
                         borderRadius: '4px',
@@ -186,10 +197,10 @@ const Navbar = ({
                         padding: '0',
                         font: 'inherit',
                         fontWeight: 'bold',
-                        textShadow: `-1px -1px 0 #f5b5ef67,
-                                     1px -1px 0 #f5b5ef67,
-                                    -1px  1px 0 #f5b5ef67,
-                                     1px  1px 0 #f5b5ef67 `,
+                        textShadow: `-1px -1px 0 #317ab567,
+                                     1px -1px 0 #317ab567,
+                                    -1px  1px 0 #317ab567,
+                                     1px  1px 0 #317ab567 `,
                       }}
                     >
                       Create an Account

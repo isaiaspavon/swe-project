@@ -30,7 +30,7 @@ const cardStyle = {
 
 const buttonStyle = {
   marginTop: '1rem',
-  background: '#f5b5efff',
+  background: '#317ab5',
   color: 'white',
   border: 'none',
   borderRadius: '4px',
@@ -112,7 +112,7 @@ const AccountOverview = ({ onNavigate }) => {
           ) : (
             <>
               <span>Recent Order(s):</span>
-              <ul style={{ margin: '0.5rem 0 0 1.2rem', color: '#f5b5efff', fontSize: '1rem' }}>
+              <ul style={{ margin: '0.5rem 0 0 1.2rem', color: '#317ab5', fontSize: '1rem' }}>
                 {recentOrders.map(order => (
                   <li key={order.id}>
                     <span style={{ fontWeight: 500 }}>Order #{order.id}</span> — {order.date} — ${order.total?.toFixed(2) || '0.00'}

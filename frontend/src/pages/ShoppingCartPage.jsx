@@ -37,7 +37,7 @@ const ShoppingCartPage = () => {
           <button 
             onClick={handleContinueShopping}
             style={{
-              backgroundColor: '#f5b5efff',
+              backgroundColor: '#317ab5',
               color: '#000',
               border: 'none',
               padding: '0.75rem 1.5rem',
@@ -128,8 +128,8 @@ const ShoppingCartPage = () => {
               onClick={handleContinueShopping}
               style={{
                 backgroundColor: 'transparent',
-                color: '#f5b5efff',
-                border: '1px solid #f5b5efff',
+                color: '#317ab5',
+                border: '1px solid #317ab5',
                 padding: '0.75rem 1.5rem',
                 borderRadius: '8px',
                 cursor: 'pointer',

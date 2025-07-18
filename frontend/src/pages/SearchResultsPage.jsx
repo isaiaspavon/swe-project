@@ -5,7 +5,7 @@ import { db } from '../firebaseConfig';
 import BookCard from '../components/BookCard';
 import './SearchResultsPage.css';
 
-const accent = "#f5b5efff";
+const accent = "#317ab5ff";
 const darkBg = "#18181b";
 const cardBg = "#232323";
 const border = "#333";

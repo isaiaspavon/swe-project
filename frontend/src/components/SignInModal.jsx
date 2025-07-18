@@ -146,7 +146,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                             type="submit"
                             style={{
                                 padding: '0.5rem',
-                                backgroundColor: '#f5b5efff',
+                                backgroundColor: '#317ab5',
                                 color: 'white',
                                 border: 'none',
                                 borderRadius: '4px',
@@ -298,7 +298,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                         disabled={isLoading}
                         style={{
                             padding: '0.5rem',
-                            backgroundColor: isLoading ? '#ccc' : '#f5b5efff',
+                            backgroundColor: isLoading ? '#ccc' : '#317ab5',
                             color: 'white',
                             border: 'none',
                             borderRadius: '4px',

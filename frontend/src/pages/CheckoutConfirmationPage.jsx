@@ -70,12 +70,12 @@ const CheckoutConfirmationPage = () => {
         </ul>
         <p>Subtotal: ${order.subtotal.toFixed(2)}</p>
         <p>Tax (8.5%): ${order.tax.toFixed(2)}</p>
-        <p style={{ fontWeight: "bold", color: "#f5b5efff" }}>
+        <p style={{ fontWeight: "bold", color: "#317ab5ff" }}>
           Total: ${order.total.toFixed(2)}
         </p>
       </div>
       <Link to="/" style={{
-        background: "#f5b5efff",
+        background: "#317ab5ff",
         color: "#000",
         borderRadius: "8px",
         padding: "0.75rem 1.5rem",

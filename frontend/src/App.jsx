@@ -24,7 +24,7 @@ function App() {
   return (
     <>
       <Aurora
-        colorStops={["#b718f2", "#bbacec", "#246dff"]}
+        colorStops={["#317ab5", "#bbacec", "#246dff"]}
         blend={0.5}
         amplitude={1.0}
         speed={0.5}

@@ -13,7 +13,7 @@
   .elite-search-header h1 {
     font-size: 2.7rem;
     font-weight: 800;
-    color: #f5b5efff;
+    color: #317ab5ff;
     letter-spacing: -1px;
     margin-bottom: 0.5rem;
   }
@@ -24,7 +24,7 @@
   }
   
   .elite-accent {
-    color: #f5b5efff;
+    color: #317ab5ff;
     font-weight: 700;
   }
   
@@ -48,7 +48,7 @@
   }
   
   .elite-sidebar h3 {
-    color: #f5b5efff;
+    color: #317ab5ff;
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
     font-weight: 700;
@@ -87,9 +87,9 @@
   
   .elite-pill.active,
   .elite-pill:hover {
-    background: #f5b5efff;
+    background: #317ab5ff;
     color: #232323;
-    border-color: #f5b5efff;
+    border-color: #317ab5ff;
   }
   
   .elite-select {
@@ -107,8 +107,8 @@
     width: 100%;
     padding: 0.7rem;
     background: transparent;
-    color: #f5b5efff;
-    border: 1.5px solid #f5b5efff;
+    color: #317ab5ff;
+    border: 1.5px solid #317ab5ff;
     border-radius: 8px;
     font-weight: 700;
     cursor: pointer;
@@ -117,7 +117,7 @@
   }
   
   .elite-clear-btn:hover {
-    background: #f5b5efff;
+    background: #317ab5ff;
     color: #232323;
   }
   
@@ -143,8 +143,8 @@
   }
   
   .elite-book-card:hover {
-    box-shadow: 0 8px 40px 0 #f5b5ef33, 0 2px 8px 0 rgba(0,0,0,0.18);
-    border-color: #f5b5efff;
+    box-shadow: 0 8px 40px 0 #317ab533, 0 2px 8px 0 rgba(0,0,0,0.18);
+    border-color: #317ab5ff;
     transform: translateY(-4px) scale(1.025);
   }
   
@@ -155,14 +155,14 @@
   }
   
   .elite-no-results h3 {
-    color: #f5b5efff;
+    color: #317ab5ff;
     margin-bottom: 1rem;
   }
   
   .elite-accent-btn {
     margin-top: 1.2rem;
     padding: 0.7rem 2.2rem;
-    background: #f5b5efff;
+    background: #317ab5ff;
     color: #232323;
     border: none;
     border-radius: 8px;
@@ -178,7 +178,7 @@
   }
   
   .elite-loader {
-    color: #f5b5efff;
+    color: #317ab5ff;
     font-size: 2rem;
     text-align: center;
     padding: 5rem 0;

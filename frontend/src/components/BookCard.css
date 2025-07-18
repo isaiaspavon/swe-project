@@ -51,7 +51,7 @@
 }
 
 .book-card button {
-  background: #f5b5efff;
+  background: #317ab5ff;
   color: #000;
   border: none;
   padding: 0.5rem 0.75rem;
@@ -64,5 +64,5 @@
 }
 
 .book-card button:hover {
-  background: #f5b5efff;
+  background: #317ab5ff;
 }

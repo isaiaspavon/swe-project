@@ -20,7 +20,7 @@ const questionStyle = {
 };
 
 const saveButtonStyle = {
-  backgroundColor: '#f5b5efff', color: 'white', border: 'none', borderRadius: '6px',
+  backgroundColor: '#317ab5', color: 'white', border: 'none', borderRadius: '6px',
   padding: '0.7rem 2rem', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer',
 };
 

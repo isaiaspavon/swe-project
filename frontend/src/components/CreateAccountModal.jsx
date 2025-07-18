@@ -353,7 +353,7 @@ const closeButton = {
   paddingBottom: '20px',
   paddingLeft: '10px',
   height: '2rem', background: 'transparent', border: 'none',
-  borderRadius: '50%', fontSize: '1.25rem', color: '#f5b5efff', cursor: 'pointer',
+  borderRadius: '50%', fontSize: '1.25rem', color: '#317ab5', cursor: 'pointer',
   
 };
 const submitButtonStyle = {

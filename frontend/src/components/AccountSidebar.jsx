@@ -29,7 +29,7 @@ const AccountSidebar = ({ activeSection, onSelect }) => {
             padding: '0.75rem 1rem',
             borderRadius: '6px',
             border: 'none',
-            background: activeSection === opt.key ? '#f5b5efff' : '#fff',
+            background: activeSection === opt.key ? '#317ab5' : '#fff',
             color: activeSection === opt.key ? 'white' : '#222',
             fontWeight: activeSection === opt.key ? 'bold' : 'normal',
             cursor: 'pointer',
