@@ -19,7 +19,7 @@ const SearchResultsPage = () => {
   const [loading, setLoading] = useState(true);
 
   const query = searchParams.get('q') || '';
-  const filter = searchParams.get('filter') || 'title';
+  const filter = searchParams.get('filter') || 'all';
   const category = searchParams.get('category') || 'all';
   const genre = searchParams.get('genre') || 'all';
   const priceRange = searchParams.get('price') || 'all';
@@ -210,7 +210,7 @@ const SearchResultsPage = () => {
           <button
             className="elite-clear-btn"
             onClick={() => {
-              setLocalFilter('title');
+              setLocalFilter('all');
               setLocalCategory('all');
               setLocalGenre('all');
               setLocalPriceRange('all');
