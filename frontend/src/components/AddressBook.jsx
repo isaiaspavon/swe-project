@@ -113,13 +113,11 @@ const AddressBook = () => {
       await update(ref(db, `users/${currentUser.uid}/address`), {
         name: fullName, // Save as single name field
         phone,
-        
         street: form.street,
         street2: form.street2,
         city: form.city,
         zip: form.zip,
         state: form.state,
-        
       });
       setEditing(false);
     } catch (err) {
