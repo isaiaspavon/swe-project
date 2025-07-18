@@ -58,9 +58,15 @@ const AddressBook = () => {
     onValue(userRef, (snap) => {
       const userData = snap.val() || {};
       const regAddr = userData.address || {};
+      
+      // Fix: Split the full name into first and last
+      const nameParts = (userData.name || '').split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      
       setAddress({
-        firstName: userData.firstName || '',
-        lastName: userData.lastName || '',
+        firstName: firstName,
+        lastName: lastName,
         street: regAddr.street || '',
         street2: regAddr.street2 || '',
         city: regAddr.city || '',
@@ -100,9 +106,11 @@ const AddressBook = () => {
     }
 
     try {
+      // Fix: Save full name as single string
+      const fullName = `${firstName} ${lastName}`;
+      
       await update(ref(db, `users/${currentUser.uid}`), {
-        firstName,
-        lastName,
+        name: fullName, // Save as single name field
         phone,
         address: {
           street: form.street,

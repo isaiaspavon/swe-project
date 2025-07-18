@@ -12,17 +12,25 @@ const AdminBooks = () => {
   // Fetch books from Firebase
   useEffect(() => {
     const booksRef = ref(db, 'books');
+    console.log('🔍 Fetching books from Firebase...');
+    
     const unsubscribe = onValue(booksRef, (snapshot) => {
+      console.log('📚 Books snapshot:', snapshot.val());
       if (snapshot.exists()) {
         const booksData = snapshot.val();
         const booksList = Object.entries(booksData).map(([id, book]) => ({
           id,
           ...book,
         }));
+        console.log('�� Processed books:', booksList);
         setBooks(booksList);
       } else {
+        console.log('❌ No books found in database');
         setBooks([]);
       }
+      setLoading(false);
+    }, (error) => {
+      console.error('❌ Error fetching books:', error);
       setLoading(false);
     });
 
@@ -36,6 +44,7 @@ const AdminBooks = () => {
     if (!form.title || !form.author || !form.price) return;
     
     try {
+      console.log('➕ Adding book:', form);
       const booksRef = ref(db, 'books');
       const newBookRef = await push(booksRef, {
         title: form.title,
@@ -45,14 +54,16 @@ const AdminBooks = () => {
         image: form.image || '/path/to/default-image.jpg'
       });
       
+      console.log('✅ Book added successfully with ID:', newBookRef.key);
       setForm({ title: '', author: '', price: '', category: 'top-seller', image: '' });
     } catch (error) {
-      console.error('Error adding book:', error);
-      alert('Failed to add book');
+      console.error('❌ Error adding book:', error);
+      alert('Failed to add book: ' + error.message);
     }
   };
 
   const handleEdit = book => {
+    console.log('✏️ Editing book:', book);
     setEditingId(book.id);
     setForm({ 
       title: book.title, 
@@ -66,7 +77,13 @@ const AdminBooks = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     
+    if (!editingId) {
+      console.error('❌ No editing ID found');
+      return;
+    }
+    
     try {
+      console.log('�� Updating book with ID:', editingId, 'Data:', form);
       const bookRef = ref(db, `books/${editingId}`);
       await update(bookRef, {
         title: form.title,
@@ -76,24 +93,38 @@ const AdminBooks = () => {
         image: form.image || '/path/to/default-image.jpg'
       });
       
+      console.log('✅ Book updated successfully');
       setEditingId(null);
       setForm({ title: '', author: '', price: '', category: 'top-seller', image: '' });
     } catch (error) {
-      console.error('Error updating book:', error);
-      alert('Failed to update book');
+      console.error('❌ Error updating book:', error);
+      alert('Failed to update book: ' + error.message);
     }
   };
 
   const handleDelete = async (id) => {
+    if (!id) {
+      console.error('❌ No book ID provided for deletion');
+      return;
+    }
+    
     if (window.confirm('Are you sure you want to delete this book?')) {
       try {
+        console.log('🗑️ Deleting book with ID:', id);
         const bookRef = ref(db, `books/${id}`);
         await remove(bookRef);
+        console.log('✅ Book deleted successfully');
       } catch (error) {
-        console.error('Error deleting book:', error);
-        alert('Failed to delete book');
+        console.error('❌ Error deleting book:', error);
+        alert('Failed to delete book: ' + error.message);
       }
     }
+  };
+
+  const handleCancelEdit = () => {
+    console.log('❌ Canceling edit');
+    setEditingId(null);
+    setForm({ title: '', author: '', price: '', category: 'top-seller', image: '' });
   };
 
   if (loading) {
@@ -108,6 +139,14 @@ const AdminBooks = () => {
     <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#facc15', textDecoration: 'underline' }}>← Back to Dashboard</Link>
       <h2 style={{ color: '#facc15' }}>Manage Books</h2>
+      
+      {/* Debug Info */}
+      <div style={{ background: '#333', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>
+        <p><strong>Debug Info:</strong></p>
+        <p>Books loaded: {books.length}</p>
+        <p>Currently editing: {editingId || 'None'}</p>
+        <p>Form data: {JSON.stringify(form)}</p>
+      </div>
       
       <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem', background: '#232323', padding: '1rem', borderRadius: '8px' }}>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -157,7 +196,7 @@ const AdminBooks = () => {
             {editingId ? 'Update' : 'Add'}
           </button>
           {editingId && (
-            <button type="button" onClick={() => { setEditingId(null); setForm({ title: '', author: '', price: '', category: 'top-seller', image: '' }); }} style={{ marginLeft: 8, background: '#666', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
+            <button type="button" onClick={handleCancelEdit} style={{ marginLeft: 8, background: '#666', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
               Cancel
             </button>
           )}
@@ -182,8 +221,18 @@ const AdminBooks = () => {
               <td style={{ padding: 8 }}>${book.price?.toFixed(2) || '0.00'}</td>
               <td style={{ padding: 8 }}>{book.category || 'N/A'}</td>
               <td style={{ padding: 8 }}>
-                <button onClick={() => handleEdit(book)} style={{ marginRight: 8, background: '#2196f3', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Edit</button>
-                <button onClick={() => handleDelete(book.id)} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
+                <button 
+                  onClick={() => handleEdit(book)} 
+                  style={{ marginRight: 8, background: '#2196f3', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={() => handleDelete(book.id)} 
+                  style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

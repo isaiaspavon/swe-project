@@ -100,8 +100,6 @@ const sendNotificationEmail = async (user) => {
   }
 };
 
-
-
 const AccountSettings = () => {
   const { currentUser, userProfile, updateProfile, updatePassword } = useAuth();
 
@@ -110,10 +108,14 @@ const AccountSettings = () => {
   const [password, setPassword] = useState({ current: '', new: '', confirm: '' });
 
   useEffect(() => {
-    if (userProfile?.firstName || userProfile?.lastName) {
+    // Fix: Properly split the full name into first and last
+    if (userProfile?.name) {
+      const nameParts = userProfile.name.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
       setName({
-        first: userProfile.firstName || '',
-        last: userProfile.lastName || ''
+        first: firstName,
+        last: lastName
       });
     }
     if (userProfile?.phone) {
@@ -135,11 +137,14 @@ const AccountSettings = () => {
     if (!lettersOnly.test(first) || !lettersOnly.test(last)) {
       return alert("Names may only contain letters A–Z.");
     }
+    
+    const fullName = `${first} ${last}`;
 
     try {
-      await updateProfile({ firstName: first, lastName: last });
+      await updateProfile({ name: fullName });
       await sendNotificationEmail(currentUser);
       alert('Name updated successfully!');
+      setName({ first: '', last: '' });
     } catch (err) {
       console.error(err);
       alert('Failed to update name: ' + err.message);
@@ -174,7 +179,7 @@ const AccountSettings = () => {
     if (!password.current) {
       return alert("Enter your current password.");
     }
-    if (password.new.length < 8 || password.new.length > 15) {
+    if (password.new.length < 8 || password.new.length > 15) { 
       return alert("New password must be between 8 and 15 characters.");
     }
     if (!/[A-Z]/.test(password.new)) {
@@ -192,7 +197,7 @@ const AccountSettings = () => {
 
     try {
       const cred = EmailAuthProvider.credential(currentUser.email, password.current);
-      await reauthenticateWithCredential(currentUser, cred);
+      await reauthenticateWithCredential(currentUser, cred);  
       await firebaseUpdatePassword(currentUser, password.new);
       await sendNotificationEmail(currentUser);
       alert("Password changed successfully!");
@@ -203,13 +208,24 @@ const AccountSettings = () => {
     }
   };
 
+  // Helper function to get current name display
+  const getCurrentNameDisplay = () => {
+    if (userProfile?.name) {
+      const nameParts = userProfile.name.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      return `${firstName} ${lastName}`;
+    }
+    return 'None';
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', alignItems: 'center', width: '100%' }}>
       <h2 style={headerStyle}>Account Settings</h2>
 
       <form onSubmit={handleNameSave} style={cardStyle}>
         <div style={sectionTitleStyle}>Update Your Name</div>
-        <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Name: {userProfile.firstName} {userProfile.lastName}</div>
+        <div style={{ color: '#bbb', marginBottom: '0.5rem' }}>Current Name: {getCurrentNameDisplay()}</div>
         <label style={labelStyle}>First Name</label>
         <input style={inputStyle} value={name.first} onChange={e => setName({ ...name, first: e.target.value })} placeholder="First Name" />
         <label style={labelStyle}>Last Name</label>

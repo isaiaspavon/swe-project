@@ -100,9 +100,11 @@ const CreateAccountModal = ({ isOpen, onClose, onSwitchToSignIn }) => {
 
       await sendEmailVerification(user);
 
+      // Fix: Store full name as a single string
+      const fullName = `${firstName} ${lastName}`;
+
       await set(ref(db, 'users/' + user.uid), {
-        firstName,
-        lastName,
+        name: fullName, // Store as single name field
         phone: phoneNumber,
         email,
         status: "Inactive",

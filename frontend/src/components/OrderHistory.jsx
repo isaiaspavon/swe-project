@@ -95,7 +95,7 @@ const OrderHistory = () => {
           onClick={handleContinueShopping}
           style={{
             padding: '0.75rem 2rem',
-            backgroundColor: '#2e7d32',
+            backgroundColor: '#f5b5efff',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
@@ -105,8 +105,6 @@ const OrderHistory = () => {
             transition: 'background-color 0.2s',
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
-          onMouseOver={e => e.target.style.backgroundColor = '#1b5e20'}
-          onMouseOut={e => e.target.style.backgroundColor = '#2e7d32'}
         >
           Continue Shopping
         </button>
