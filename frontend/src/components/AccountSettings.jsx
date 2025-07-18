@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword as firebaseUpdatePassword } from 'firebase/auth';
+import { updateEmail, EmailAuthProvider, reauthenticateWithCredential, updatePassword as firebaseUpdatePassword } from 'firebase/auth';
 import { formatPhone } from '../utils/formatPhone';
+import emailjs from 'emailjs-com';
+
 
 const headerStyle = {
   fontSize: '2rem',
@@ -80,6 +82,26 @@ const passwordReqStyle = {
   marginBottom: '0.5rem',
 };
 
+const sendNotificationEmail = async (user) => {
+  try {
+    await emailjs.send(
+      'service_tsqwzy7',
+      'template_8sl9i6e',
+      {
+        to_name: "user",
+        to_email: user.email,
+        message: 'Your account settings were updated.',
+      },
+      '5PxilDqp-n8urSbtG'
+    );
+    console.log("✅ Custom email sent!");
+  } catch (err) {
+    console.error("❌ Email failed:", err);
+  }
+};
+
+
+
 const AccountSettings = () => {
   const { currentUser, userProfile, updateProfile, updatePassword } = useAuth();
 
@@ -116,6 +138,7 @@ const AccountSettings = () => {
 
     try {
       await updateProfile({ firstName: first, lastName: last });
+      await sendNotificationEmail(currentUser);
       alert('Name updated successfully!');
     } catch (err) {
       console.error(err);
@@ -136,6 +159,7 @@ const AccountSettings = () => {
 
     try {
       await updateProfile({ phone: raw });
+      await sendNotificationEmail(currentUser);
       alert("Phone number updated!");
       setPhone(curr => ({ ...curr, new: "", confirm: "" }));
     } catch (err) {
@@ -170,6 +194,7 @@ const AccountSettings = () => {
       const cred = EmailAuthProvider.credential(currentUser.email, password.current);
       await reauthenticateWithCredential(currentUser, cred);
       await firebaseUpdatePassword(currentUser, password.new);
+      await sendNotificationEmail(currentUser);
       alert("Password changed successfully!");
       setPassword({ current: "", new: "", confirm: "" });
     } catch (err) {
