@@ -107,32 +107,70 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="navbar-search-bar">
-          <select
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-            className="navbar-search-select"
-          >
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="genre">Genre</option>
-          </select>
-          <input
-            type="text"
-            placeholder={`Search by ${searchFilter || "title"}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="navbar-search-input"
-          />
-          <button
-            onClick={handleSearch}
-            className="navbar-search-btn"
-          >
-            <span role="img" aria-label="search" style={{ marginRight: 4, fontSize: "1em" }}>🔎</span>
-            Search
-          </button>
-        </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+  <select 
+    value={searchFilter}
+    onChange={(e) => setSearchFilter(e.target.value)}
+    style={{ 
+      padding: '8px 12px',
+      border: '1px solid #ccc',
+      borderRight: 'none',
+      borderRadius: '6px 0 0 6px',
+      background: 'linear-gradient(#b5a8eeff, #61adecff)',
+      fontSize: '14px',
+      height: '38px',
+      outline: 'none',
+      appearance: 'none',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      color: 'black',
+      textAlign: 'center'
+    }}
+  >
+    <option value="title">Title</option>
+    <option value="author">Author</option>
+    <option value="genre">Genre</option>
+  </select>
+
+  <input
+    type="text"
+    placeholder={`Search by ${searchFilter}...`}
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    onKeyPress={handleKeyPress}
+    style={{
+      background: 'white',
+      color: 'black',
+      padding: '8px 12px',
+      border: '1px solid #ccc',
+      borderLeft: 'none',
+      borderRight: 'none',
+      width: '350px',
+      height: '20px',
+      fontSize: '14px',
+      borderRadius: '0',
+      outline: 'none',
+    }}
+  />
+
+  <button
+    onClick={handleSearch}
+    style={{
+      padding: '8px 16px',
+      background: 'linear-gradient(#61adecff, #b5a8eeff)',
+      border: '1px solid #ccc',
+      borderLeft: 'none',
+      borderRadius: '0 6px 6px 0',
+      height: '38px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      fontSize: '14px',
+      color: 'black'
+    }}
+  >
+    Search
+  </button>
+</div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ position: 'relative' }} ref={dropdownRef}>
