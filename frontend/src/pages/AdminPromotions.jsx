@@ -41,7 +41,7 @@ const AdminPromotions = () => {
       <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem' }}>
         <input name="code" placeholder="Promo Code" value={form.code} onChange={handleChange} required style={{ marginRight: 8 }} />
         <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required style={{ marginRight: 8 }} />
-        <button type="submit" style={{ background: '#337437ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
+        <button type="submit" style={{ background: 'linear-gradient(#a8d6f5ff, #82c7f5ff)', color: 'black', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
           {editingId ? 'Update' : 'Add'}
         </button>
         {editingId && (
@@ -50,7 +50,7 @@ const AdminPromotions = () => {
           </button>
         )}
       </form>
-      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8 }}>
+      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, border: '0.2px solid #59595aff'  }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'left', padding: 8 }}>Code</th>
@@ -64,8 +64,8 @@ const AdminPromotions = () => {
               <td style={{ padding: 8 }}>{promo.code}</td>
               <td style={{ padding: 8 }}>{promo.description}</td>
               <td style={{ padding: 8 }}>
-                <button onClick={() => handleEdit(promo)} style={{ marginRight: 8 }}>Edit</button>
-                <button onClick={() => handleDelete(promo.id)} style={{ background: '#dc2626', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
+                <button onClick={() => handleEdit(promo)} style={{ marginRight: '8px', background: 'linear-gradient(#616060ff, #2b2b2bff)', padding: '0.25rem 0.75rem' }}>Edit</button>
+                <button onClick={() => handleDelete(promo.id)} style={{ background: 'linear-gradient(#f1155eff, #940b24ff)', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
               </td>
             </tr>
           ))}

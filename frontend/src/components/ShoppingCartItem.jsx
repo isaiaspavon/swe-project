@@ -43,7 +43,7 @@ const ShoppingCartItem = ({ item }) => {
         <p style={{ margin: '0 0 0.5rem 0', color: '#bbb' }}>
           by {item.author}
         </p>
-        <p style={{ margin: '0 0 1rem 0', fontWeight: 'bold', color: '#317ab5' }}>
+        <p style={{ margin: '0 0 1rem 0', fontWeight: 'bold', color: '#f3bc16ff' }}>
           ${item.price.toFixed(2)}
         </p>
         
@@ -111,7 +111,7 @@ const ShoppingCartItem = ({ item }) => {
       </div>
       
       <div style={{ textAlign: 'right' }}>
-        <p style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#317ab5' }}>
+        <p style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#f3bc16ff' }}>
           ${(item.price * item.quantity).toFixed(2)}
         </p>
       </div>

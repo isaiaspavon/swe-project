@@ -32,7 +32,7 @@ const AccountPage = () => {
         activeSection={activeSection}
         onSelect={setActiveSection}
       />
-      <div style={{ flex: 1, background: '#fff', borderRadius: '8px', padding: '2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+      <div style={{ flex: 1, background: '#2e2e2eff', borderRadius: '8px', padding: '2rem', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
         {sectionContent[activeSection](setActiveSection)}
       </div>
     </div>

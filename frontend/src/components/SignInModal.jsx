@@ -298,8 +298,8 @@ const SignInModal = ({ isOpen, onClose, onSwitchToCreateAccount, onLogin }) => {
                         disabled={isLoading}
                         style={{
                             padding: '0.5rem',
-                            backgroundColor: isLoading ? '#ccc' : '#317ab5',
-                            color: 'white',
+                            background: isLoading ? 'linear-gradient(#b5a8eeff, #c6d1dbff)' : 'linear-gradient(#b5a8eeff, #61adecff)',
+                            color: 'black',
                             border: 'none',
                             borderRadius: '4px',
                             fontWeight: 'bold',

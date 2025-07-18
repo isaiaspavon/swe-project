@@ -26,7 +26,7 @@ const BookCard = ({ book }) => {
         onClick={handleAddToCart}
         className="add-to-cart-btn"
         style={{
-          backgroundColor: '#95cff5ff',
+          background: 'linear-gradient(#a8d6f5ff, #82c7f5ff)',
           color: '#000',
           border: 'none',
           padding: '0.5rem 1rem',

@@ -56,11 +56,11 @@ const AdminUsers = () => {
   }
 
   return (
-    <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
-      <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
+    <div style={{ padding: '2rem', background: 'transparent', color: '#f4f4f5', minHeight: '100vh' }}>
+      <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline',  }}>← Back to Dashboard</Link>
       <h2 style={{ color: '#f6f084ff' }}>Manage Users</h2>
       
-      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, marginTop: '1rem' }}>
+      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, marginTop: '1rem', border: '0.2px solid #ffffffff' }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'left', padding: 8 }}>Name</th>
@@ -86,7 +86,7 @@ const AdminUsers = () => {
                     padding: '0.25rem', 
                     borderRadius: '4px', 
                     border: '1px solid #444',
-                    background: user.status === 'Active' ? '#2e7d32' : '#860d0dff',
+                    background: user.status === 'Active' ? 'linear-gradient(#82cb87ff, #58815bff)' : 'linear-gradient(#f1155eff, #940b24ff)',
                     color: 'white'
                   }}
                 >
@@ -102,7 +102,7 @@ const AdminUsers = () => {
                     padding: '0.25rem', 
                     borderRadius: '4px', 
                     border: '1px solid #444',
-                    background: user.role === 'admin' ? '#61c5f0ff' : '#666',
+                    background: user.role === 'admin' ?  'linear-gradient(#a8d6f5ff, #82c7f5ff)' : '#666',
                     color: user.role === 'admin' ? 'black' : 'white'
                   }}
                 >
@@ -115,7 +115,7 @@ const AdminUsers = () => {
               </td>
               <td style={{ padding: 8 }}>
                 <span style={{ 
-                  color: user.status === 'Active' ? '#2e7d32' : '#860d0dff',
+                  color: user.status === 'Active' ? '#8acc8eff' : '#f45b77ff',
                   fontWeight: 'bold'
                 }}>
                   {user.status || 'Inactive'}

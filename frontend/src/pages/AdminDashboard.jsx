@@ -4,10 +4,11 @@ import { Link } from 'react-router-dom';
 const AdminDashboard = () => {
   return (
     <div className="admin-dashboard" style={{
-      padding: '2rem',
+      padding:'1rem 1rem 0.5rem 1rem',
       minHeight: '80vh',
-      background: '#18181b',
-      color: '#f4f4f5'
+      background: 'transparent',
+      color: '#f4f4f5',
+      marginTop: '2rem'
     }}>
       <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#f6f084ff' }}>
         Admin Dashboard
@@ -39,6 +40,7 @@ const adminCardStyle = {
   background: '#232323',
   color: '#f4f4f5',
   borderRadius: '12px',
+  border:'0.5px solid white',
   padding: '2rem 2.5rem',
   minWidth: '220px',
   textAlign: 'center',

@@ -136,20 +136,20 @@ const AdminBooks = () => {
   }
 
   return (
-    <div style={{ padding: '2rem', background: '#18181b', color: '#f4f4f5', minHeight: '100vh' }}>
+    <div style={{ padding: '2rem', background: 'transparent', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
       <h2 style={{ color: '#f6f084ff' }}>Manage Books</h2>
       
       {/* Debug Info */}
-      <div style={{ background: '#333', padding: '1rem', marginBottom: '1rem', borderRadius: '4px' }}>
+      <div style={{ background: '#333', padding: '1rem', marginBottom: '1rem', borderRadius: '4px', border: '0.2px solid #59595aff'}}>
         <p><strong>Debug Info:</strong></p>
         <p>Books loaded: {books.length}</p>
         <p>Currently editing: {editingId || 'None'}</p>
         <p>Form data: {JSON.stringify(form)}</p>
       </div>
       
-      <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem', background: '#232323', padding: '1rem', borderRadius: '8px' }}>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem', background: '#232323', padding: '1rem', borderRadius: '8px', border: '0.2px solid #59595aff' }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center',  }}>
           <input 
             name="title" 
             placeholder="Title" 
@@ -192,7 +192,7 @@ const AdminBooks = () => {
             onChange={handleChange} 
             style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #444', width: '200px' }} 
           />
-          <button type="submit" style={{ background: '#068327ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
+          <button type="submit" style={{ background: 'linear-gradient(#a8d6f5ff, #82c7f5ff)', color: 'black', border: 'none', borderRadius: 4, padding: '0.5rem 1rem' }}>
             {editingId ? 'Update' : 'Add'}
           </button>
           {editingId && (
@@ -203,7 +203,7 @@ const AdminBooks = () => {
         </div>
       </form>
       
-      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8 }}>
+      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: '8px', border: '0.2px solid #59595aff' }}>
         <thead>
           <tr>
             <th style={{ textAlign: 'left', padding: 8 }}>Title</th>
@@ -223,13 +223,13 @@ const AdminBooks = () => {
               <td style={{ padding: 8 }}>
                 <button 
                   onClick={() => handleEdit(book)} 
-                  style={{ marginRight: 8, background: '#949792ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                  style={{ marginRight: 8, background: 'linear-gradient(#616060ff, #2b2b2bff)', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
                 >
                   Edit
                 </button>
                 <button 
                   onClick={() => handleDelete(book.id)} 
-                  style={{ background: '#a21010ff', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
+                  style={{ background: 'linear-gradient(#f1155eff, #940b24ff)', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}
                 >
                   Delete
                 </button>
