@@ -54,7 +54,7 @@ const AddressBook = () => {
 
   useEffect(() => {
     if (!currentUser) return;
-    const userRef = ref(db, `users/${currentUser.uid}`);
+    const userRef = ref(db, `users/${currentUser.uid}/address`);
 
     onValue(userRef, (snap) => {
       const userData = snap.val() || {};
@@ -110,7 +110,7 @@ const AddressBook = () => {
       // Fix: Save full name as single string
       const fullName = `${firstName} ${lastName}`;
       
-      await update(ref(db, `users/${currentUser.uid}`), {
+      await update(ref(db, `users/${currentUser.uid}/address`), {
         name: fullName, // Save as single name field
         phone,
         address: {

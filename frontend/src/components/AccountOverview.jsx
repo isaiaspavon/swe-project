@@ -43,7 +43,6 @@ const buttonStyle = {
 const AccountOverview = ({ onNavigate }) => {
   const { currentUser } = useAuth();
   const [userProfile, setUserProfile] = useState(null);
-  const [addresses, setAddresses] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [defaultCard, setDefaultCard] = useState(null);
@@ -57,17 +56,6 @@ const AccountOverview = ({ onNavigate }) => {
       }
     });
     return () => off(userRef, 'value', unsubscribe);
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (!currentUser) return;
-    const addrRef = ref(db, `addresses/${currentUser.uid}`);
-    const unsubscribe = onValue(addrRef, snap => {
-      const data = snap.val() || {};
-      const list = Object.entries(data).map(([id, addr]) => ({ id, ...addr }));
-      setAddresses(list);
-    });
-    return () => off(addrRef, 'value', unsubscribe);
   }, [currentUser]);
 
   useEffect(() => {
@@ -163,21 +151,29 @@ const AccountOverview = ({ onNavigate }) => {
 
       <div style={cardStyle}>
         <h2 style={{ margin: 0 }}>Address Book</h2>
+
         {userProfile?.address?.street ? (
-          <div style={{ margin: '0.5rem 0 0 0', lineHeight: 1.4, color: 'white'}}>
+          <div style={{ margin: '0.5rem 0 0 0', lineHeight: 1.4, color: 'white' }}>
             <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
-            {userProfile.name}</strong>{userProfile.address.street}
-            {userProfile.address.street2 && `, ${userProfile.address.street2}`} <br/>
-            {userProfile.address.city}, {userProfile.address.state} {userProfile.address.zip} <br/>
-            {userProfile.phone && (
-              <span>Phone: {formatPhone(userProfile.phone)}</span>)}
+              {userProfile.address?.name || userProfile.name}
+            </strong>
+            {userProfile.address.street}
+            {userProfile.address.street2 && `, ${userProfile.address.street2}`}
+            <br/>
+            {userProfile.address.city}, {userProfile.address.state}{' '}
+            {userProfile.address.zip}
+            <br/>
+            <span>Phone: {formatPhone(userProfile.address.phone)}</span>
           </div>
-          ) : (
-            <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>
-              You haven't added any address yet.
-            </p>
-          )}
-        <button style={buttonStyle} onClick={() => onNavigate('address')}>Manage Address Book</button>
+        ) : (
+          <p style={{ margin: '0.5rem 0 0 0', color: '#bbb' }}>
+            You haven’t added any addresses yet.
+          </p>
+        )}
+
+        <button style={buttonStyle} onClick={() => onNavigate('address')}>
+          Manage Address Book
+        </button>
       </div>
 
       <div style={cardStyle}>
