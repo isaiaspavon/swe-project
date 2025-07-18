@@ -4,7 +4,7 @@ import { auth, db } from '../firebaseConfig';
 import { encryptData, decryptData } from '../utils/encryption';
 
 const headerStyle = {
-  fontSize: '2rem', fontWeight: 'bold', color: 'black',
+  fontSize: '2rem', fontWeight: 'bold', color: 'white',
   textAlign: 'center', marginBottom: '22px', marginTop: '56.56px',
   letterSpacing: '0.01em',
 };
@@ -38,7 +38,7 @@ const checkboxLabelStyle = {
   marginBottom: '1.2rem', color: 'white', fontWeight: 'normal',
 };
 const saveButtonStyle = {
-  backgroundColor: '#317ab5', color: 'white',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', color: 'white',
   border: 'none', borderRadius: '6px', padding: '0.7rem 2rem',
   fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer',
   marginTop: '1rem',

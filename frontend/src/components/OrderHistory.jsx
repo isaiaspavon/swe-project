@@ -77,7 +77,7 @@ const OrderHistory = () => {
   const handleContinueShopping = () => navigate('/');
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: '2rem' }}><p>Loading order history...</p></div>;
+    return <div style={{ textAlign: 'center', padding: '2rem', color: 'white' }}><p>Loading order history...</p></div>;
   }
 
   if (!currentUser) {
@@ -87,8 +87,8 @@ const OrderHistory = () => {
   if (orders.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '3rem 2rem', maxWidth: '600px', margin: '0 auto' }}>
-        <h2 style={{ color: '#333', marginBottom: '1rem', fontSize: '1.8rem' }}>No orders have been placed yet</h2>
-        <p style={{ color: '#666', marginBottom: '2rem', fontSize: '1.1rem', lineHeight: '1.5' }}>
+        <h2 style={{ color: 'white', marginBottom: '1rem', fontSize: '1.8rem' }}>No orders have been placed yet</h2>
+        <p style={{ color: '#666', marginBottom: '2rem', fontSize: '1.1rem', color: 'white', lineHeight: '1.5' }}>
           Start exploring our collection of books and place your first order to see your order history here!
         </p>
         <button
@@ -113,8 +113,8 @@ const OrderHistory = () => {
   }
 
   return (
-    <div className="order-tracker-container" style={{ padding: '2rem 0' }}>
-      <h2 className="order-tracking-header">Order History</h2>
+    <div className="order-tracker-container" style={{ padding: '2rem 0'  }}>
+      <h2 className="order-tracking-header" style={{color: 'white'}}>Order History</h2>
       <div className="order-container" style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
         {orders.map(order => (
           <div key={order.id} className="order-section" style={{
@@ -192,8 +192,8 @@ const OrderHistory = () => {
               }}>
                 <button
                   style={{
-                    background: '#317ab5',
-                    color: '#232323',
+                    background: 'linear-gradient(#1d91f0ff, #3d92d7ff)',
+                    color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '0.8rem 0',
@@ -209,8 +209,8 @@ const OrderHistory = () => {
                 </button>
                 <button
                   style={{
-                    background: '#317ab5',
-                    color: '#232323',
+                    background: 'linear-gradient(#1d91f0ff, #3d92d7ff)',
+                    color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     padding: '0.8rem 0',
@@ -265,7 +265,7 @@ const OrderHistory = () => {
               }}
               aria-label="Close"
             >&times;</button>
-            <h2 style={{ marginBottom: '1rem' }}>Order Details</h2>
+            <h2 style={{ marginBottom: '1rem', color: '#2986d2ff' }}>Order Details</h2>
             <div style={{ marginBottom: '1rem' }}>
               <strong>Order #:</strong> {modalOrder.id}<br />
               <strong>Date Placed:</strong> {modalOrder.date}<br />
