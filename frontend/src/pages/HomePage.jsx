@@ -4,7 +4,7 @@ import { fetchBooks } from "../firebaseConfig";
 import BookCarousel from "../components/BookCarousel";
 import "./HomePage.css";
 
-const HomePage = ({ searchQuery, searchFilter }) => {
+const HomePage = () => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -13,17 +13,9 @@ const HomePage = ({ searchQuery, searchFilter }) => {
     });
   }, []);
 
-  const filteredBooks = books.filter((book) => {
-    if (!searchQuery) return true;
-    const value = searchQuery.toLowerCase();
-    if (searchFilter === "title") return book.title.toLowerCase().includes(value);
-    if (searchFilter === "author") return book.author.toLowerCase().includes(value);
-    if (searchFilter === "genre") return (book.category || "").toLowerCase().includes(value);
-    return true;
-  });
-
-  const topSellers = filteredBooks.filter((book) => book.category === "top-seller");
-  const comingSoon = filteredBooks.filter((book) => book.category === "coming-soon");
+  // No filtering by searchQuery here!
+  const topSellers = books.filter((book) => book.category === "top-seller");
+  const comingSoon = books.filter((book) => book.category === "coming-soon");
 
   return (
     <motion.div

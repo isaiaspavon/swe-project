@@ -33,19 +33,11 @@ function App() {
         <CartProvider>
           <div className="App">
             <Navbar
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              searchFilter={searchFilter}
-              setSearchFilter={setSearchFilter}
+              
             />
             <div style={{ paddingTop: '50px' }}>
               <Routes>
-                  <Route path="/" element={
-                    <HomePage
-                      searchQuery={searchQuery}
-                      searchFilter={searchFilter}
-                    />
-                  } />
+                  <Route path="/" element={<HomePage />} />
                   <Route path="/search" element={<SearchResultsPage />} />
                   <Route path="/cart" element={<ShoppingCartPage />} />
                   <Route path="/checkout" element={<CheckoutPage />} />
