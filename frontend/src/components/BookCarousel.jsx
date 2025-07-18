@@ -1,11 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BookCard from "./BookCard";
 import "./BookCarousel.css"; // we'll style it separately
 
+const PRELOAD_AHEAD = 5;
+
 const BookCarousel = ({ books }) => {
   const [startIndex, setStartIndex] = useState(0);
   const visibleBooks = books.slice(startIndex, startIndex + 5);
+
+  // Preload images for the next N books
+  useEffect(() => {
+    const preloadStart = startIndex + 5;
+    const preloadEnd = preloadStart + PRELOAD_AHEAD;
+    books.slice(preloadStart, preloadEnd).forEach(book => {
+      if (book.image) {
+        const img = new window.Image();
+        img.src = book.image;
+      }
+    });
+  }, [startIndex, books]);
 
   const handleNext = () => {
     if (startIndex + 5 < books.length) {
