@@ -353,11 +353,11 @@ const closeButton = {
   paddingBottom: '20px',
   paddingLeft: '10px',
   height: '2rem', background: 'transparent', border: 'none',
-  borderRadius: '50%', fontSize: '1.25rem', color: '#317ab5', cursor: 'pointer',
+  borderRadius: '50%', fontSize: '1.25rem', color: '#39a1e6ff', cursor: 'pointer',
   
 };
 const submitButtonStyle = {
-  padding: '0.5rem', backgroundColor: '#45b94bff', color: 'white',
+  padding: '0.5rem', background: 'linear-gradient(#b5a8eeff, #61adecff)', color: 'black',
   border: 'none', borderRadius: '4px', fontSize: '1rem',
   cursor: 'pointer', marginTop: '1rem'
 };

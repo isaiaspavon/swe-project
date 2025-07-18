@@ -16,7 +16,7 @@ const AccountSidebar = ({ activeSection, onSelect }) => {
       flexDirection: 'column',
       gap: '1rem',
       padding: '1.5rem 1rem',
-      background: '#f5f5f5',
+      background: '#2e2e2eff',
       borderRadius: '8px',
       minWidth: '180px',
       boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
@@ -28,9 +28,9 @@ const AccountSidebar = ({ activeSection, onSelect }) => {
           style={{
             padding: '0.75rem 1rem',
             borderRadius: '6px',
-            border: 'none',
-            background: activeSection === opt.key ? '#317ab5' : '#fff',
-            color: activeSection === opt.key ? 'white' : '#222',
+            border: activeSection === opt.key ? '1px solid #8ec3efff' : '0.2px solid #737272ff',
+            background: activeSection === opt.key ? '#317ab5' : '#3a3a3aff',
+            color: activeSection === opt.key ? 'white' : 'white',
             fontWeight: activeSection === opt.key ? 'bold' : 'normal',
             cursor: 'pointer',
             boxShadow: activeSection === opt.key ? '0 2px 8px rgba(46,125,50,0.08)' : 'none',

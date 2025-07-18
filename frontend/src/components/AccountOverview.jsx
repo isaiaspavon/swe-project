@@ -7,7 +7,7 @@ import { db } from '../firebaseConfig';
 const headerStyle = {
     fontSize: '2rem',
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     textAlign: 'center',
     marginBottom: '58px',
     marginTop: '56.56px',
@@ -30,7 +30,7 @@ const cardStyle = {
 
 const buttonStyle = {
   marginTop: '1rem',
-  background: '#317ab5',
+  background: '#2986d2ff',
   color: 'white',
   border: 'none',
   borderRadius: '4px',

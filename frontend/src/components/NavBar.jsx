@@ -95,11 +95,11 @@ const Navbar = ({
     style={{
       fontWeight: 'bold',
       fontSize: '1.3rem',
-      backgroundImage: 'linear-gradient(90deg, #d2aa1aff, #998b0cff, #f4c430, #9c7e08ff, #0c0c0cff)',
+      backgroundImage: 'linear-gradient(90deg, #a58a29ff, #ece6b2ff, #e6c564ff, #f1cd3dff, #ede9e9ff)',
       WebkitBackgroundClip: 'text',
       backgroundClip: 'text',
       color: 'transparent',
-      textShadow: '0 0 5px rgba(244, 207, 20, 0.6), 0 0 10px rgba(238, 231, 35, 0.3)',
+      textShadow: '0 0 5px rgba(245, 228, 145, 0.1), 0 0 5px rgba(238, 231, 35, 0.1)',
       backgroundSize: '200%',
       animation: 'none',
     }}
@@ -108,57 +108,69 @@ const Navbar = ({
   </span>
 </Link>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <select 
-            value={searchFilter}
-            onChange={(e) => setSearchFilter(e.target.value)}
-            style={{ 
-              padding: '7px 5px 7px 10px', 
-              borderRadius: '4px',
-              border: '0.5px ridge #fffbfbff',
-              background: 'linear-gradient(#fffdfdff, #a5a2a2ff)',
-              color: 'black',
-              textAlign: 'center',
-              marginRight: '-11px',
-              fontSize: '13px'
-            }}
-          >
-            <option value="title">Title</option>
-            <option value="author">Author</option>
-            <option value="genre">Genre</option>
-          </select>
-          
-          <input
-            type="text"
-            placeholder={`Search by ${searchFilter}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            style={{
-              padding: '8px 10px 7px 10px',
-              marginRight: '-1px',
-              width: '400px',
-              borderRadius: '4px',
-              border: '1px solid #ccc'
-            }}
-          />
-          
-          <button
-            onClick={handleSearch}
-            style={{
-              padding: '7px 9px 7px 8px',
-              marginLeft: '-11px',
-              background: 'linear-gradient(#f6f084ff, #c3bf75ff)',
-              color: '#000000ff',
-              border: '0.5px solid #5b6e7bff',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '15px'
-            }}
-          >
-            Search
-          </button>
-        </div>
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <select 
+    value={searchFilter}
+    onChange={(e) => setSearchFilter(e.target.value)}
+    style={{ 
+      padding: '8px 12px',
+      border: '1px solid #ccc',
+      borderRight: 'none',
+      borderRadius: '6px 0 0 6px',
+      background: 'linear-gradient(#b5a8eeff, #61adecff)',
+      fontSize: '14px',
+      height: '38px',
+      outline: 'none',
+      appearance: 'none',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      color: 'black',
+      textAlign: 'center'
+    }}
+  >
+    <option value="title">Title</option>
+    <option value="author">Author</option>
+    <option value="genre">Genre</option>
+  </select>
+
+  <input
+    type="text"
+    placeholder={`Search by ${searchFilter}...`}
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    onKeyPress={handleKeyPress}
+    style={{
+      background: 'white',
+      padding: '8px 12px',
+      border: '1px solid #ccc',
+      borderLeft: 'none',
+      borderRight: 'none',
+      width: '350px',
+      height: '20px',
+      fontSize: '14px',
+      borderRadius: '0',
+      outline: 'none',
+    }}
+  />
+
+  <button
+    onClick={handleSearch}
+    style={{
+      padding: '8px 16px',
+      background: 'linear-gradient(#61adecff, #b5a8eeff)',
+      border: '1px solid #ccc',
+      borderLeft: 'none',
+      borderRadius: '0 6px 6px 0',
+      height: '38px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      fontSize: '14px',
+      color: 'black'
+    }}
+  >
+    Search
+  </button>
+</div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ position: 'relative' }} ref={dropdownRef}>
@@ -170,7 +182,7 @@ const Navbar = ({
                 width: '32px',
                 height: '32px',
                 borderRadius: '50%',
-                backgroundColor: '#317ab5'
+                backgroundColor: '#b5a8eeff'
               }} />
               <span>{isAuthenticated ? (userProfile?.name || 'My Account') : 'My Account'} ▾</span>
             </div>
@@ -198,7 +210,7 @@ const Navbar = ({
                       style={{
                         width: '100%',
                         padding: '0.5rem',
-                        backgroundColor: '#317ab5',
+                        background: 'linear-gradient(#b5a8eeff, #f6f084ff)',
                         color: '#000',
                         border: 'none',
                         borderRadius: '4px',
@@ -214,20 +226,17 @@ const Navbar = ({
                         setDropdownOpen(false);
                       }}
                       style={{
-                        color: '#232323ff',
-                        textDecoration: 'none',
+                        color: '#8142f6ff',
+                        textDecoration: 'underline',
                         fontSize: '0.9rem',
                         background: 'none',
-                        marginLeft: '20px',
+                        marginLeft: '22px',
                         border: 'none',
                         cursor: 'pointer',
                         padding: '0',
                         font: 'inherit',
                         fontWeight: 'bold',
-                        textShadow: `-1px -1px 0 #317ab567,
-                                     1px -1px 0 #317ab567,
-                                    -1px  1px 0 #317ab567,
-                                     1px  1px 0 #317ab567 `,
+                        
                       }}
                     >
                       Create an Account
@@ -243,9 +252,8 @@ const Navbar = ({
                       style={{
                         width: '100%',
                         padding: '0.5rem',
-                        backgroundColor: '#af1818ff',
-                        border: "2px, outset, #c4463dff",
-                        color: 'white',
+                        background: 'linear-gradient(#f6f084ff, #b5a8eeff)',
+                        color: 'black',
                         borderRadius: '4px',
                         cursor: 'pointer',
                         fontSize: '0.9rem',
@@ -328,8 +336,8 @@ const Navbar = ({
             {getCartCount() > 0 && (
               <span style={{
                 marginLeft: '0.4rem',
-                backgroundColor: '#af1818ff',
-                color: 'white',
+                backgroundColor: '#f6f084ff',
+                color: 'black',
                 borderRadius: '50%',
                 minWidth: '20px',
                 height: '20px',
