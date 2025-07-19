@@ -16,6 +16,7 @@ import { CartProvider } from "./contexts/CartContext";
 import AdminRoute from "./components/AdminRoute";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import Aurora from "./components/Aurora";
+import AboutPage from "./pages/AboutPage";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,6 +45,7 @@ function App() {
                   <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
                   <Route path="/orders" element={<OrderHistoryPage />} />
                   <Route path="/account" element={<AccountPage />} />
+                  <Route path="/about" element={<AboutPage />} />
                   {/* Admin Routes - Protected */}
                   <Route path="/admin" element={
                     <AdminRoute>

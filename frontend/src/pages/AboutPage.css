@@ -1,0 +1,182 @@
+.about-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #18181b 70%, #b5a8ee22 100%);
+    color: #f4f4f5;
+    font-family: 'Merriweather', serif;
+    padding-bottom: 3rem;
+  }
+  
+  .about-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 1rem 2rem 1rem;
+    background: linear-gradient(90deg, #232323 60%, #b5a8ee22 100%);
+    border-bottom: 2px solid #b5a8eeff;
+  }
+  
+  .logo-container {
+    margin-bottom: 1.5rem;
+  }
+  
+  .logo-image {
+    background: linear-gradient(120deg, #f5b642 60%, #b5a8eeff 100%);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 32px #b5a8ee33;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .gilded-logo {
+    width: 180px;
+    height: auto;
+    display: block;
+  }
+  
+  .hero-content {
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .text-gold {
+    color: #f5b642;
+    letter-spacing: 2px;
+  }
+  
+  .text-blue {
+    color: #b5a8eeff;
+    letter-spacing: 2px;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #b5a8eeff;
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+  
+  .about-content {
+    max-width: 900px;
+    margin: 2.5rem auto 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .content-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    color: #f5b642;
+    letter-spacing: 1px;
+  }
+  
+  .story-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
+  
+  .story-text {
+    flex: 2;
+    font-size: 1.1rem;
+    color: #f4f4f5;
+  }
+  
+  .story-stats {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: flex-end;
+  }
+  
+  .stat-item {
+    background: rgba(245, 182, 66, 0.08);
+    border: 1.5px solid #f5b642;
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    text-align: right;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f5b642;
+  }
+  
+  .stat-label {
+    font-size: 1rem;
+    color: #b5a8eeff;
+  }
+  
+  .philosophy-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+  }
+  
+  .philosophy-card {
+    background: #232323;
+    border: 1.5px solid #b5a8eeff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 16px #b5a8ee22;
+    padding: 1.5rem 2rem;
+    min-width: 180px;
+    max-width: 240px;
+    text-align: center;
+    color: #f4f4f5;
+  }
+  
+  .philosophy-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .promise-content {
+    background: linear-gradient(90deg, #232323 60%, #b5a8ee22 100%);
+    border-radius: 1.2rem;
+    border: 1.5px solid #b5a8eeff;
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+  
+  .promise-text {
+    font-size: 1.15rem;
+    color: #f4f4f5;
+    margin-bottom: 1.2rem;
+  }
+  
+  .promise-signature {
+    color: #f5b642;
+    font-family: 'Dancing Script', cursive, serif;
+    font-size: 1.3rem;
+  }
+  
+  @media (max-width: 700px) {
+    .about-hero {
+      padding: 2rem 0.5rem 1.5rem 0.5rem;
+    }
+    .hero-title {
+      font-size: 2rem;
+    }
+    .about-content {
+      padding: 0 0.2rem;
+    }
+    .story-grid, .philosophy-grid {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
