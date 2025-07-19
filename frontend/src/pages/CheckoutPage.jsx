@@ -11,6 +11,9 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, getCartTotal, clearCart } = useCart();
   const { currentUser } = useAuth();
+  const [availablePromos, setAvailablePromos] = useState([]);
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [promoDiscount, setPromoDiscount] = useState(0);  
   
   const [formData, setFormData] = useState({
     firstName: '',
@@ -26,6 +29,32 @@ const CheckoutPage = () => {
     cvv: '',
     promoCode: '',
   });
+
+  // use effect to fetch available promotions
+  useEffect(() => { 
+    const promosRef = ref(db, 'promotions');
+    const unsubscribe = onValue(promosRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const currentDate = new Date();
+        const promosArray = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        })).filter(promo => {
+          // Check if promo is active AND within date range
+          const startDate = new Date(promo.startDate);
+          const endDate = new Date(promo.endDate);
+          return promo.isActive && 
+                currentDate >= startDate && 
+                currentDate <= endDate;
+        });
+        setAvailablePromos(promosArray);
+      } else {
+        setAvailablePromos([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []); 
 
   useEffect(() => {
     if (!currentUser) return;
@@ -244,18 +273,20 @@ const CheckoutPage = () => {
     };
 
     // Create order object with all the data
-    const order = {
-      items: items,
-      subtotal: getCartTotal(),
-      tax: getCartTotal() * 0.085,
-      total: getCartTotal() * 1.085,
-      shipping: formData,
-      orderDate: new Date().toISOString(),
-      orderNumber: 'ORD-' + Date.now(),
-      status: 'Placed',
-      userId: currentUser.uid,
-      userEmail: currentUser.email
-    };
+   const order = {
+    items: items,
+    subtotal: getCartTotal(),
+    promoCode: appliedPromo ? appliedPromo.code : null,
+    promoDiscount: promoDiscount,
+    tax: parseFloat(calculateTax()),
+    total: parseFloat(calculateTotal()),
+    shipping: formData,
+    orderDate: new Date().toISOString(),
+    orderNumber: 'ORD-' + Date.now(),
+    status: 'Placed',
+    userId: currentUser.uid,
+    userEmail: currentUser.email
+  };
 
     try {
       // Save order to Firebase
@@ -282,17 +313,91 @@ const CheckoutPage = () => {
   const calculateTotalBeforeTax = () => {
     return getCartTotal().toFixed(2);
   };
+  
+  const calculateSubtotal = () => {
+    return getCartTotal().toFixed(2);
+  };
+
+  const calculateTax = () => {
+    const subtotal = getCartTotal();
+    const discountedSubtotal = subtotal - promoDiscount;
+    return (discountedSubtotal * 0.085).toFixed(2);
+  };
+
+  const calculateTotal = () => {
+    const subtotal = getCartTotal();
+    const tax = (subtotal - promoDiscount) * 0.085;
+    return (subtotal - promoDiscount + tax).toFixed(2);
+  };
 
   const [promotion, setPromotion] = useState(0);
 
-  const handleApplyPromoCode = () => {
-    if (formData.promoCode.toLowerCase() === 'welcome15') {
-      setPromotion(15);
-      alert('Promo code applied: 15% off!');
-    } else {
-      alert('Invalid promo code');
-    }
-  };
+ const handleApplyPromoCode = () => {
+  const promoCode = formData.promoCode.toUpperCase().trim();
+  
+  if (!promoCode) {
+    alert('Please enter a promo code');
+    return;
+  }
+
+  // Find matching promo code
+  const matchingPromo = availablePromos.find(promo => 
+    promo.code === promoCode && promo.isActive
+  );
+
+  if (!matchingPromo) {
+    alert('Invalid or expired promo code');
+    setAppliedPromo(null);
+    setPromoDiscount(0);
+    return;
+  }
+  // Double-check date validity
+  const currentDate = new Date();
+  const startDate = new Date(matchingPromo.startDate);
+  const endDate = new Date(matchingPromo.endDate);
+  
+  if (currentDate < startDate) {
+    alert('This promo code is not yet valid');
+    setAppliedPromo(null);
+    setPromoDiscount(0);
+    return;
+  }
+  
+  if (currentDate > endDate) {
+    alert('This promo code has expired');
+    setAppliedPromo(null);
+    setPromoDiscount(0);
+    return;
+  }
+
+  const subtotal = getCartTotal();
+
+  // Check minimum order requirement
+  if (matchingPromo.minOrderAmount > 0 && subtotal < matchingPromo.minOrderAmount) {
+    alert(`This promo code requires a minimum order of $${matchingPromo.minOrderAmount.toFixed(2)}`);
+    setAppliedPromo(null);
+    setPromoDiscount(0);
+    return;
+  }
+
+  // Calculate discount
+  let discount = 0;
+  if (matchingPromo.discountType === 'percentage') {
+    discount = subtotal * (matchingPromo.discountValue / 100);
+  } 
+  // Don't let discount exceed subtotal
+  discount = Math.min(discount, subtotal);
+
+  setAppliedPromo(matchingPromo);
+  setPromoDiscount(discount);
+  alert(`Promo code applied: ${matchingPromo.description}`);
+};
+
+const handleRemovePromoCode = () => {
+  setFormData({ ...formData, promoCode: '' });
+  setAppliedPromo(null);
+  setPromoDiscount(0);
+};
 
   if (!currentUser) {
     return (
@@ -453,17 +558,35 @@ const CheckoutPage = () => {
         {/* Promo Code */}
         <section className="promo-code">
           <h3 className="promo-header">Enter Promo Code</h3>
-          <input
-            type="text"
-            value={formData.promoCode}
-            onChange={handlePromoCodeChange}
-            placeholder="Enter Promo Code"
-            style={{ color: '#000' }}
-          />
-          {/* Promo Code Apply */}
-          <button type="button" className="place-order primary-btn" onClick={handleApplyPromoCode}>
-            Apply
-          </button>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+              <input
+                type="text"
+                value={formData.promoCode}
+                onChange={handlePromoCodeChange}
+                placeholder="Enter Promo Code"
+                style={{ color: '#000', flex: 1 }}
+                disabled={appliedPromo !== null}
+              />
+              {appliedPromo ? (
+                <button 
+                  type="button" 
+                  className="place-order primary-btn" 
+                  onClick={handleRemovePromoCode}
+                  style={{ background: '#f87171' }}
+                >
+                  Remove
+                </button>
+              ) : (
+                <button type="button" className="place-order primary-btn" onClick={handleApplyPromoCode}>
+                  Apply
+                </button>
+              )}
+            </div>
+            {appliedPromo && (
+              <p style={{ color: '#4ade80', fontSize: '0.9em', margin: 0 }}>
+                ✓ {appliedPromo.description}
+              </p>
+            )}
         </section>
       </div>
 
@@ -471,44 +594,59 @@ const CheckoutPage = () => {
         {/* Order Summary */}
         <section className="order-summary">
           <h3 className="order-summary-header">Order Summary</h3>
-          <ul className='order-list-summary'>
-            {items.map((item, index) => (
-              <li key={index} className="book-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                <span style={{ flex: 1, fontWeight: 500 }}>{item.title} <span style={{ color: '#FFFFFF', fontSize: '0.98em' }}>({item.quantity})</span></span>
-                <span style={{ minWidth: 60, textAlign: 'right', fontWeight: 'bold' }}>${(item.price * item.quantity).toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
+            <ul className='order-list-summary'>
+              {items.map((item, index) => (
+                <li key={index} className="book-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ flex: 1, fontWeight: 500 }}>{item.title} <span style={{ color: '#FFFFFF', fontSize: '0.98em' }}>({item.quantity})</span></span>
+                  <span style={{ minWidth: 60, textAlign: 'right', fontWeight: 'bold' }}>${(item.price * item.quantity).toFixed(2)}</span>
+                </li>
+              ))}
+            </ul>
 
-          <div className="total">
-            <p className="split-paragraph">
-              <span className="left-side">Subtotal:</span>
-              <span className="right-side">${calculateTotalBeforeTax()}</span>
-            </p>
-            <p className="split-paragraph">
-              <span className="left-side">Tax (8.5%):</span>
-              <span className="right-side">${(calculateTotalBeforeTax() * 0.085).toFixed(2)}</span>
-            </p>
-
-            {/* Conditionally render promotion (if available) */}
-            {promotion > 0 && (
+            <div className="total">
               <p className="split-paragraph">
-                <span className="left-side">Promotion:</span>
-                <span className="right-side">-${promotion.toFixed(2)}</span>
+                <span className="left-side">Subtotal:</span>
+                <span className="right-side">${calculateSubtotal()}</span>
               </p>
-            )}
 
-            <p className="split-paragraph" style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
-              <span className="left-side">Total:</span>
-              <span className="right-side">
-                ${(calculateTotalBeforeTax() * 1.085 - promotion).toFixed(2)}
-              </span>
-            </p>
-          </div>
-          {/* Place Order */}
-          <button type="button" className="place-order primary-btn" onClick={handleSubmit}>
-            Place Order
-          </button>
+              {/* Show applied promo discount */}
+              {appliedPromo && promoDiscount > 0 && (
+                <p className="split-paragraph" style={{ color: '#4ade80' }}>
+                  <span className="left-side">
+                    Discount ({appliedPromo.code}):
+                    <button 
+                      onClick={handleRemovePromoCode}
+                      style={{ 
+                        marginLeft: '8px', 
+                        background: 'transparent', 
+                        border: 'none', 
+                        color: '#f87171', 
+                        cursor: 'pointer',
+                        fontSize: '0.8em'
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </span>
+                  <span className="right-side">-${promoDiscount.toFixed(2)}</span>
+                </p>
+              )}
+
+              <p className="split-paragraph">
+                <span className="left-side">Tax (8.5%):</span>
+                <span className="right-side">${calculateTax()}</span>
+              </p>
+
+              <p className="split-paragraph" style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+                <span className="left-side">Total:</span>
+                <span className="right-side">${calculateTotal()}</span>
+              </p>
+            </div>
+            
+            {/* Place Order */}
+            <button type="button" className="place-order primary-btn" onClick={handleSubmit}>
+              Place Order
+            </button>
         </section>
       </div>
     </div>
