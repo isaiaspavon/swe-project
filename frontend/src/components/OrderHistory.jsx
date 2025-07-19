@@ -286,7 +286,15 @@ const OrderHistory = () => {
               <strong>Shipping Info:</strong>
               <div style={{ fontSize: '0.98rem', color: '#444' }}>
                 {modalOrder.shipping?.firstName} {modalOrder.shipping?.lastName}<br />
-                {modalOrder.shipping?.address}, {modalOrder.shipping?.city} {modalOrder.shipping?.zipCode}<br />
+                {[
+                  modalOrder.shipping?.addressLine1,
+                  modalOrder.shipping?.addressLine2,
+                  modalOrder.shipping?.city,
+                  modalOrder.shipping?.state,
+                  modalOrder.shipping?.zipCode
+                ]
+                  .filter(Boolean) // Remove empty/null/undefined values
+                  .join(', ')}<br />
                 {modalOrder.shipping?.email}
               </div>
             </div>

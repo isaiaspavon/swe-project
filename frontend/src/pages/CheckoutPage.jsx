@@ -16,8 +16,10 @@ const CheckoutPage = () => {
     firstName: '',
     lastName: '',
     email: '',
-    address: '',
+    addressLine1: '',
+    addressLine2: '',
     city: '',
+    state: '',
     zipCode: '',
     cardNumber: '',
     expiryDate: '',
@@ -35,11 +37,13 @@ const CheckoutPage = () => {
         const userData = snapshot.val();
         setFormData(prev => ({
           ...prev,
-          firstName: userData.name ? userData.name.split(' ')[0] : '',
-          lastName: userData.name ? userData.name.split(' ').slice(1).join(' ') : '',
+          firstName: userData.address.name ? userData.address.name.split(' ')[0] : '',
+          lastName: userData.address.name ? userData.address.name.split(' ').slice(1).join(' ') : '',
           email: userData.email || '',
-          address: userData.address?.street || '',
+          addressLine1: userData.address?.addressLine1 || userData.address?.street || '',
+          addressLine2: userData.address?.street2 || '',
           city: userData.address?.city || '',
+          state: userData.address?.state || '',
           zipCode: userData.address?.zip || '',
           // Optionally, add more fields if you store them
         }));
@@ -79,14 +83,60 @@ const CheckoutPage = () => {
   }, [currentUser]);
 
   const handleShippingChange = (e) => {
+    
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    
+  };
+
+  const handleSaveShippingChanges = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const userRef = ref(db, `users/${currentUser.uid}`);
+      const updateData = {
+        name: `${formData.firstName} ${formData.lastName}`.trim(),
+        email: formData.email,
+        address: {
+          addressLine1: formData.addressLine1,
+          addressLine2: formData.addressLine2,
+          city: formData.city,
+          zip: formData.zipCode,
+          state: formData.state,
+        }
+      };
+      
+      await push(userRef, updateData);
+      alert('Shipping address saved successfully!');
+    } catch (error) {
+      console.error('Error saving shipping address:', error);
+      alert('Error saving shipping address. Please try again.');
+    }
   };
 
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+  const handleSavePaymentChanges = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const paymentRef = ref(db, `users/${currentUser.uid}/payment`);
+      const updateData = {
+        cardNumber: formData.cardNumber,
+        expDate: formData.expiryDate,
+        // Don't save CVV for security reasons
+      };
+      
+      await push(paymentRef, updateData);
+      alert('Payment information saved successfully!');
+    } catch (error) {
+      console.error('Error saving payment information:', error);
+      alert('Error saving payment information. Please try again.');
+    }
+  };  
 
   const handlePromoCodeChange = (e) => {
     const { value } = e.target;
@@ -100,6 +150,19 @@ const CheckoutPage = () => {
       alert('Please sign in to complete your order.');
       return;
     }
+    const cleanShippingData = {
+      firstName: formData.firstName || '',
+      lastName: formData.lastName || '',
+      email: formData.email || '',
+      addressLine1: formData.addressLine1 || '',
+      addressLine2: formData.addressLine2 || '',
+      city: formData.city || '',
+      state: formData.state || '',
+      zipCode: formData.zipCode || '',
+      cardNumber: formData.cardNumber || '',
+      expiryDate: formData.expiryDate || '',
+      // Don't include CVV in the order for security
+    };
 
     // Create order object with all the data
     const order = {
@@ -219,13 +282,21 @@ const CheckoutPage = () => {
               required
               style={{ color: '#000' }}
             />
-            <label>Address</label>
+            <label>Address Line 1</label>
             <input
               type="text"
-              name="address"
-              value={formData.address}
+              name="addressLine1"
+              value={formData.addressLine1}
               onChange={handleShippingChange}
               required
+              style={{ color: '#000' }}
+            />
+            <label>Address Line 2 (Optional)</label>
+            <input
+              type="text"
+              name="addressLine2"
+              value={formData.addressLine2}
+              onChange={handleShippingChange}
               style={{ color: '#000' }}
             />
             <label>City</label>
@@ -233,6 +304,15 @@ const CheckoutPage = () => {
               type="text"
               name="city"
               value={formData.city}
+              onChange={handleShippingChange}
+              required
+              style={{ color: '#000' }}
+            />
+            <label>State</label>
+            <input
+              type="text"
+              name="state"
+              value={formData.state}
               onChange={handleShippingChange}
               required
               style={{ color: '#000' }}
@@ -247,7 +327,7 @@ const CheckoutPage = () => {
               style={{ color: '#000' }}
             />
             {/* Shipping Address Save Changes */}
-            <button type="button" className="place-order primary-btn" onClick={handleShippingChange}>
+            <button type="button" className="place-order primary-btn" onClick={handleSaveShippingChanges}>
               Save Changes
             </button>
           </form>
@@ -285,7 +365,7 @@ const CheckoutPage = () => {
               style={{ color: '#000' }}
             />
             {/* Payment Info Save Changes */}
-            <button type="button" className="place-order primary-btn" onClick={handlePaymentChange}>
+            <button type="button" className="place-order primary-btn" onClick={handleSavePaymentChanges}>
               Save Changes
             </button>
           </form>
