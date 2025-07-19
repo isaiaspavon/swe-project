@@ -143,11 +143,90 @@ const CheckoutPage = () => {
     setFormData({ ...formData, promoCode: value });
   };
 
+  const validateShippingAddress = (formData) => {
+        const errors = [];
+        
+        if (!formData.firstName || formData.firstName.trim() === '') {
+          errors.push("First name is required");
+        }
+        
+        if (!formData.lastName || formData.lastName.trim() === '') {
+          errors.push("Last name is required");
+        }
+        
+        if (!formData.email || formData.email.trim() === '') {
+          errors.push("Email is required");
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+          errors.push("Please enter a valid email address");
+        }
+        
+        if (!formData.addressLine1 || formData.addressLine1.trim() === '') {
+          errors.push("Address Line 1 is required");
+        }
+        
+        if (!formData.city || formData.city.trim() === '') {
+          errors.push("City is required");
+        }
+        
+        if (!formData.zipCode || formData.zipCode.trim() === '') {
+          errors.push("Zip code is required");
+        }
+        
+        return {
+          isValid: errors.length === 0,
+          errors
+        };
+      };
+
+      const validatePaymentMethod = (formData) => {
+        const errors = [];
+        
+        if (!formData.cardNumber || formData.cardNumber.trim() === '') {
+          errors.push("Card number is required");
+        } else {
+          // Remove spaces and check if it's all digits and proper length
+          const cleanCardNumber = formData.cardNumber.replace(/\s/g, '');
+          if (!/^\d{13,19}$/.test(cleanCardNumber)) {
+            errors.push("Please enter a valid card number");
+          }
+        }
+        
+        if (!formData.expiryDate || formData.expiryDate.trim() === '') {
+          errors.push("Expiry date is required");
+        } else if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(formData.expiryDate)) {
+          errors.push("Expiry date must be in MM/YY format");
+        }
+        
+        if (!formData.cvv || formData.cvv.trim() === '') {
+          errors.push("CVV is required");
+        } else if (!/^\d{3,4}$/.test(formData.cvv)) {
+          errors.push("CVV must be 3 or 4 digits");
+        }
+        
+        return {
+          isValid: errors.length === 0,
+          errors
+        };
+      };
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!currentUser) {
       alert('Please sign in to complete your order.');
+      return;
+    }
+
+    // Validate shipping address
+    const shippingValidation = validateShippingAddress(formData);
+    if (!shippingValidation.isValid) {
+      alert(`Shipping Address Issues:\n${shippingValidation.errors.join('\n')}`);
+      return;
+    }
+
+    // Validate payment method
+    const paymentValidation = validatePaymentMethod(formData);
+    if (!paymentValidation.isValid) {
+      alert(`Payment Method Issues:\n${paymentValidation.errors.join('\n')}`);
       return;
     }
     const cleanShippingData = {
