@@ -6,7 +6,7 @@ import { formatPhone } from '../utils/formatPhone';
 import { add } from 'ogl/src/math/functions/Mat4Func.js';
 
 const headerStyle = {
-  fontSize: '2rem', fontWeight: 'bold', color: 'black',
+  fontSize: '2rem', fontWeight: 'bold', color: 'white',
   textAlign: 'center', marginBottom: '22px', marginTop: '56.56px',
   letterSpacing: '0.01em',
 };
