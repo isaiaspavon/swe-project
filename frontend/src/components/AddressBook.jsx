@@ -3,7 +3,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { ref, update, onValue } from 'firebase/database';
 import { db } from '../firebaseConfig';
 import { formatPhone } from '../utils/formatPhone';
-import { add } from 'ogl/src/math/functions/Mat4Func.js';
 
 const headerStyle = {
   fontSize: '2rem', fontWeight: 'bold', color: 'white',
@@ -58,7 +57,6 @@ const AddressBook = () => {
 
     onValue(userRef, (snap) => {
       const userData = snap.val() || {};
-      const regAddr = userData.address || {};
       
       // Fix: Split the full name into first and last
       const nameParts = (userData.name || '').split(' ');
@@ -68,11 +66,11 @@ const AddressBook = () => {
       setAddress({
         firstName: firstName,
         lastName: lastName,
-        street: regAddr.street || '',
-        street2: regAddr.street2 || '',
-        city: regAddr.city || '',
-        zip: regAddr.zip || '',
-        state: regAddr.state || '',
+        street: userData.street || '',
+        street2: userData.street2 || '',
+        city: userData.city || '',
+        zip: userData.zip || '',
+        state: userData.state || '',
         phone: userData.phone || '',
       });
     });
@@ -167,17 +165,16 @@ const AddressBook = () => {
       </div>
         
     ) : (
+      // Default view when address exists
         <div style={{ ...cardStyle, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <strong>{address.firstName} {address.lastName}</strong><br />
 
             {address.street}{address.street2 && `, ${address.street2}`}<br />
+            {/* City, State, Zip line - only show if at least one exists */}
             {(address.city || address.state || address.zip) && (
-            <>
-              {address.city}
-              {address.city && address.state && ', '}
-              {address.state}
-              {address.zip && ` ${address.zip}`}
+              <>
+                {[address.city, address.state, address.zip].filter(Boolean).join(', ')}
               <br/>
             </>
           )}

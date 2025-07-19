@@ -257,14 +257,21 @@ const OrderHistory = () => {
                 position: 'absolute',
                 top: 10,
                 right: 10,
+                width: '32px',          
+                height: '32px',         
                 background: 'transparent',
                 border: 'none',
                 fontSize: '1.5rem',
                 color: '#232323',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                display: 'flex',        
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000,           
+                padding: 0              
               }}
               aria-label="Close"
-            >&times;</button>
+            >×</button>
             <h2 style={{ marginBottom: '1rem', color: '#2986d2ff' }}>Order Details</h2>
             <div style={{ marginBottom: '1rem' }}>
               <strong>Order #:</strong> {modalOrder.id}<br />
