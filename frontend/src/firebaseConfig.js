@@ -4,7 +4,6 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { getDatabase, ref, onValue, set, get } from "firebase/database";
 
 // Firebase config file
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAjUpA0011FObYX3xsKF8G9zWxUaRlk9ig",
   authDomain: "swe-database-3ba25.firebaseapp.com",
@@ -19,7 +18,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-//Export Auth and Realtime DB services
+// Export Auth and Realtime DB services
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 
@@ -48,20 +47,20 @@ export const registerUser = async (email, password, userData) => {
       name: userData.name,
       phone: userData.phone,
       email: email,
-      address: userData.address, // e.g., {street, city, state, zip}
-      payment: userData.payment, // optional: {cardType, last4, exp}
-      status: "Inactive", // change to Active after email verification
+      address: userData.address,
+      payment: userData.payment,
+      status: "Inactive",
       createdAt: new Date().toISOString()
     });
 
     console.log("✅ User created and profile saved!");
+    return { success: true };
   } catch (error) {
     console.error("❌ Registration error:", error.message);
+    return { success: false, error: error.message };
   }
 };
 
-
-// login function
 export const loginUser = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -70,42 +69,44 @@ export const loginUser = async (email, password) => {
     // Fetch user data from Realtime Database
     const userRef = ref(db, 'users/' + user.uid);
     const snapshot = await get(userRef);
-    
+
     if (!user.emailVerified) {
-  console.warn("❌ Email not verified");
-  return { success: false, error: "Please verify your email before logging in." };
-}
-
-  if (snapshot.exists()) {
-    const userData = snapshot.val();
-
-    // Optional: auto-update status to Active after email verification
-    if (userData.status === "Inactive") {
-      await set(ref(db, 'users/' + user.uid + '/status'), "Active");
+      console.warn("❌ Email not verified");
+      return { success: false, error: "Please verify your email before logging in." };
     }
 
-    console.log("✅ User logged in successfully!");
-    return { 
-      success: true, 
-      user: user, 
-      userData: { ...userData, status: "Active" }
-    };
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+
+      // Optional: auto-update status to Active after email verification
+      if (userData.status === "Inactive") {
+        await set(ref(db, 'users/' + user.uid + '/status'), "Active");
+      }
+
+      console.log("✅ User logged in successfully!");
+      return {
+        success: true,
+        user: user,
+        userData: { ...userData, status: "Active" }
+      };
 
     } else {
       console.log("User authenticated but no profile data found");
-      return { 
-        success: true, 
-        user: user, 
-        userData: null 
+      return {
+        success: true,
+        user: user,
+        userData: null
       };
     }
   } catch (error) {
-    console.error("❌ Login error:", error.message);
-    return { success: false, error: error.message };
+    let friendlyMessage = error.message;
+    if (error.code === "auth/invalid-credential") {
+      friendlyMessage = "Incorrect email or password. Please try again.";
+    }
+    return { success: false, error: friendlyMessage };
   }
 };
 
-// LOGOUT FUNCTION
 export const logoutUser = async () => {
   try {
     await signOut(auth);
@@ -116,4 +117,3 @@ export const logoutUser = async () => {
     return { success: false, error: error.message };
   }
 };
-
