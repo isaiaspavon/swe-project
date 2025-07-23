@@ -18,16 +18,26 @@ const SearchResultsPage = () => {
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Get filter params from URL
   const query = searchParams.get('q') || '';
   const filter = searchParams.get('filter') || 'all';
   const category = searchParams.get('category') || 'all';
   const genre = searchParams.get('genre') || 'all';
   const priceRange = searchParams.get('price') || 'all';
 
+  // Single source of truth for all filters
   const [localFilter, setLocalFilter] = useState(filter);
   const [localCategory, setLocalCategory] = useState(category);
   const [localGenre, setLocalGenre] = useState(genre);
   const [localPriceRange, setLocalPriceRange] = useState(priceRange);
+
+  // Keep local state in sync with URL params (for direct URL changes)
+  useEffect(() => {
+    setLocalFilter(filter);
+    setLocalCategory(category);
+    setLocalGenre(genre);
+    setLocalPriceRange(priceRange);
+  }, [filter, category, genre, priceRange]);
 
   useEffect(() => {
     const booksRef = ref(db, 'books');
@@ -94,6 +104,7 @@ const SearchResultsPage = () => {
     return [...new Set(genres)];
   };
 
+  // Update both local state and URL params
   const updateFilters = (newFilters) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(newFilters).forEach(([key, value]) => {
@@ -106,6 +117,7 @@ const SearchResultsPage = () => {
     navigate(`/search?${params.toString()}`);
   };
 
+  // Unified handler for all filter changes
   const handleFilterChange = (filterType, value) => {
     switch (filterType) {
       case 'filter':
@@ -141,6 +153,21 @@ const SearchResultsPage = () => {
     <div className="elite-search-bg">
       <div className="elite-search-header">
         <h1>Search Results</h1>
+        {/* Top filter bar */}
+        <div style={{ margin: '1.5rem 0', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+          <label style={{ color: '#f4f4f5', fontWeight: 600, marginRight: 8 }}>Search Type:</label>
+          {['title', 'author', 'genre', 'all'].map(opt => (
+            <button
+              key={opt}
+              className={`elite-pill${localFilter === opt ? ' active' : ''}`}
+              onClick={() => handleFilterChange('filter', opt)}
+              style={{ minWidth: 80 }}
+            >
+              {opt.charAt(0).toUpperCase() + opt.slice(1)}
+            </button>
+          ))}
+          {/* You can add more top bar filters here if needed */}
+        </div>
         {query && (
           <p>
             <span className="elite-accent">"{query}"</span> — {filteredBooks.length} book{filteredBooks.length !== 1 ? 's' : ''} found

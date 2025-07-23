@@ -1,7 +1,7 @@
 // src/utils/encryption.js
 import CryptoJS from 'crypto-js';
 
-const SECRET_KEY = 'my_super_secret_key_123!'; // ideally from .env in production
+const SECRET_KEY = 'my_super_secret_key_123!';
 
 export const encryptData = (plainText) => {
   return CryptoJS.AES.encrypt(plainText, SECRET_KEY).toString();

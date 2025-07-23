@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SignInModal from './SignInModal';
 import CreateAccountModal from './CreateAccountModal';
 import { useCart } from '../contexts/CartContext';
@@ -7,10 +7,16 @@ import { useAuth } from '../contexts/AuthContext';
 import logo from '../assets/logo.png';
 import './NavBar.css';
 
+const FILTER_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'title', label: 'Title' },
+  { value: 'author', label: 'Author' },
+  { value: 'genre', label: 'Genre' }
+];
+
 const Navbar = () => {
-  // Local state for search bar
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchFilter, setSearchFilter] = useState('title');
+  const [searchFilter, setSearchFilter] = useState('all');
   const [showSignIn, setShowSignIn] = useState(false);
   const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,6 +24,15 @@ const Navbar = () => {
   const { getCartCount } = useCart();
   const { currentUser, userProfile, logout, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Sync dropdown with URL param on load or URL change
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const urlFilter = params.get('filter') || 'all';
+    setSearchFilter(urlFilter);
+    setSearchQuery(params.get('q') || '');
+  }, [location.search]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,12 +54,17 @@ const Navbar = () => {
     }
   };
 
+  // Only update local state when filter changes
+  const handleFilterChange = (value) => {
+    setSearchFilter(value);
+  };
+
+  // Only update URL when user clicks Search or presses Enter
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      const params = new URLSearchParams({
-        q: searchQuery.trim(),
-        filter: searchFilter
-      });
+      const params = new URLSearchParams();
+      params.set('q', searchQuery.trim());
+      params.set('filter', searchFilter);
       navigate(`/search?${params.toString()}`);
     }
   };
@@ -108,69 +128,69 @@ const Navbar = () => {
         </Link>
 
         <div style={{ display: 'flex', alignItems: 'center' }}>
-  <select 
-    value={searchFilter}
-    onChange={(e) => setSearchFilter(e.target.value)}
-    style={{ 
-      padding: '8px 12px',
-      border: '1px solid #ccc',
-      borderRight: 'none',
-      borderRadius: '6px 0 0 6px',
-      background: 'linear-gradient(#b5a8eeff, #61adecff)',
-      fontSize: '14px',
-      height: '38px',
-      outline: 'none',
-      appearance: 'none',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      color: 'black',
-      textAlign: 'center'
-    }}
-  >
-    <option value="title">Title</option>
-    <option value="author">Author</option>
-    <option value="genre">Genre</option>
-  </select>
+          <select 
+            value={searchFilter}
+            onChange={e => handleFilterChange(e.target.value)}
+            style={{ 
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              borderRight: 'none',
+              borderRadius: '6px 0 0 6px',
+              background: 'linear-gradient(#b5a8eeff, #61adecff)',
+              fontSize: '14px',
+              height: '38px',
+              outline: 'none',
+              appearance: 'none',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              color: 'black',
+              textAlign: 'center'
+            }}
+          >
+            {FILTER_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
 
-  <input
-    type="text"
-    placeholder={`Search by ${searchFilter}...`}
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    onKeyPress={handleKeyPress}
-    style={{
-      background: 'white',
-      color: 'black',
-      padding: '8px 12px',
-      border: '1px solid #ccc',
-      borderLeft: 'none',
-      borderRight: 'none',
-      width: '350px',
-      height: '20px',
-      fontSize: '14px',
-      borderRadius: '0',
-      outline: 'none',
-    }}
-  />
+          <input
+            type="text"
+            placeholder={`Search by ${searchFilter === 'all' ? 'title, author, or genre' : searchFilter}...`}
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            onKeyPress={handleKeyPress}
+            style={{
+              background: 'white',
+              color: 'black',
+              padding: '8px 12px',
+              border: '1px solid #ccc',
+              borderLeft: 'none',
+              borderRight: 'none',
+              width: '350px',
+              height: '20px',
+              fontSize: '14px',
+              borderRadius: '0',
+              outline: 'none',
+            }}
+          />
 
-  <button
-    onClick={handleSearch}
-    style={{
-      padding: '8px 16px',
-      background: 'linear-gradient(#61adecff, #b5a8eeff)',
-      border: '1px solid #ccc',
-      borderLeft: 'none',
-      borderRadius: '0 6px 6px 0',
-      height: '38px',
-      fontWeight: 'bold',
-      cursor: 'pointer',
-      fontSize: '14px',
-      color: 'black'
-    }}
-  >
-    Search
-  </button>
-</div>
+          <button
+            onClick={handleSearch}
+            style={{
+              padding: '8px 16px',
+              background: 'linear-gradient(#61adecff, #b5a8eeff)',
+              border: '1px solid #ccc',
+              borderLeft: 'none',
+              borderRadius: '0 6px 6px 0',
+              height: '38px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: 'black'
+            }}
+          >
+            Search
+          </button>
+        </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ position: 'relative' }} ref={dropdownRef}>
