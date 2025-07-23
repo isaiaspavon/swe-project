@@ -23,7 +23,7 @@ const BookCard = ({ book }) => {
       <img src={book.image} alt={book.title} className="book-image" />
       <h3 className="book-title">{book.title}</h3>
       <p className="book-author">by {book.author}</p>
-      <p className="book-price">${book.price}</p>
+      <p className="book-price">${book.price.toFixed(2)}</p>
       <button 
         onClick={handleAddToCart}
         className="add-to-cart-btn"
