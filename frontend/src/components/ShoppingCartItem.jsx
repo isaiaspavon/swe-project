@@ -2,13 +2,13 @@ import React from 'react';
 import { useCart } from '../contexts/CartContext';
 
 const ShoppingCartItem = ({ item }) => {
-  const { updateQuantity, removeFromCart } = useCart();
+  const { addOrUpdateCartBook, removeFromCart } = useCart();
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity <= 0) {
-      removeFromCart(item.id);
+      removeFromCart(item.bookId);
     } else {
-      updateQuantity(item.id, newQuantity);
+      addOrUpdateCartBook(item.bookId, newQuantity);
     }
   };
 
@@ -62,9 +62,10 @@ const ShoppingCartItem = ({ item }) => {
                 border: '1px solid #333',
                 backgroundColor: '#2a2a2a',
                 color: '#f4f4f5',
-                cursor: 'pointer',
+                cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer',
                 borderRadius: '8px'
               }}
+              disabled={item.quantity <= 1}
             >
               -
             </button>
@@ -93,7 +94,7 @@ const ShoppingCartItem = ({ item }) => {
           </div>
           
           <button
-            onClick={() => removeFromCart(item.id)}
+            onClick={() => removeFromCart(item.bookId)}
             style={{
               backgroundColor: '#dc2626',
               color: 'white',
