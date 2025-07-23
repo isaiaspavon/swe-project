@@ -142,7 +142,7 @@ const AdminBooks = () => {
       
       {/* Debug Info */}
       <div style={{ background: '#333', padding: '1rem', marginBottom: '1rem', borderRadius: '4px', border: '0.2px solid #59595aff'}}>
-        <p><strong>Debug Info:</strong></p>
+        <p><strong>Book JSON Info:</strong></p>
         <p>Books loaded: {books.length}</p>
         <p>Currently editing: {editingId || 'None'}</p>
         <p>Form data: {JSON.stringify(form)}</p>
