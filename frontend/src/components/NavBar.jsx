@@ -47,7 +47,6 @@ const Navbar = () => {
   // Logout and clear cart
   const handleLogout = async () => {
     await logout();
-    await clearCart();
     setDropdownOpen(false);
     navigate('/');
   };
