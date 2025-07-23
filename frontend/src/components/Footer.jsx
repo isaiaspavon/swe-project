@@ -11,10 +11,10 @@ const Footer = () => (
       </div>
       <div className="footer-links">
         <Link to="/about">About</Link>
-        <a href="#">Contact</a>
-        <a href="#">FAQ</a>
-        <a href="#">Careers</a>
-        <a href="#">Instagram</a>
+        <Link to="/wip">Contact</Link>
+        <Link to="/wip">FAQ</Link>
+        <Link to="/wip">Careers</Link>
+        <Link to="/wip">Instagram</Link>
       </div>
       <div className="footer-newsletter">
         <input type="email" placeholder="Subscribe to newsletter" />

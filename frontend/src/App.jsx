@@ -17,6 +17,7 @@ import AdminRoute from "./components/AdminRoute";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import Aurora from "./components/Aurora";
 import AboutPage from "./pages/AboutPage";
+import WIPPage from "./pages/WIPPage";
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,6 +45,7 @@ function App() {
                 <Route path="/orders" element={<OrderHistoryPage />} />
                 <Route path="/account" element={<AccountPage />} />
                 <Route path="/about" element={<AboutPage />} />
+                <Route path="/wip" element={<WIPPage />} />
                 {/* Admin Routes - Protected */}
                 <Route path="/admin" element={
                   <AdminRoute>
