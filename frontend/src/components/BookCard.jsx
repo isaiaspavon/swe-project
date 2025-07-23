@@ -4,16 +4,18 @@ import { useAuth } from '../contexts/AuthContext';
 import "./BookCard.css";
 
 const BookCard = ({ book }) => {
-  const { addToCart } = useCart();
+  const { addOrUpdateCartBook, getCartBooks } = useCart();
   const { isAuthenticated } = useAuth();
 
   const handleAddToCart = () => {
     if (!isAuthenticated) {
-      // You could show a toast notification here or redirect to login
       alert('Please sign in to add items to your cart');
       return;
     }
-    addToCart(book);
+    const cartBooks = getCartBooks() || [];
+    const existing = cartBooks.find(item => item.bookId === book.id);
+    const newQuantity = existing ? existing.quantity + 1 : 1;
+    addOrUpdateCartBook(book.id, newQuantity);
   };
 
   return (

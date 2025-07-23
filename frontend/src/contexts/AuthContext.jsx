@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebaseConfig';
 import { onAuthStateChanged, signOut, updateProfile as authUpdateProfile, updateEmail as authUpdateEmail, updatePassword as authUpdatePassword } from 'firebase/auth';
-import { ref, get, update} from 'firebase/database';
-import { useCart } from './CartContext';
+import { ref, get, update } from 'firebase/database';
 
 const AuthContext = createContext();
 
@@ -18,7 +17,6 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { clearCart } = useCart();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -49,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       await signOut(auth);
       setCurrentUser(null);
       setUserProfile(null);
-      clearCart();
+      // Do NOT call clearCart here!
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -58,23 +56,19 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (fields) => {
     if (!currentUser) throw new Error("Not authenticated");
 
-    // 1) Update Auth displayName/email if you want:
     if (fields.name) {
       await authUpdateProfile(currentUser, { displayName: fields.name });
     }
 
-    // 2) Write any fields into your RTDB record
     const userRef = ref(db, `users/${currentUser.uid}`);
     await update(userRef, fields);
 
-    // 3) Optimistically update local state
     setUserProfile(p => ({ ...p, ...fields }));
   };
 
   const updateEmail = async (newEmail) => {
     if (!currentUser) throw new Error("Not authenticated");
     await authUpdateEmail(currentUser, newEmail);
-    // optionally mirror it in your RTDB
     const userRef = ref(db, `users/${currentUser.uid}`);
     await update(userRef, { email: newEmail });
     setCurrentUser(u => ({ ...u, email: newEmail }));
@@ -86,7 +80,6 @@ export const AuthProvider = ({ children }) => {
     await authUpdatePassword(currentUser, newPassword);
   };
 
-  // Add this line to check if user is admin
   const isAdmin = userProfile?.role === 'admin';
 
   const value = {
@@ -95,7 +88,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     logout,
     isAuthenticated: !!currentUser,
-    isAdmin, // Add this line
+    isAdmin,
     updateProfile,
     updateEmail,
     updatePassword

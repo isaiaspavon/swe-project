@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, onValue, set, get } from "firebase/database";
+import { getDatabase, ref, onValue, set, get, remove } from "firebase/database";
 
 // Firebase config file
 const firebaseConfig = {
@@ -21,6 +21,39 @@ const app = initializeApp(firebaseConfig);
 // Export Auth and Realtime DB services
 export const auth = getAuth(app);
 export const db = getDatabase(app);
+
+// --- CART FUNCTIONS ---
+
+// Get cart for a user
+export const getUserCart = async (userId) => {
+  const cartRef = ref(db, `carts/${userId}`);
+  const snapshot = await get(cartRef);
+  return snapshot.exists() ? snapshot.val() : {};
+};
+
+// Add or update a cartBook
+export const setCartBook = async (userId, bookId, quantity) => {
+  const cartBookRef = ref(db, `carts/${userId}/${bookId}`);
+  if (quantity > 0) {
+    await set(cartBookRef, { bookId, quantity });
+  } else {
+    await remove(cartBookRef);
+  }
+};
+
+// Remove a cartBook
+export const removeCartBook = async (userId, bookId) => {
+  const cartBookRef = ref(db, `carts/${userId}/${bookId}`);
+  await remove(cartBookRef);
+};
+
+// Clear the cart
+export const clearUserCart = async (userId) => {
+  const cartRef = ref(db, `carts/${userId}`);
+  await set(cartRef, {});
+};
+
+// --- EXISTING LOGIC BELOW ---
 
 export const fetchBooks = (callback) => {
   const db = getDatabase();

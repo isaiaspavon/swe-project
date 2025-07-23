@@ -21,7 +21,7 @@ const Navbar = () => {
   const [showCreateAccount, setShowCreateAccount] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const { getCartCount } = useCart();
+  const { getCartCount, clearCart } = useCart();
   const { currentUser, userProfile, logout, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,14 +44,12 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Logout and clear cart
   const handleLogout = async () => {
-    try {
-      await logout();
-      setDropdownOpen(false);
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+    await logout();
+    await clearCart();
+    setDropdownOpen(false);
+    navigate('/');
   };
 
   // Only update local state when filter changes
@@ -359,7 +357,7 @@ const Navbar = () => {
               backgroundColor: '#af1818ff',
               color: 'white',
               borderRadius: '50%',
-              minWidth: '24px', // enough for two digits
+              minWidth: '24px',
               height: '20px',
               display: 'flex',
               alignItems: 'center',

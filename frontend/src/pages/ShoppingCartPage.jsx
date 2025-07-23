@@ -1,14 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import ShoppingCartItem from '../components/ShoppingCartItem';
 import './ShoppingCartPage.css';
 import { useNavigate } from 'react-router-dom';
+import { fetchBooks } from '../firebaseConfig';
 
 const ShoppingCartPage = () => {
-  const { items, getCartTotal, clearCart } = useCart();
+  const { getCartBooks, addOrUpdateCartBook, removeFromCart, clearCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const [books, setBooks] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchBooks(setBooks);
+  }, []);
+
+  // Helper to get book details by id
+  const getBook = (bookId) => books.find(b => b.id === bookId);
+
+  // Always default to empty array if undefined
+  const items = getCartBooks() || [];
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
@@ -54,7 +66,10 @@ const ShoppingCartPage = () => {
     );
   }
 
-  const subtotal = getCartTotal();
+  const subtotal = items.reduce((sum, item) => {
+    const book = getBook(item.bookId);
+    return sum + ((book?.price || 0) * item.quantity);
+  }, 0);
   const tax = subtotal * 0.085;
   const total = subtotal + tax;
 
@@ -86,9 +101,23 @@ const ShoppingCartPage = () => {
               Clear Cart
             </button>
           </div>
-          {items.map((item) => (
-            <ShoppingCartItem key={item.id} item={item} />
-          ))}
+          {items.map((item) => {
+            const book = getBook(item.bookId);
+            if (!book) return null;
+            return (
+              <ShoppingCartItem
+                key={item.bookId}
+                item={{
+                  ...item,
+                  ...book,
+                  id: item.bookId,
+                }}
+                onIncrease={() => addOrUpdateCartBook(item.bookId, item.quantity + 1)}
+                onDecrease={() => addOrUpdateCartBook(item.bookId, item.quantity - 1)}
+                onRemove={() => removeFromCart(item.bookId)}
+              />
+            );
+          })}
         </div>
         <div className="order-summary">
           <h3>Order Summary</h3>

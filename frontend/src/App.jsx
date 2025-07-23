@@ -30,48 +30,46 @@ function App() {
         amplitude={1.0}
         speed={0.5}
       />
-      <CartProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <CartProvider>
           <div className="App">
-            <Navbar
-              
-            />
+            <Navbar />
             <div style={{ paddingTop: '50px' }}>
               <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/search" element={<SearchResultsPage />} />
-                  <Route path="/cart" element={<ShoppingCartPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
-                  <Route path="/orders" element={<OrderHistoryPage />} />
-                  <Route path="/account" element={<AccountPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  {/* Admin Routes - Protected */}
-                  <Route path="/admin" element={
-                    <AdminRoute>
-                      <AdminDashboard />
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/books" element={
-                    <AdminRoute>
-                      <AdminBooks />
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/users" element={
-                    <AdminRoute>
-                      <AdminUsers />
-                    </AdminRoute>
-                  } />
-                  <Route path="/admin/promotions" element={
-                    <AdminRoute>
-                      <AdminPromotions />
-                    </AdminRoute>
-                  } />
-                </Routes>
-              </div>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
+                <Route path="/cart" element={<ShoppingCartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/checkout-confirmation" element={<CheckoutConfirmationPage />} />
+                <Route path="/orders" element={<OrderHistoryPage />} />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                {/* Admin Routes - Protected */}
+                <Route path="/admin" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/books" element={
+                  <AdminRoute>
+                    <AdminBooks />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/users" element={
+                  <AdminRoute>
+                    <AdminUsers />
+                  </AdminRoute>
+                } />
+                <Route path="/admin/promotions" element={
+                  <AdminRoute>
+                    <AdminPromotions />
+                  </AdminRoute>
+                } />
+              </Routes>
             </div>
-          </AuthProvider>
+          </div>
         </CartProvider>
+      </AuthProvider>
     </>
   );
 }

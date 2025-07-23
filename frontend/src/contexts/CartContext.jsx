@@ -1,101 +1,73 @@
-// This file is used to manage the cart state and actions
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useAuth } from "./AuthContext";
+import { getUserCart, setCartBook, removeCartBook, clearUserCart } from "../firebaseConfig";
 
 const CartContext = createContext();
 
-const cartReducer = (state, action) => {
-  switch (action.type) {
-    case 'ADD_TO_CART':
-      const existingItem = state.items.find(item => item.id === action.payload.id);
-      if (existingItem) {
-        return {
-          ...state,
-          items: state.items.map(item =>
-            item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
-        };
-      } else {
-        return {
-          ...state,
-          items: [...state.items, { ...action.payload, quantity: 1 }]
-        };
-      }
-    
-    case 'REMOVE_FROM_CART':
-      return {
-        ...state,
-        items: state.items.filter(item => item.id !== action.payload)
-      };
-    
-    case 'UPDATE_QUANTITY':
-      return {
-        ...state,
-        items: state.items.map(item =>
-          item.id === action.payload.id
-            ? { ...item, quantity: action.payload.quantity }
-            : item
-        )
-      };
-    
-    case 'CLEAR_CART':
-      return {
-        ...state,
-        items: []
-      };
-    
-    default:
-      return state;
-  }
-};
+export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [] });
+  const { currentUser } = useAuth();
+  const [cart, setCart] = useState({}); // { bookId: { bookId, quantity } }
 
-  const addToCart = (book) => {
-    dispatch({ type: 'ADD_TO_CART', payload: book });
+  // Load cart from Firebase on login
+  useEffect(() => {
+    if (currentUser) {
+      getUserCart(currentUser.uid).then(setCart);
+    } else {
+      setCart({});
+    }
+  }, [currentUser]);
+
+  // Add or update a cartBook
+  const addOrUpdateCartBook = async (bookId, quantity) => {
+    if (!currentUser) return;
+    await setCartBook(currentUser.uid, bookId, quantity);
+    setCart(prev => {
+      const updated = { ...prev };
+      if (quantity > 0) {
+        updated[bookId] = { bookId, quantity };
+      } else {
+        delete updated[bookId];
+      }
+      return updated;
+    });
   };
 
-  const removeFromCart = (bookId) => {
-    dispatch({ type: 'REMOVE_FROM_CART', payload: bookId });
+  // Remove a cartBook
+  const removeFromCart = async (bookId) => {
+    if (!currentUser) return;
+    await removeCartBook(currentUser.uid, bookId);
+    setCart(prev => {
+      const updated = { ...prev };
+      delete updated[bookId];
+      return updated;
+    });
   };
 
-  const updateQuantity = (bookId, quantity) => {
-    dispatch({ type: 'UPDATE_QUANTITY', payload: { id: bookId, quantity } });
+  // Clear cart
+  const clearCart = async () => {
+    if (!currentUser) return;
+    await clearUserCart(currentUser.uid);
+    setCart({});
   };
 
-  const clearCart = () => {
-    dispatch({ type: 'CLEAR_CART' });
-  };
+  // Get total items
+  const getCartCount = () => Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
 
-  const getCartTotal = () => {
-    return state.items.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
-  const getCartCount = () => {
-    return state.items.reduce((count, item) => count + item.quantity, 0);
-  };
+  // Get all cartBooks as array
+  const getCartBooks = () => Object.values(cart);
 
   return (
     <CartContext.Provider value={{
-      items: state.items,
-      addToCart,
+      cart,
+      addOrUpdateCartBook,
       removeFromCart,
-      updateQuantity,
       clearCart,
-      getCartTotal,
-      getCartCount
+      getCartCount,
+      getCartBooks
     }}>
       {children}
     </CartContext.Provider>
   );
-};
-
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
-  }
-  return context;
 };
