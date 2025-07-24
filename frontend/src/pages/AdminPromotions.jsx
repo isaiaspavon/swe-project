@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ref, push, set, onValue, remove } from 'firebase/database';
+import { ref, push, set, onValue, remove, get} from 'firebase/database';
 import { db } from '../firebaseConfig';
+import emailjs from 'emailjs-com';
 
 const AdminPromotions = () => {
   const [promos, setPromos] = useState([]);
@@ -104,6 +105,41 @@ const AdminPromotions = () => {
       }
     }
   };
+  const handleSendPromoEmail = async (promo) => {
+  try {
+    const usersRef = ref(db, 'users');
+    onValue(usersRef, (snapshot) => {
+      const users = snapshot.val();
+      if (!users) return;
+
+      Object.entries(users).forEach(([uid, user]) => {
+        if (user.promotions?.subscribed && user.email) {
+          emailjs.send(
+            'service_tsqwzy7',       
+            'template_00hb1z2',      
+            {
+              to_email: user.email,
+              to_name: user.name || 'Valued Customer',
+              promo_code: promo.code,
+              promo_description: promo.description,
+              discount: `${promo.discountValue}%`,
+              min_order: `$${promo.minOrderAmount}`,
+              valid_dates: `From ${formatDate(promo.startDate)} to ${formatDate(promo.endDate)}`
+            },
+            '5PxilDqp-n8urSbtG'        // Replace
+          ).then(
+            (response) => console.log('SUCCESS!', response.status, response.text),
+            (err) => console.error('FAILED...', err)
+          );
+        }
+      });
+    }, { onlyOnce: true });
+  } catch (err) {
+    console.error('Error sending emails:', err);
+    alert('Failed to send promotional emails.');
+  }
+};
+
 
   // Helper function to check if promotion has expired
   const isExpired = (endDate) => {
@@ -251,6 +287,20 @@ const AdminPromotions = () => {
                       }}
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => handleSendPromoEmail(promo)}
+                      style={{
+                        background: 'linear-gradient(#84fab0, #8fd3f4)',
+                        color: '#111',
+                        border: 'none',
+                        borderRadius: '4px',
+                        padding: '0.25rem 0.75rem',
+                        fontSize: '0.85em',
+                        fontWeight: '500'
+                      }}
+                    >
+                      Email Promo
                     </button>
                   </div>
                 </td>
