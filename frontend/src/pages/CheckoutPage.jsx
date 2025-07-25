@@ -68,7 +68,7 @@ const CheckoutPage = () => {
     return () => unsubscribe();
   }, []);
 
-  // Fetch user profile/payment info
+  // Fetch user profile
   useEffect(() => {
     if (!currentUser) return;
     const userRef = ref(db, `users/${currentUser.uid}`);
@@ -77,8 +77,8 @@ const CheckoutPage = () => {
         const userData = snapshot.val();
         setFormData(prev => ({
           ...prev,
-          firstName: userData.address?.name ? userData.address.name.split(' ')[0] : '',
-          lastName: userData.address?.name ? userData.address.name.split(' ').slice(1).join(' ') : '',
+          firstName: userData.name ? userData.name.split(' ')[0] : '',
+          lastName: userData.name ? userData.name.split(' ').slice(1).join(' ') : '',
           email: userData.email || '',
           addressLine1: userData.address?.addressLine1 || userData.address?.street || '',
           addressLine2: userData.address?.street2 || '',
@@ -88,7 +88,87 @@ const CheckoutPage = () => {
         }));
       }
     });
-    // Payment info fetching omitted for brevity
+  }, [currentUser]);
+
+  // Fetch payment card info
+  useEffect(() => {
+    if (!currentUser) return;
+    const paymentCardsRef = ref(db, `paymentCards/${currentUser.uid}`);
+    const registrationCardRef = ref(db, `users/${currentUser.uid}/payment`);
+
+    get(paymentCardsRef).then(paymentSnap => {
+      const paymentData = paymentSnap.val() || {};
+      // Find default card
+      let defaultCard = null;
+      for (const key in paymentData) {
+        if (paymentData[key].default) {
+          defaultCard = paymentData[key];
+          break;
+        }
+      }
+      // If no default, pick the first card
+      if (!defaultCard && Object.keys(paymentData).length > 0) {
+        defaultCard = paymentData[Object.keys(paymentData)[0]];
+      }
+      if (defaultCard) {
+        let cardNumber = '';
+        let expDate = '';
+        let cvv = '';
+        try {
+          cardNumber = defaultCard.cardNumber ? decryptData(defaultCard.cardNumber) : '';
+        } catch (err) {
+          cardNumber = defaultCard.cardNumber || '';
+        }
+        try {
+          expDate = defaultCard.expDate ? decryptData(defaultCard.expDate) : '';
+        } catch (err) {
+          expDate = defaultCard.expDate || '';
+        }
+        // If CVV is stored, decrypt
+        try {
+          cvv = defaultCard.cvv ? decryptData(defaultCard.cvv) : '';
+        } catch (err) {
+          cvv = defaultCard.cvv || '';
+        }
+        setFormData(prev => ({
+          ...prev,
+          cardNumber: cardNumber,
+          expiryDate: expDate,
+          cvv: cvv,
+        }));
+        return;
+      }
+      // Fallback
+      get(registrationCardRef).then(regSnap => {
+        const regData = regSnap.val() || {};
+        if (regData.cardNumber && regData.expDate) {
+          let cardNumber = '';
+          let expDate = '';
+          let cvv = '';
+          try {
+            cardNumber = decryptData(regData.cardNumber);
+          } catch (err) {
+            cardNumber = regData.cardNumber || '';
+          }
+          try {
+            expDate = decryptData(regData.expDate);
+          } catch (err) {
+            expDate = regData.expDate || '';
+          }
+          try {
+            cvv = regData.cvv ? decryptData(regData.cvv) : '';
+          } catch (err) {
+            cvv = regData.cvv || '';
+          }
+          setFormData(prev => ({
+            ...prev,
+            cardNumber: cardNumber,
+            expiryDate: expDate,
+            cvv: cvv,
+          }));
+        }
+      });
+    });
   }, [currentUser]);
 
   // Handlers for shipping/payment/promo code
