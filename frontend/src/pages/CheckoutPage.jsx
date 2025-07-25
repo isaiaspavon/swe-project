@@ -246,8 +246,11 @@ const CheckoutPage = () => {
       return;
     }
     let discount = 0;
-    if (matchingPromo.discountType === 'percentage') {
-      discount = subtotal * (matchingPromo.discountValue / 100);
+    const discountVal = Number(matchingPromo.discountValue);
+    if (matchingPromo.discountType === 'percentage' || !matchingPromo.discountType) {
+      discount = subtotal * (discountVal / 100);
+    } else if (matchingPromo.discountType === 'fixed') {
+      discount = discountVal;
     }
     discount = Math.min(discount, subtotal);
     setAppliedPromo(matchingPromo);
@@ -350,7 +353,7 @@ const CheckoutPage = () => {
       </div>
     );
   }
-
+  
   return (
     <div className="checkout-page">
       <div className="checkout-left">
@@ -437,19 +440,22 @@ const CheckoutPage = () => {
               <span className="left-side">Subtotal:</span>
               <span className="right-side">${calculateSubtotal().toFixed(2)}</span>
             </p>
-            {appliedPromo && promoDiscount > 0 && (
-              <p className="split-paragraph" style={{ color: '#4ade80' }}>
-                <span className="left-side">
-                  Discount ({appliedPromo.code}):
+            {appliedPromo && (
+              <p className="split-paragraph" style={{ color: '#4ade80', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5em' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  Discount {appliedPromo.discountType === 'percentage' || !appliedPromo.discountType
+                    ? `(${appliedPromo.discountValue}%)`
+                    : `($${appliedPromo.discountValue})`}
                   <button 
+                    type="button"
                     onClick={handleRemovePromoCode}
                     style={{ 
-                      marginLeft: '8px', 
                       background: 'transparent', 
                       border: 'none', 
                       color: '#f87171', 
                       cursor: 'pointer',
-                      fontSize: '0.8em'
+                      fontSize: '0.9em',
+                      padding: 0,
                     }}
                   >
                     Remove
