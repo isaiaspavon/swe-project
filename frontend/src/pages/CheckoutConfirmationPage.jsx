@@ -25,7 +25,7 @@ const CheckoutConfirmationPage = () => {
   }
 
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
+    <div style={{ padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center" }}>
       <h1 style={{ color: "#f065e2ff" }}>Thank you for your order!</h1>
       <p style={{ margin: "1rem 0" }}>
         A confirmation email has been sent to your email address.
