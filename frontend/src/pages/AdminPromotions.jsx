@@ -159,7 +159,11 @@ const AdminPromotions = () => {
   return (
     <div style={{ padding: '2rem', background: 'transparent', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2 style={{ color: '#f6f084ff' }}>Manage Promotions</h2>
+      <h2 style={{ backgroundImage: 'linear-gradient(#b5a8eeff, #f6a0edff)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '3.2 rem' }}>Manage Promotions</h2>
 
       <form
         onSubmit={handleAdd}
@@ -331,13 +335,13 @@ const AdminPromotions = () => {
                     <button
                       onClick={() => handleDelete(promo.id)}
                       style={{
-                        background: 'linear-gradient(#f1155eff, #940b24ff)',
-                        color: 'white',
-                        border: 'none',
                         borderRadius: '4px',
                         padding: '0.25rem 0.75rem',
                         fontSize: '0.9em',
                         fontWeight: '500',
+                        backgroundColor: 'transparent',
+                         color: 'white',
+                         border: '1.5px solid #e22929ff'
                       }}
                     >
                       Delete
@@ -346,7 +350,9 @@ const AdminPromotions = () => {
                       style={{
                         color: promo.emailSent ? '#4ade80' : '#f87171',
                         fontWeight: 'bold',
-                        fontSize: '0.9em',
+                        fontSize: '0.9rem',
+                        paddingLeft: '0.5rem',
+                        textAlign: 'center'
                       }}
                     >
                       {promo.emailSent ? 'Email Sent' : 'Not Sent'}

@@ -58,7 +58,11 @@ const AdminUsers = () => {
   return (
     <div style={{ padding: '2rem', background: 'transparent', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline',  }}>← Back to Dashboard</Link>
-      <h2 style={{ color: '#f6f084ff' }}>Manage Users</h2>
+      <h2 style={{ backgroundImage: 'linear-gradient(#b5a8eeff, #f6a0edff)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '3.2 rem' }}>Manage Users</h2>
       
       <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: 8, marginTop: '1rem', border: '0.2px solid #ffffffff' }}>
         <thead>

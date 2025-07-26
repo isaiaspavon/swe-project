@@ -117,7 +117,11 @@ const AdminBooks = () => {
   return (
     <div style={{ padding: '2rem', background: 'transparent', color: '#f4f4f5', minHeight: '100vh' }}>
       <Link to="/admin" style={{ color: '#bbdef4ff', textDecoration: 'underline' }}>← Back to Dashboard</Link>
-      <h2 style={{ color: '#f6f084ff' }}>Manage Books</h2>
+      <h2 style={{ backgroundImage: 'linear-gradient(#b5a8eeff, #f6a0edff)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '3.2 rem' }}>Manage Books</h2>
 
       <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem', background: '#232323', padding: '1rem', borderRadius: '8px', border: '0.2px solid #59595aff' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
@@ -179,7 +183,9 @@ const AdminBooks = () => {
               <td style={{ padding: 8 }}>${parseFloat(book.price || 0).toFixed(2)}</td>
               <td style={{ padding: 8 }}>
                 <button onClick={() => handleEdit(book)} style={{ marginRight: 8, background: 'gray', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Edit</button>
-                <button onClick={() => handleDelete(book.id)} style={{ background: 'darkred', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
+                <button onClick={() => handleDelete(book.id)} style={{ backgroundColor: 'transparent',
+  color: 'white',
+  border: '1.5px solid #e22929ff',  borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
               </td>
             </tr>
           ))}

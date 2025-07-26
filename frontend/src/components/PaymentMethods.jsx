@@ -44,8 +44,9 @@ const saveButtonStyle = {
   marginTop: '1rem',
 };
 const deleteButtonStyle = {
-  backgroundColor: '#b71c1c', color: 'white',
-  border: 'none', borderRadius: '4px', padding: '0.4rem 1rem',
+  bbackgroundColor: 'transparent',
+  color: 'white',
+  border: '1.5px solid #e22929ff', borderRadius: '4px', padding: '0.4rem 1rem',
   cursor: 'pointer', marginTop: '0.5rem',
 };
 
@@ -273,7 +274,7 @@ const PaymentMethods = () => {
       <div style={cardStyle}>
         <div style={sectionTitleStyle}>Saved Payment Cards</div>
         {cards.map((card, index) => (
-          <div key={index} style={{ marginBottom: '1.2rem', background: '#1e1e1e', padding: '1rem', borderRadius: '6px' }}>
+          <div key={index} style={{ marginBottom: '1.2rem', background: '#1e1e1e', padding: '1rem', borderRadius: '6px', border: '1.5px solid #444',}}>
             <div><strong>Card Type:</strong> {card.cardType}</div>
             <div><strong>Card Number:</strong> {maskCardNumber(card.cardNumber)}</div>
             <div><strong>Expiration:</strong> {card.expDate}</div>

@@ -107,9 +107,9 @@ form {
   text-align: left;
 }
 
-.primary-btn {
-  background: linear-gradient(#1d91f0ff, #3d92d7ff);
-  color: white;
+.checkout-page button.primary-btn  {
+  background: linear-gradient(#f6f084ff , #b5a8eeff);
+  color: rgb(0, 0, 0);
   border: none;
   border-radius: 6px;
   padding: 0.5rem 2rem;
@@ -123,7 +123,7 @@ form {
   margin-right: auto;
 }
 .primary-btn:hover {
-  background: linear-gradient(#3d92d7ff, #1d91f0ff);
+  background: linear-gradient(#f6f084ff , #b5a8eeff);
   transform: scale(1.03);
 }
 
@@ -151,8 +151,8 @@ form {
 }
 
 .checkout-page button {
-  color: rgb(68, 67, 67);
-  background-color: #317ab5ff;
+  color: rgb(255, 255, 255);
+  background: linear-gradient(#1d91f0ff, #3d92d7ff);
   align-self: center;
   max-width: 70%;;
   padding: 7px 20px;
