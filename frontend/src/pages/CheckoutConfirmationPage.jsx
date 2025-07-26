@@ -25,9 +25,15 @@ const CheckoutConfirmationPage = () => {
   }
 
   return (
-    <div style={{ padding: "2rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center" }}>
-      <h1 style={{ color: "#f065e2ff" }}>Thank you for your order!</h1>
-      <p style={{ margin: "1rem 0" }}>
+    <div style={{ padding: "2rem 2rem 2rem 2rem", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", textAlign: "center" }}>
+      <h1 style={{
+    backgroundImage: 'linear-gradient(#b5a8eeff, #f6a0edff)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '3.2 rem',
+  }}> Thank you for your order!</h1>
+      <p style={{ margin: "0.5rem 0", fontWeight: 'bold' }}>
         A confirmation email has been sent to your email address.
       </p>
       <div style={{
@@ -35,6 +41,7 @@ const CheckoutConfirmationPage = () => {
         color: "#f4f4f5",
         borderRadius: "12px",
         display: "inline-block",
+        border: '0.2px solid #59595aff',
         padding: "2rem",
         margin: "2rem 0"
       }}>
@@ -47,6 +54,7 @@ const CheckoutConfirmationPage = () => {
               alignItems: "center",
               gap: "1rem",
               background: "#18181b",
+              border: '0.2px solid #59595aff',
               borderRadius: "8px",
               padding: "0.75rem 1rem"
             }}>
@@ -70,13 +78,13 @@ const CheckoutConfirmationPage = () => {
         </ul>
         <p>Subtotal: ${order.subtotal.toFixed(2)}</p>
         <p>Tax (8.5%): ${order.tax.toFixed(2)}</p>
-        <p style={{ fontWeight: "bold", color: "#317ab5ff" }}>
+        <p style={{ fontWeight: "bold", color: "#aad1f0ff" }}>
           Total: ${order.total.toFixed(2)}
         </p>
       </div>
       <Link to="/" style={{
-        background: "#317ab5ff",
-        color: "#000",
+        background: 'linear-gradient(#b5a8eeff , #f6a0edff  )',
+        color: 'black',
         borderRadius: "8px",
         padding: "0.75rem 1.5rem",
         textDecoration: "none",

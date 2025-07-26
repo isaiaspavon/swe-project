@@ -10,7 +10,11 @@ const AdminDashboard = () => {
       color: '#f4f4f5',
       marginTop: '2rem'
     }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#f6f084ff' }}>
+      <h1 style={{ textAlign: 'center', marginBottom: '2rem', backgroundImage: 'linear-gradient(#b5a8eeff, #f6a0edff)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    fontWeight: 'bold',
+    fontSize: '3.2 rem' }}>
         Admin Dashboard
       </h1>
       <div style={{

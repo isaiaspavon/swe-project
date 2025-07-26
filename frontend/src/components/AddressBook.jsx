@@ -33,13 +33,13 @@ const rowStyle = {
 };
 
 const saveButtonStyle = {
-  background: '#317ab5', color: 'white', border: 'none',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', color: 'white', border: 'none',
   borderRadius: '6px', padding: '0.7rem 2rem', fontWeight: 'bold',
   fontSize: '1rem', cursor: 'pointer', marginTop: '1rem',
 };
 
 const editButtonStyle = {
-  background: '#317ab5', border: 'none', color: 'white', fontWeight: 'bold',
+  background: 'linear-gradient(#1d91f0ff, #3d92d7ff)', border: 'none', color: 'white', fontWeight: 'bold',
   padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', marginLeft: '1rem'
 };
 

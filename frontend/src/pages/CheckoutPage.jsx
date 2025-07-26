@@ -406,11 +406,11 @@ const CheckoutPage = () => {
               disabled={appliedPromo !== null}
             />
             {appliedPromo ? (
-              <button type="button" className="place-order primary-btn" onClick={handleRemovePromoCode} style={{ background: '#f87171' }}>
+              <button type="button" className="checkout-page button" onClick={handleRemovePromoCode} style={{ background: '#f87171' }}>
                 Remove
               </button>
             ) : (
-              <button type="button" className="place-order primary-btn" onClick={handleApplyPromoCode}>
+              <button type="button" className=".checkout-page button" onClick={handleApplyPromoCode}>
                 Apply
               </button>
             )}
@@ -473,7 +473,7 @@ const CheckoutPage = () => {
               <span className="right-side">${calculateTotal().toFixed(2)}</span>
             </p>
           </div>
-          <button type="button" className="place-order primary-btn" onClick={handleSubmit}>
+          <button type="button" className="primary-btn" onClick={handleSubmit}>
             Place Order
           </button>
         </section>
