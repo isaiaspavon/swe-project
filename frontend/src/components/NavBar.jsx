@@ -9,9 +9,10 @@ import './NavBar.css';
 
 const FILTER_OPTIONS = [
   { value: 'all', label: 'All' },
+  { value: 'isbn', label: 'ISBN' },
+  { value: 'category', label: 'Category' },
   { value: 'title', label: 'Title' },
-  { value: 'author', label: 'Author' },
-  { value: 'genre', label: 'Genre' }
+  { value: 'author', label: 'Author' }
 ];
 
 const Navbar = () => {
@@ -151,7 +152,7 @@ const Navbar = () => {
 
           <input
             type="text"
-            placeholder={`Search by ${searchFilter === 'all' ? 'title, author, or genre' : searchFilter}...`}
+            placeholder={`Search by ${searchFilter === 'all' ? 'title, author, isbn, or category' : searchFilter}...`}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}

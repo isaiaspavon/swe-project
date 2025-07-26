@@ -65,16 +65,19 @@ const SearchResultsPage = () => {
       results = results.filter(book => {
         switch (localFilter) {
           case 'title':
-            return book.title?.toLowerCase().includes(searchTerm);
+            return String(book.title || '').toLowerCase().includes(searchTerm);
           case 'author':
-            return book.author?.toLowerCase().includes(searchTerm);
-          case 'genre':
-            return book.genre?.toLowerCase().includes(searchTerm);
+            return String(book.author || '').toLowerCase().includes(searchTerm);
+          case 'isbn':
+            return String(book.isbn || '').includes(query);
+          case 'category':
+            return String(book.category || '').toLowerCase().includes(searchTerm);
           default:
             return (
-              book.title?.toLowerCase().includes(searchTerm) ||
-              book.author?.toLowerCase().includes(searchTerm) ||
-              book.genre?.toLowerCase().includes(searchTerm)
+              String(book.title || '').toLowerCase().includes(searchTerm) ||
+              String(book.author || '').toLowerCase().includes(searchTerm) ||
+              String(book.isbn || '').includes(query) ||
+              String(book.category || '').toLowerCase().includes(searchTerm)
             );
         }
       });
@@ -156,17 +159,16 @@ const SearchResultsPage = () => {
         {/* Top filter bar */}
         <div style={{ margin: '1.5rem 0', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           <label style={{ color: '#f4f4f5', fontWeight: 600, marginRight: 8 }}>Search Type:</label>
-          {['title', 'author', 'genre', 'all'].map(opt => (
+          {['all','title', 'author', 'ISBN', 'category'].map(opt => (
             <button
               key={opt}
               className={`elite-pill${localFilter === opt ? ' active' : ''}`}
               onClick={() => handleFilterChange('filter', opt)}
               style={{ minWidth: 80 }}
             >
-              {opt.charAt(0).toUpperCase() + opt.slice(1)}
+              {opt === 'all' ? 'All' : opt.charAt(0).toUpperCase() + opt.slice(1)}
             </button>
           ))}
-          {/* You can add more top bar filters here if needed */}
         </div>
         {query && (
           <p>
@@ -181,13 +183,13 @@ const SearchResultsPage = () => {
           <div className="elite-filter-group">
             <label>Search Type</label>
             <div className="elite-pill-group">
-              {['title', 'author', 'genre', 'all'].map(opt => (
+              {['all', 'title', 'author', 'ISBN', 'category'].map(opt => (
                 <button
                   key={opt}
                   className={`elite-pill${localFilter === opt ? ' active' : ''}`}
                   onClick={() => handleFilterChange('filter', opt)}
                 >
-                  {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                  {opt === 'all' ? 'All' : opt.charAt(0).toUpperCase() + opt.slice(1)}
                 </button>
               ))}
             </div>
