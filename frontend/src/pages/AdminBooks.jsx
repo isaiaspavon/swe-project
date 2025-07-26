@@ -6,9 +6,9 @@ import { db } from '../firebaseConfig';
 const AdminBooks = () => {
   const [books, setBooks] = useState([]);
   const [form, setForm] = useState({
-    isbn: '', category: '', authors: '', title: '',
-    image: '', edition: '', publisher: '', year: '', quantity: '',
-    threshold: '', buyingPrice: '', sellingPrice: ''
+    isbn: '', category: '', author: '', title: '',
+    image: '', edition: '', publisher: '', year: '', inventory: '',
+    threshold: '', buyingPrice: '', price: ''
   });
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,16 +36,16 @@ const AdminBooks = () => {
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.authors || !form.isbn) return;
+    if (!form.title || !form.author || !form.isbn) return;
 
     try {
       const booksRef = ref(db, 'books');
       await push(booksRef, {
         ...form,
-        quantity: parseInt(form.quantity),
+        inventory: parseInt(form.inventory),
         threshold: parseInt(form.threshold),
         buyingPrice: parseFloat(form.buyingPrice),
-        sellingPrice: parseFloat(form.sellingPrice),
+        price: parseFloat(form.price),
         year: parseInt(form.year)
       });
       resetForm();
@@ -58,11 +58,11 @@ const AdminBooks = () => {
     setEditingId(book.id);
     setForm({
       isbn: book.isbn || '', category: book.category || 'top-seller',
-      authors: book.authors || '', title: book.title || '',
+      author: book.author || '', title: book.title || '',
       image: book.image || '', edition: book.edition || '',
       publisher: book.publisher || '', year: book.year || '',
-      quantity: book.quantity || '', threshold: book.threshold || '',
-      buyingPrice: book.buyingPrice || '', sellingPrice: book.sellingPrice || ''
+      inventory: book.inventory || '', threshold: book.threshold || '',
+      buyingPrice: book.buyingPrice || '', price: book.price || ''
     });
   };
 
@@ -74,10 +74,10 @@ const AdminBooks = () => {
       const bookRef = ref(db, `books/${editingId}`);
       await update(bookRef, {
         ...form,
-        quantity: parseInt(form.quantity),
+        inventory: parseInt(form.inventory),
         threshold: parseInt(form.threshold),
         buyingPrice: parseFloat(form.buyingPrice),
-        sellingPrice: parseFloat(form.sellingPrice),
+        price: parseFloat(form.price),
         year: parseInt(form.year)
       });
       setEditingId(null);
@@ -99,9 +99,9 @@ const AdminBooks = () => {
 
   const resetForm = () => {
     setForm({
-      isbn: '', category: '', authors: '', title: '',
-      image: '', edition: '', publisher: '', year: '', quantity: '',
-      threshold: '', buyingPrice: '', sellingPrice: ''
+      isbn: '', category: '', author: '', title: '',
+      image: '', edition: '', publisher: '', year: '', inventory: '',
+      threshold: '', buyingPrice: '', price: ''
     });
   };
 
@@ -122,17 +122,17 @@ const AdminBooks = () => {
       <form onSubmit={editingId ? handleUpdate : handleAdd} style={{ marginBottom: '1.5rem', background: '#232323', padding: '1rem', borderRadius: '8px', border: '0.2px solid #59595aff' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem' }}>
           {[
-            { name: 'isbn', placeholder: 'ISBN' },
+            { name: 'isbn', placeholder: 'ISBN', type: 'number'},
             { name: 'category', placeholder: 'Category' },
-            { name: 'authors', placeholder: 'Authors' },
+            { name: 'author', placeholder: 'Author' },
             { name: 'title', placeholder: 'Title' },
             { name: 'edition', placeholder: 'Edition' },
             { name: 'publisher', placeholder: 'Publisher' },
             { name: 'year', placeholder: 'Year', type: 'number' },
-            { name: 'quantity', placeholder: 'In Stock', type: 'number' },
+            { name: 'inventory', placeholder: 'In Stock', type: 'number' },
             { name: 'threshold', placeholder: 'Min Threshold', type: 'number' },
             { name: 'buyingPrice', placeholder: 'Buying Price', type: 'number' },
-            { name: 'sellingPrice', placeholder: 'Selling Price', type: 'number' },
+            { name: 'price', placeholder: 'Selling Price', type: 'number' },
             { name: 'image', placeholder: 'Image URL' }
           ].map(({ name, placeholder, type = 'text' }) => (
             <input
@@ -162,7 +162,7 @@ const AdminBooks = () => {
         <thead>
           <tr>
             <th style={{ padding: 8 }}>Title</th>
-            <th style={{ padding: 8 }}>Authors</th>
+            <th style={{ padding: 8 }}>Author</th>
             <th style={{ padding: 8 }}>ISBN</th>
             <th style={{ padding: 8 }}>Stock</th>
             <th style={{ padding: 8 }}>Sell Price</th>
@@ -173,10 +173,10 @@ const AdminBooks = () => {
           {books.map(book => (
             <tr key={book.id}>
               <td style={{ padding: 8 }}>{book.title}</td>
-              <td style={{ padding: 8 }}>{book.authors}</td>
+              <td style={{ padding: 8 }}>{book.author}</td>
               <td style={{ padding: 8 }}>{book.isbn}</td>
-              <td style={{ padding: 8 }}>{book.quantity}</td>
-              <td style={{ padding: 8 }}>${parseFloat(book.sellingPrice || 0).toFixed(2)}</td>
+              <td style={{ padding: 8 }}>{book.inventory}</td>
+              <td style={{ padding: 8 }}>${parseFloat(book.price || 0).toFixed(2)}</td>
               <td style={{ padding: 8 }}>
                 <button onClick={() => handleEdit(book)} style={{ marginRight: 8, background: 'gray', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Edit</button>
                 <button onClick={() => handleDelete(book.id)} style={{ background: 'darkred', color: 'white', border: 'none', borderRadius: 4, padding: '0.25rem 0.75rem' }}>Delete</button>
