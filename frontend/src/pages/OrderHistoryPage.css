@@ -31,7 +31,6 @@
   padding: 0px 10px;
 }
 
-/* Background line */
 .progress-tracker::before {
   content: '';
   position: absolute;
@@ -39,22 +38,23 @@
   left: 0;
   right: 0;
   height: 4px;
-  background-color: #ccc;
+  background: linear-gradient(
+    to right,
+    #4CAF50 var(--progress-percent, 0%),
+    #dfe6e0 var(--progress-percent, 0%)
+  );
   z-index: 0;
+  border-radius: 2px;
+  transition: background 0.4s ease;
 }
 
-/* Filled progress line */
+
 .progress-tracker::after {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 0;
-  height: 4px;
-  background-color: #4CAF50;
-  z-index: 1;
-  width: var(--progress-percent, 0%);
-  max-width: 100%;
-  transition: width 0.4s ease;
+  content: none;
+}
+
+.progress-tracker::after {
+  content: none;
 }
 
 .step {
@@ -166,9 +166,9 @@ background-color: #317ab5ff;
   margin-bottom: 15px;
 }
 
-/* When progress is fully completed, fade green to gray */
+
 .progress-tracker.completed::after {
-  background: #ccc;
+  background: #cccccc;
 }
 
 .progress-tracker.completed .step .step-number {

@@ -16,7 +16,7 @@ const steps = [
 
 const OrderHistory = () => {
   const { currentUser } = useAuth();
-  const { addToCart } = useCart();
+  const { addOrUpdateCartBook, getCartBooks } = useCart();
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,15 +64,23 @@ const OrderHistory = () => {
 
   const handleViewOrder = (order) => setModalOrder(order);
 
-  const handleOrderAgain = (order) => {
-    if (order.items && Array.isArray(order.items)) {
-      order.items.forEach(item => {
-        addToCart(item, item.quantity || 1);
-      });
-      alert('Items from this order have been added to your cart!');
-      navigate('/cart');
-    }
-  };
+ const handleOrderAgain = (order) => {
+  const cartBooks = getCartBooks() || [];
+
+  if (order.items && Array.isArray(order.items)) {
+    order.items.forEach(item => {
+      const existing = cartBooks.find(cartItem => cartItem.bookId === item.bookId);
+      const newQuantity = existing
+        ? existing.quantity + (item.quantity || 1)
+        : (item.quantity || 1);
+
+      addOrUpdateCartBook(item.bookId, newQuantity);
+    });
+
+    alert('Items from this order have been added to your cart!');
+    navigate('/cart');
+  }
+};
 
   const handleContinueShopping = () => navigate('/');
 
@@ -127,11 +135,17 @@ const OrderHistory = () => {
             maxWidth: '900px',
             margin: '0 auto'
           }}>
-            {/* Progress Tracker */}
-            <div
-              className={`progress-tracker ${order.step >= steps.length - 1 ? 'completed' : ''}`}
-              style={{ marginBottom: '2rem' }}
-            >
+            
+          <div className={`progress-tracker ${order.step >= steps.length - 1 ? 'completed' : ''}`}
+                style={{
+                  marginBottom: '2rem',
+                  '--progress-percent': `${
+                    order.step === 0
+                      ? 10 
+                      : (order.step / (steps.length - 1)) * 100
+                  }%`
+                }}
+              >
               {steps.map((step, index) => (
                 <div
                   key={index}
@@ -146,7 +160,7 @@ const OrderHistory = () => {
                 </div>
               ))}
             </div>
-            {/* Order Info */}
+           
             <div style={{
               display: 'flex',
               flexWrap: 'wrap',
