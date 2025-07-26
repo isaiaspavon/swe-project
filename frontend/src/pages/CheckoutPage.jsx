@@ -6,6 +6,8 @@ import { ref, push, get, onValue } from 'firebase/database';
 import { db, fetchBooks } from '../firebaseConfig';
 import "./CheckoutPage.css";
 import { decryptData } from '../utils/encryption';
+import emailjs from 'emailjs-com';
+
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -279,7 +281,32 @@ const CheckoutPage = () => {
     const tax = subtotal * 0.085;
     return (subtotal + tax);
   };
+  const sendConfirmationEmail = (order) => {
+    const itemList = order.items.map(item => `${item.title} x${item.quantity}`).join(", ");
 
+    const templateParams = {
+      order_number: order.orderNumber,
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      order_date: new Date(order.orderDate).toLocaleDateString(),
+      shipping_name: `${formData.firstName} ${formData.lastName}`,
+      shipping_address: `${formData.addressLine1} ${formData.addressLine2 ? formData.addressLine2 + ', ' : ''}${formData.city}, ${formData.state} ${formData.zipCode}`,
+      order_items: itemList,
+      order_total: `$${order.total.toFixed(2)}`,
+      user_email: formData.email
+    };
+
+    emailjs.send(
+      "service_tsqwzy7",       // Replace with your EmailJS service ID
+      "template_818s6n7",      // Replace with your EmailJS template ID
+      templateParams,
+      "5PxilDqp-n8urSbtG"      // Replace with your EmailJS public key
+    ).then((response) => {
+      console.log("Email sent:", response.status, response.text);
+    }).catch((error) => {
+      console.error("Email failed:", error);
+    });
+  };
   // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -315,6 +342,7 @@ const CheckoutPage = () => {
       const ordersRef = ref(db, `orders/${currentUser.uid}`);
       const newOrderRef = await push(ordersRef, order);
       const orderWithId = { ...order, id: newOrderRef.key };
+      sendConfirmationEmail(order); 
       clearCart();
       navigate('/checkout-confirmation', { state: orderWithId });
     } catch (error) {
