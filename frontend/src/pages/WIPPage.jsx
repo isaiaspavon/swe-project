@@ -1,5 +1,5 @@
 import React from 'react';
-import WIPImage from '../assets/IMG_8846.png';
+import WIPImage from '../assets/WipCat.PNG.png';
 
 const WIPPage = () => (
   <div style={{
@@ -11,7 +11,7 @@ const WIPPage = () => (
     textAlign: 'center',
     background: 'none',
   }}>
-    <img src={WIPImage} alt="Work in Progress" style={{ maxWidth: 320, width: '100%', marginBottom: 24 }} />
+    <img src={WIPImage} alt="Work in Progress" style={{ maxWidth: 420, width: '100%', marginBottom: 24 }} />
     <h2 style={{ color: '#2e7d32', fontWeight: 700, fontSize: '2rem' }}>Work In Progress</h2>
     <p style={{ color: '#555', fontSize: '1.1rem' }}>This page is under construction. Please check back soon!</p>
   </div>
