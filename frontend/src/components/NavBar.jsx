@@ -10,7 +10,7 @@ import './NavBar.css';
 const FILTER_OPTIONS = [
   { value: 'all', label: 'All' },
   { value: 'isbn', label: 'ISBN' },
-  { value: 'category', label: 'Category' },
+  { value: 'category', label: 'Subject' },
   { value: 'title', label: 'Title' },
   { value: 'author', label: 'Author' }
 ];

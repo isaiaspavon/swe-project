@@ -21,7 +21,7 @@ const SearchResultsPage = () => {
   // Get filter params from URL
   const query = searchParams.get('q') || '';
   const filter = searchParams.get('filter') || 'all';
-  const category = searchParams.get('category') || 'all';
+  const category = searchParams.get('subject') || 'all';
   const genre = searchParams.get('genre') || 'all';
   const priceRange = searchParams.get('price') || 'all';
 
@@ -159,7 +159,7 @@ const SearchResultsPage = () => {
         {/* Top filter bar */}
         <div style={{ margin: '1.5rem 0', display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
           <label style={{ color: '#f4f4f5', fontWeight: 600, marginRight: 8 }}>Search Type:</label>
-          {['all','title', 'author', 'ISBN', 'category'].map(opt => (
+          {['all','title', 'author', 'ISBN', 'subject'].map(opt => (
             <button
               key={opt}
               className={`elite-pill${localFilter === opt ? ' active' : ''}`}
@@ -183,7 +183,7 @@ const SearchResultsPage = () => {
           <div className="elite-filter-group">
             <label>Search Type</label>
             <div className="elite-pill-group">
-              {['all', 'title', 'author', 'ISBN', 'category'].map(opt => (
+              {['all', 'title', 'author', 'ISBN', 'subject'].map(opt => (
                 <button
                   key={opt}
                   className={`elite-pill${localFilter === opt ? ' active' : ''}`}
@@ -195,32 +195,22 @@ const SearchResultsPage = () => {
             </div>
           </div>
           <div className="elite-filter-group">
-            <label>Category</label>
-            <div className="elite-pill-group">
-              {['all', 'top-seller', 'coming-soon'].map(opt => (
-                <button
-                  key={opt}
-                  className={`elite-pill${localCategory === opt ? ' active' : ''}`}
-                  onClick={() => handleFilterChange('category', opt)}
-                >
-                  {opt === 'all' ? 'All' : opt.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="elite-filter-group">
-            <label>Genre</label>
+            <label>Subject</label>
             <select
-              value={localGenre}
-              onChange={e => handleFilterChange('genre', e.target.value)}
+              value={localCategory}
+              onChange={e => handleFilterChange('category', e.target.value)}
               className="elite-select"
             >
-              <option value="all">All Genres</option>
-              {getUniqueGenres().map(genre => (
-                <option key={genre} value={genre}>{genre}</option>
-              ))}
+              <option value="all">All Subjects</option>
+              {['education', 'fantasy', 'history', 'horror', 'mystery',
+                'non-fiction', 'romance', 'science-fiction', 'thriller'].map(opt => (
+                <option key={opt} value={opt}>
+                  {opt.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </option>
+            ))}
             </select>
           </div>
+          
           <div className="elite-filter-group">
             <label>Price</label>
             <select
