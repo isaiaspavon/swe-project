@@ -15,9 +15,9 @@ const HomePage = () => {
     });
   }, []);
 
-  // No filtering by searchQuery here!
-  const topSellers = books.filter((book) => book.category === "top-seller");
-  const comingSoon = books.filter((book) => book.category === "coming-soon");
+  
+const topSellers = books.slice(0, 10);
+const comingSoon = books.slice(10, 20);
 
   return (
     <motion.div
