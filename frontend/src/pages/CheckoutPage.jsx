@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { ref, push, get, onValue } from 'firebase/database';
 import { db, fetchBooks } from '../firebaseConfig';
 import "./CheckoutPage.css";
-import { decryptData } from '../utils/encryption';
+import { decryptData, encryptData } from '../utils/encryption';
 import emailjs from 'emailjs-com';
 
 
@@ -44,6 +44,23 @@ const CheckoutPage = () => {
     cvv: '',
     promoCode: '',
   });
+
+  // Function to detect card type based on card number
+  const detectCardType = (cardNumber) => {
+    const cleanNumber = cardNumber.replace(/\s/g, '');
+    
+    if (/^4/.test(cleanNumber)) {
+      return 'Visa';
+    } else if (/^5[1-5]/.test(cleanNumber)) {
+      return 'MasterCard';
+    } else if (/^3[47]/.test(cleanNumber)) {
+      return 'American Express';
+    } else if (/^6/.test(cleanNumber)) {
+      return 'Discover';
+    } else {
+      return 'Card';
+    }
+  };
 
   // Fetch available promotions
   useEffect(() => {
@@ -281,6 +298,7 @@ const CheckoutPage = () => {
     const tax = subtotal * 0.085;
     return (subtotal + tax);
   };
+
   const sendConfirmationEmail = (order) => {
     const itemList = order.items.map(item => `${item.title} x${item.quantity}`).join(", ");
 
@@ -293,20 +311,21 @@ const CheckoutPage = () => {
       shipping_address: `${formData.addressLine1} ${formData.addressLine2 ? formData.addressLine2 + ', ' : ''}${formData.city}, ${formData.state} ${formData.zipCode}`,
       order_items: itemList,
       order_total: `$${order.total.toFixed(2)}`,
-      user_email: formData.email
+      user_email: order.userEmail
     };
 
     emailjs.send(
-      "service_tsqwzy7",       // Replace with your EmailJS service ID
-      "template_818s6n7",      // Replace with your EmailJS template ID
+      "service_tsqwzy7",
+      "template_818s6n7",
       templateParams,
-      "5PxilDqp-n8urSbtG"      // Replace with your EmailJS public key
+      "5PxilDqp-n8urSbtG"
     ).then((response) => {
       console.log("Email sent:", response.status, response.text);
     }).catch((error) => {
       console.error("Email failed:", error);
     });
   };
+
   // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -324,6 +343,27 @@ const CheckoutPage = () => {
       alert(`Payment Method Issues:\n${paymentValidation.errors.join('\n')}`);
       return;
     }
+
+    // Structure data like PaymentCards - billing fields empty, payment fields encrypted
+    const billing = {
+      first: '',
+      last: '',
+      mi: '',
+      street: '',
+      street2: '',
+      city: '',
+      state: '',
+      zip: '',
+      phone: '',
+    };
+
+    const payment = {
+      cardType: detectCardType(formData.cardNumber),
+      cardNumber: encryptData(formData.cardNumber),
+      expDate: encryptData(formData.expiryDate),
+      default: false,
+    };
+
     const order = {
       items: items,
       subtotal: calculateSubtotal(),
@@ -331,7 +371,8 @@ const CheckoutPage = () => {
       promoDiscount: promoDiscount,
       tax: parseFloat(calculateTax()),
       total: parseFloat(calculateTotal()),
-      shipping: formData,
+      billing: billing,
+      payment: payment,
       orderDate: new Date().toISOString(),
       orderNumber: 'ORD-' + Date.now(),
       status: 'Placed',

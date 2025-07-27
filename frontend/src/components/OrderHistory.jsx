@@ -4,6 +4,7 @@ import { useCart } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { ref, onValue, off } from 'firebase/database';
 import { db } from '../firebaseConfig';
+import { decryptData } from '../utils/encryption';
 import "../pages/OrderHistoryPage.css";
 
 const steps = [
@@ -31,12 +32,31 @@ const OrderHistory = () => {
     const unsubscribe = onValue(ordersRef, (snapshot) => {
       if (snapshot.exists()) {
         const ordersData = snapshot.val();
-        const ordersList = Object.entries(ordersData).map(([orderId, orderData]) => ({
-          id: orderId,
-          ...orderData,
-          date: orderData.orderDate ? new Date(orderData.orderDate).toLocaleDateString() : 'Unknown',
-          step: getStepFromStatus(orderData.status),
-        }));
+        const ordersList = Object.entries(ordersData).map(([orderId, orderData]) => {
+          // Billing fields are now empty strings, no decryption needed
+          let billing = {};
+          if (orderData.billing) {
+            billing = {
+              first: orderData.billing.first || '',
+              last: orderData.billing.last || '',
+              mi: orderData.billing.mi || '',
+              street: orderData.billing.street || '',
+              street2: orderData.billing.street2 || '',
+              city: orderData.billing.city || '',
+              state: orderData.billing.state || '',
+              zip: orderData.billing.zip || '',
+              phone: orderData.billing.phone || '',
+            };
+          }
+
+          return {
+            id: orderId,
+            ...orderData,
+            billing: billing,
+            date: orderData.orderDate ? new Date(orderData.orderDate).toLocaleDateString() : 'Unknown',
+            step: getStepFromStatus(orderData.status),
+          };
+        });
         ordersList.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
         setOrders(ordersList);
       } else {
@@ -304,19 +324,9 @@ const OrderHistory = () => {
               </ul>
             </div>
             <div style={{ marginTop: '1rem' }}>
-              <strong>Shipping Info:</strong>
+              <strong>Payment Method:</strong>
               <div style={{ fontSize: '0.98rem', color: '#444' }}>
-                {modalOrder.shipping?.firstName} {modalOrder.shipping?.lastName}<br />
-                {[
-                  modalOrder.shipping?.addressLine1,
-                  modalOrder.shipping?.addressLine2,
-                  modalOrder.shipping?.city,
-                  modalOrder.shipping?.state,
-                  modalOrder.shipping?.zipCode
-                ]
-                  .filter(Boolean) // Remove empty/null/undefined values
-                  .join(', ')}<br />
-                {modalOrder.shipping?.email}
+                {modalOrder.payment?.cardType || 'Card'}
               </div>
             </div>
           </div>
