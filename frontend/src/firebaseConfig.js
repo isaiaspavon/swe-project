@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { getDatabase, ref, onValue, set, get, remove } from "firebase/database";
+import { getDatabase, ref, onValue, set, get, remove, update } from "firebase/database";
 
 // Firebase config file
 const firebaseConfig = {
@@ -21,6 +21,69 @@ const app = initializeApp(firebaseConfig);
 // Export Auth and Realtime DB services
 export const auth = getAuth(app);
 export const db = getDatabase(app);
+
+// --- INVENTORY MANAGEMENT FUNCTIONS ---
+
+// Get book inventory
+export const getBookInventory = async (bookId) => {
+  const bookRef = ref(db, `books/${bookId}`);
+  const snapshot = await get(bookRef);
+  if (snapshot.exists()) {
+    const book = snapshot.val();
+    return book.inventory || 0;
+  }
+  return 0;
+};
+
+// Update book inventory (decrease by quantity)
+export const updateBookInventory = async (bookId, quantityToSubtract) => {
+  const bookRef = ref(db, `books/${bookId}`);
+  const snapshot = await get(bookRef);
+  
+  if (snapshot.exists()) {
+    const book = snapshot.val();
+    const currentInventory = book.inventory || 0;
+    const newInventory = Math.max(0, currentInventory - quantityToSubtract);
+    
+    await update(bookRef, { inventory: newInventory });
+    console.log(`Updated inventory for book ${bookId}: ${currentInventory} -> ${newInventory}`);
+    return newInventory;
+  }
+  throw new Error('Book not found');
+};
+
+// Check if book has sufficient inventory
+export const checkInventoryAvailability = async (bookId, requestedQuantity) => {
+  const currentInventory = await getBookInventory(bookId);
+  return currentInventory >= requestedQuantity;
+};
+
+// Validate cart inventory before checkout
+export const validateCartInventory = async (cartItems) => {
+  const validationResults = [];
+  
+  for (const item of cartItems) {
+    const available = await checkInventoryAvailability(item.bookId, item.quantity);
+    if (!available) {
+      const currentInventory = await getBookInventory(item.bookId);
+      validationResults.push({
+        bookId: item.bookId,
+        requested: item.quantity,
+        available: currentInventory,
+        insufficient: true
+      });
+    } else {
+      validationResults.push({
+        bookId: item.bookId,
+        requested: item.quantity,
+        available: await getBookInventory(item.bookId),
+        insufficient: false
+      });
+    }
+  }
+  
+  return validationResults;
+};
 
 // --- CART FUNCTIONS ---
 

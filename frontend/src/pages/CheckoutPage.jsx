@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { ref, push, get, onValue } from 'firebase/database';
+import { ref, push, get, onValue, update } from 'firebase/database';
 import { db, fetchBooks } from '../firebaseConfig';
 import "./CheckoutPage.css";
 import { decryptData, encryptData } from '../utils/encryption';
@@ -326,6 +326,26 @@ const CheckoutPage = () => {
     });
   };
 
+  // Function to update book inventory
+  const updateBookInventory = async (bookId, quantityToSubtract) => {
+    try {
+      const bookRef = ref(db, `books/${bookId}`);
+      const snapshot = await get(bookRef);
+      
+      if (snapshot.exists()) {
+        const book = snapshot.val();
+        const currentInventory = book.inventory || 0;
+        const newInventory = Math.max(0, currentInventory - quantityToSubtract);
+        
+        await update(bookRef, { inventory: newInventory });
+        console.log(`Updated inventory for book ${bookId}: ${currentInventory} -> ${newInventory}`);
+        return newInventory;
+      }
+    } catch (error) {
+      console.error('Error updating inventory:', error);
+    }
+  };
+
   // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -379,10 +399,17 @@ const CheckoutPage = () => {
       userId: currentUser.uid,
       userEmail: currentUser.email
     };
+    
     try {
       const ordersRef = ref(db, `orders/${currentUser.uid}`);
       const newOrderRef = await push(ordersRef, order);
       const orderWithId = { ...order, id: newOrderRef.key };
+      
+      // Update inventory for all items in the order
+      for (const item of cartBooks) {
+        await updateBookInventory(item.bookId, item.quantity);
+      }
+      
       sendConfirmationEmail(order); 
       clearCart();
       navigate('/checkout-confirmation', { state: orderWithId });

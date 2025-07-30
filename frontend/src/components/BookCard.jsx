@@ -12,6 +12,7 @@ const BookCard = ({ book }) => {
       alert('Please sign in to add items to your cart');
       return;
     }
+    
     const cartBooks = getCartBooks() || [];
     const existing = cartBooks.find(item => item.bookId === book.id);
     const newQuantity = existing ? existing.quantity + 1 : 1;
