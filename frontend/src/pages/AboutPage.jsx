@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './AboutPage.css';
 
 const AboutPage = () => {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="about-page">
       <div className="about-hero">
@@ -98,19 +103,38 @@ const AboutPage = () => {
           </h2>
           <div className="promise-content">
             <p className="promise-text">
-              When you choose The Gilded Page, you're not just purchasing a book—you're 
-              embarking on a journey. A journey guided by the strength of a panther and 
-              the wisdom of an owl. Every page you turn, every story you discover, 
-              becomes part of your own legend.
+              We promise to deliver not just books, but experiences. Every order is handled with the care and attention that our readers deserve. From the moment you browse our collection to the instant your book arrives at your door, we ensure that every step of your journey with us is nothing short of exceptional.
             </p>
-            <div className="promise-signature">
-              <span className="signature-line">— The Gilded Page</span>
+            <p className="promise-text">
+              Join us in this adventure of discovery, where every page turned is a step toward wisdom, and every book chosen is a testament to the strength of human knowledge.
+            </p>
+          </div>
+        </div>
+
+        <div className="content-section">
+          <h2 className="section-title">
+            <span className="text-gold">Contact Us</span>
+          </h2>
+          <div className="contact-content">
+            <p>
+              Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+            </p>
+            <div className="contact-info">
+              <div className="contact-item">
+                <strong>Email:</strong> info@thegildedpage.com
+              </div>
+              <div className="contact-item">
+                <strong>Phone:</strong> (555) 123-4567
+              </div>
+              <div className="contact-item">
+                <strong>Address:</strong> 123 Book Street, Literary City, LC 12345
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default AboutPage;

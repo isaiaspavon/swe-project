@@ -16,8 +16,8 @@ const HomePage = () => {
   }, []);
 
   
-const topSellers = books.slice(0, 10);
-const comingSoon = books.slice(10, 20);
+const topSellers = books.slice(5, 25);
+const comingSoon = books.slice(26, 41);
 
   return (
     <motion.div
