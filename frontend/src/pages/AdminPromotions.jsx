@@ -108,15 +108,7 @@ const AdminPromotions = () => {
                              currentDate <= endDate;
 
     if (isCurrentlyActive) {
-      alert('Cannot delete an active promotion. Please deactivate it first by setting it to inactive, then delete it.');
-      return;
-    }
-
-    // Check if promotion is expired
-    const isExpired = currentDate > endDate;
-
-    if (!isExpired && promotion.isActive) {
-      alert('Cannot delete a future active promotion. Please deactivate it first.');
+      alert('Cannot delete an active promotion. Please wait until it expires or manually set it to inactive in the database.');
       return;
     }
 
@@ -129,27 +121,6 @@ const AdminPromotions = () => {
       } catch (error) {
         console.error('Error deleting promotion:', error);
         alert('Error deleting promotion');
-      }
-    }
-  };
-
-  // Add a function to deactivate promotions
-  const handleDeactivate = async (id) => {
-    const promotion = promos.find(promo => promo.id === id);
-    
-    if (!promotion) {
-      alert('Promotion not found');
-      return;
-    }
-
-    if (window.confirm(`Are you sure you want to deactivate the promotion "${promotion.code}"?`)) {
-      try {
-        const promoRef = ref(db, `promotions/${id}`);
-        await set(promoRef, { ...promotion, isActive: false });
-        console.log('Promotion deactivated successfully');
-      } catch (error) {
-        console.error('Error deactivating promotion:', error);
-        alert('Error deactivating promotion');
       }
     }
   };
@@ -402,26 +373,7 @@ const AdminPromotions = () => {
                 </td>
                 <td style={{ padding: '12px 8px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    {/* Deactivate button for active promotions */}
-                    {isCurrentlyActive && (
-                      <button
-                        onClick={() => handleDeactivate(promo.id)}
-                        style={{
-                          borderRadius: '4px',
-                          padding: '0.25rem 0.75rem',
-                          fontSize: '0.9em',
-                          fontWeight: '500',
-                          backgroundColor: '#fbbf24',
-                          color: 'black',
-                          border: 'none',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Deactivate
-                      </button>
-                    )}
-                    
-                    {/* Delete button - only for inactive/expired promotions */}
+                    {/* Delete button - disabled for active promotions */}
                     <button
                       onClick={() => handleDelete(promo.id)}
                       disabled={isCurrentlyActive}
