@@ -91,13 +91,65 @@ const AdminPromotions = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this promotion?')) {
+    // Find the promotion to check if it's active
+    const promotion = promos.find(promo => promo.id === id);
+    
+    if (!promotion) {
+      alert('Promotion not found');
+      return;
+    }
+
+    // Check if promotion is currently active
+    const currentDate = new Date();
+    const startDate = new Date(promotion.startDate);
+    const endDate = new Date(promotion.endDate);
+    const isCurrentlyActive = promotion.isActive && 
+                             currentDate >= startDate && 
+                             currentDate <= endDate;
+
+    if (isCurrentlyActive) {
+      alert('Cannot delete an active promotion. Please deactivate it first by setting it to inactive, then delete it.');
+      return;
+    }
+
+    // Check if promotion is expired
+    const isExpired = currentDate > endDate;
+
+    if (!isExpired && promotion.isActive) {
+      alert('Cannot delete a future active promotion. Please deactivate it first.');
+      return;
+    }
+
+    // Only allow deletion of inactive or expired promotions
+    if (window.confirm(`Are you sure you want to delete the promotion "${promotion.code}"? This action cannot be undone.`)) {
       try {
         const promoRef = ref(db, `promotions/${id}`);
         await remove(promoRef);
+        console.log('Promotion deleted successfully');
       } catch (error) {
         console.error('Error deleting promotion:', error);
         alert('Error deleting promotion');
+      }
+    }
+  };
+
+  // Add a function to deactivate promotions
+  const handleDeactivate = async (id) => {
+    const promotion = promos.find(promo => promo.id === id);
+    
+    if (!promotion) {
+      alert('Promotion not found');
+      return;
+    }
+
+    if (window.confirm(`Are you sure you want to deactivate the promotion "${promotion.code}"?`)) {
+      try {
+        const promoRef = ref(db, `promotions/${id}`);
+        await set(promoRef, { ...promotion, isActive: false });
+        console.log('Promotion deactivated successfully');
+      } catch (error) {
+        console.error('Error deactivating promotion:', error);
+        alert('Error deactivating promotion');
       }
     }
   };
@@ -177,74 +229,79 @@ const AdminPromotions = () => {
       >
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <input
+            type="text"
             name="code"
-            placeholder="Promo Code"
             value={form.code}
             onChange={handleChange}
+            placeholder="Promo Code"
             required
             style={{
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
-              width: '250px',
+              flex: '1',
+              minWidth: '120px'
             }}
           />
           <input
+            type="text"
             name="description"
-            placeholder="Description"
             value={form.description}
             onChange={handleChange}
+            placeholder="Description"
             required
             style={{
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
-              width: '620px',
+              flex: '2',
+              minWidth: '200px'
             }}
           />
           <input
+            type="number"
             name="discountValue"
-            placeholder="Discount %"
             value={form.discountValue}
             onChange={handleChange}
-            type="number"
-            step="0.01"
+            placeholder="Discount %"
+            required
             min="0"
             max="100"
-            required
             style={{
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
-              width: '100px',
+              flex: '1',
+              minWidth: '100px'
             }}
           />
           <input
+            type="number"
             name="minOrderAmount"
-            placeholder="Min Order ($)"
             value={form.minOrderAmount}
             onChange={handleChange}
-            type="number"
-            step="0.01"
+            placeholder="Min Order $"
             min="0"
+            step="0.01"
             style={{
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
-              width: '120px',
+              flex: '1',
+              minWidth: '120px'
             }}
           />
           <input
-            name="startDate"
             type="date"
+            name="startDate"
             value={form.startDate}
             onChange={handleChange}
             required
@@ -252,13 +309,15 @@ const AdminPromotions = () => {
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
+              flex: '1',
+              minWidth: '140px'
             }}
           />
           <input
-            name="endDate"
             type="date"
+            name="endDate"
             value={form.endDate}
             onChange={handleChange}
             required
@@ -266,19 +325,32 @@ const AdminPromotions = () => {
               padding: '0.5rem',
               borderRadius: '4px',
               border: '1px solid #444',
-              background: '#333',
+              background: '#1a1a1a',
               color: '#f4f4f5',
+              flex: '1',
+              minWidth: '140px'
             }}
           />
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#f4f4f5' }}>
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={form.isActive}
+              onChange={handleChange}
+              style={{ margin: 0 }}
+            />
+            Active
+          </label>
           <button
             type="submit"
             style={{
+              padding: '0.5rem 1rem',
+              borderRadius: '4px',
+              border: 'none',
               background: 'linear-gradient(#a8d6f5ff, #82c7f5ff)',
               color: 'black',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '0.5rem 1rem',
-              fontWeight: '500',
+              cursor: 'pointer',
+              fontWeight: 'bold'
             }}
           >
             Add Promotion
@@ -286,31 +358,29 @@ const AdminPromotions = () => {
         </div>
       </form>
 
-      <table
-        style={{
-          width: '100%',
-          background: '#232323',
-          color: '#f4f4f5',
-          borderRadius: '8px',
-          border: '0.2px solid #59595aff',
-          borderCollapse: 'collapse',
-        }}
-      >
+      <table style={{ width: '100%', background: '#232323', color: '#f4f4f5', borderRadius: '8px', border: '0.2px solid #59595aff' }}>
         <thead>
-          <tr style={{ borderBottom: '1px solid #444' }}>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Code</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Description</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Discount</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Min Order</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Start Date</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>End Date</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Status</th>
-            <th style={{ textAlign: 'left', padding: '12px 8px', fontWeight: '600' }}>Actions</th>
+          <tr>
+            <th style={{ padding: 8 }}>Code</th>
+            <th style={{ padding: 8 }}>Description</th>
+            <th style={{ padding: 8 }}>Discount</th>
+            <th style={{ padding: 8 }}>Min Order</th>
+            <th style={{ padding: 8 }}>Start Date</th>
+            <th style={{ padding: 8 }}>End Date</th>
+            <th style={{ padding: 8 }}>Status</th>
+            <th style={{ padding: 8 }}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {promos.map((promo, index) => {
             const expired = isExpired(promo.endDate);
+            const currentDate = new Date();
+            const startDate = new Date(promo.startDate);
+            const endDate = new Date(promo.endDate);
+            const isCurrentlyActive = promo.isActive && 
+                                    currentDate >= startDate && 
+                                    currentDate <= endDate;
+            
             return (
               <tr key={promo.id} style={{ borderBottom: index < promos.length - 1 ? '1px solid #333' : 'none' }}>
                 <td style={{ padding: '12px 8px' }}>{promo.code}</td>
@@ -322,30 +392,54 @@ const AdminPromotions = () => {
                 <td style={{ padding: '12px 8px' }}>
                   <span
                     style={{
-                      color: expired ? '#f87171' : promo.isActive ? '#4ade80' : '#f87171',
+                      color: expired ? '#f87171' : isCurrentlyActive ? '#4ade80' : '#fbbf24',
                       fontWeight: 'bold',
                       fontSize: '0.9em',
                     }}
                   >
-                    {expired ? 'Expired' : promo.isActive ? 'Active' : 'Inactive'}
+                    {expired ? 'Expired' : isCurrentlyActive ? 'Active' : promo.isActive ? 'Future Active' : 'Inactive'}
                   </span>
                 </td>
                 <td style={{ padding: '12px 8px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    {/* Deactivate button for active promotions */}
+                    {isCurrentlyActive && (
+                      <button
+                        onClick={() => handleDeactivate(promo.id)}
+                        style={{
+                          borderRadius: '4px',
+                          padding: '0.25rem 0.75rem',
+                          fontSize: '0.9em',
+                          fontWeight: '500',
+                          backgroundColor: '#fbbf24',
+                          color: 'black',
+                          border: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Deactivate
+                      </button>
+                    )}
+                    
+                    {/* Delete button - only for inactive/expired promotions */}
                     <button
                       onClick={() => handleDelete(promo.id)}
+                      disabled={isCurrentlyActive}
                       style={{
                         borderRadius: '4px',
                         padding: '0.25rem 0.75rem',
                         fontSize: '0.9em',
                         fontWeight: '500',
                         backgroundColor: 'transparent',
-                         color: 'white',
-                         border: '1.5px solid #e22929ff'
+                        color: isCurrentlyActive ? '#666' : 'white',
+                        border: `1.5px solid ${isCurrentlyActive ? '#666' : '#e22929ff'}`,
+                        cursor: isCurrentlyActive ? 'not-allowed' : 'pointer'
                       }}
+                      title={isCurrentlyActive ? 'Cannot delete active promotion' : 'Delete promotion'}
                     >
                       Delete
                     </button>
+                    
                     <span
                       style={{
                         color: promo.emailSent ? '#4ade80' : '#f87171',
